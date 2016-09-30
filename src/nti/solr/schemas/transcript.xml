@@ -7,29 +7,73 @@
 	<fieldType name="strings" class="solr.StrField" sortMissingLast="true" docValues="true" multiValued="true"/>
 	<fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-			<filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+			<charFilter class="solr.PatternReplaceCharFilterFactory"
+						pattern="([a-zA-Z])\1+"
+						replacement="$1$1"/>    
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>        
+			<filter class="solr.WordDelimiterFilterFactory" 
+					generateWordParts="1" 
+					splitOnCaseChange="0"
+					splitOnNumerics="0"
+					stemEnglishPossessive="1"
+					preserveOriginal="0"
+					catenateWords="1" 
+					generateNumberParts="1" 
+					catenateNumbers="0" 
+					catenateAll="0" 
+					types="wdfftypes.txt"/>
+			<filter class="solr.StopFilterFactory" 
+					words="lang/stopwords_en.txt" 
+					ignoreCase="true"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.EnglishPossessiveFilterFactory"/>
-			<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" 
+					protected="protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.PorterStemFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-			<filter class="solr.SynonymFilterFactory" expand="true" ignoreCase="true" synonyms="synonyms.txt"/>
-			<filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+			<charFilter class="solr.PatternReplaceCharFilterFactory"
+						pattern="([a-zA-Z])\1+"
+						replacement="$1$1"/>    
+			<filter class="solr.WordDelimiterFilterFactory" 
+					generateWordParts="1" 
+					splitOnCaseChange="0"
+					splitOnNumerics="0"
+					stemEnglishPossessive="1"
+					preserveOriginal="0"
+					catenateWords="1" 
+					generateNumberParts="1" 
+					catenateNumbers="0" 
+					catenateAll="0" 
+					types="wdfftypes.txt"/>
+			<filter class="solr.SynonymFilterFactory" 
+					expand="true" 
+					ignoreCase="true"
+					synonyms="synonyms.txt"/>
+			<filter class="solr.StopFilterFactory" 
+					words="lang/stopwords_en.txt" 
+					ignoreCase="true"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.EnglishPossessiveFilterFactory"/>
-			<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" 
+					protected="protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.PorterStemFilterFactory"/>
 		</analyzer>
 	</fieldType>
 	<fieldType name="text_en_splitting" class="solr.TextField" autoGeneratePhraseQueries="true" positionIncrementGap="100">
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-			<filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
-			<filter class="solr.WordDelimiterFilterFactory" catenateNumbers="1"
-					generateNumberParts="1" splitOnCaseChange="1" generateWordParts="1" catenateAll="0"
+			<filter class="solr.StopFilterFactory" 
+					words="lang/stopwords_en.txt" 
+					ignoreCase="true"/>
+			<filter class="solr.WordDelimiterFilterFactory" 
+					catenateNumbers="1"
+					generateNumberParts="1" 
+					splitOnCaseChange="1" 
+					generateWordParts="1" 
+					catenateAll="0"
 					catenateWords="1"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -37,12 +81,20 @@
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-			<filter class="solr.SynonymFilterFactory" expand="true" ignoreCase="true"
-				synonyms="synonyms.txt"/>
-			<filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
-			<filter class="solr.WordDelimiterFilterFactory" catenateNumbers="0"
-				generateNumberParts="1" splitOnCaseChange="1" generateWordParts="1" catenateAll="0"
-				catenateWords="0"/>
+			<filter class="solr.SynonymFilterFactory" 
+					expand="true" 
+					ignoreCase="true"
+					synonyms="synonyms.txt"/>
+			<filter class="solr.StopFilterFactory" 
+					words="lang/stopwords_en.txt" 
+					ignoreCase="true"/>
+			<filter class="solr.WordDelimiterFilterFactory" 
+					catenateNumbers="0"
+					generateNumberParts="1" 
+					splitOnCaseChange="1" 
+					generateWordParts="1" 
+					catenateAll="0"
+					catenateWords="0"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
 			<filter class="solr.PorterStemFilterFactory"/>
@@ -51,20 +103,46 @@
 	<fieldType name="text_en_splitting_tight" class="solr.TextField" autoGeneratePhraseQueries="true" positionIncrementGap="100">
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-			<filter class="solr.SynonymFilterFactory" expand="false" ignoreCase="true"
+			<filter class="solr.SynonymFilterFactory" 
+					expand="false"
+					ignoreCase="true"
 					synonyms="synonyms.txt"/>
-			<filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
-			<filter class="solr.WordDelimiterFilterFactory" catenateNumbers="1"
-					generateNumberParts="0" generateWordParts="0" catenateAll="0" catenateWords="1"/>
+			<filter class="solr.StopFilterFactory" 
+					words="lang/stopwords_en.txt" 
+					ignoreCase="true"/>
+			<filter class="solr.WordDelimiterFilterFactory"
+					catenateNumbers="1"
+					generateNumberParts="0" 
+					generateWordParts="0" 
+					catenateAll="0"
+					catenateWords="1"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
 			<filter class="solr.EnglishMinimalStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
+	<fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.SynonymFilterFactory" expand="true" ignoreCase="true" synonyms="synonyms.txt"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
 	<!-- Fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+	<field name="type" type="strings"/>
 	<field name="purpose" type="strings"/>
-	<field name="content_en" type="text_en"/>
+	<field name="video" type="string" indexed="true" required="true" stored="true"/>
+	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
+	<!-- content field(s) -->
+	<dynamicField name="*_en" type="text_en" indexed="true" stored="true"/>
+	<!-- catch all -->
 	<copyField source="*" dest="_text_"/>
 </schema>
