@@ -47,7 +47,8 @@ setup(
     namespace_packages=['nti'],
     tests_require=TESTS_REQUIRE,
     install_requires=[
-        'setuptools'
+        'setuptools',
+        'solrcloudpy'
     ],
     extras_require={
         'test': TESTS_REQUIRE,
