@@ -16,7 +16,7 @@ class IAttributeValue(interface.Interface):
     Adapter interface to get the [field] value from a given object
     """
 
-    def __call__():
+    def value():
         """
         Return the attribute value for a given adapted object
         """

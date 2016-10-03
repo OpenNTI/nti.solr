@@ -26,7 +26,7 @@ class DefaultCreatorValue(object):
     def __init__(self, context):
         self.context = context
     
-    def __call__(self, context=None):
+    def value(self, context=None):
         context = self.context if context is None else context
         context = ICreatedUsername(context, None)
         result = context.creator_username if context is not None else None
