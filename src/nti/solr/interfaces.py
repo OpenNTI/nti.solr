@@ -8,3 +8,12 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
+
+from zope import interface
+
+class IAttributeValue(interface.Interface):
+    
+    def __call__():
+        """
+        Return the attribute value for a given adapted object
+        """
