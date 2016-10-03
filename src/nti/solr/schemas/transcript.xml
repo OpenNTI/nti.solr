@@ -2,6 +2,7 @@
 <schema name="transcript-schema" version="1.6">
 	<uniqueKey>id</uniqueKey>
 	<!-- Field Types -->
+	<fieldType name="tdate" class="solr.TrieDateField" precisionStep="4" positionIncrementGap="0"/>
 	<fieldType name="date" class="solr.TrieDateField" positionIncrementGap="0" docValues="true" precisionStep="0"/>
 	<fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
 	<fieldType name="strings" class="solr.StrField" sortMissingLast="true" docValues="true" multiValued="true"/>
@@ -143,7 +144,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 	</fieldType>
-	<!-- Fields -->
+	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="type" type="strings"/>
 	<field name="purpose" type="strings"/>
@@ -151,6 +152,17 @@
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content field(s) -->
 	<dynamicField name="*_en" type="text_en" indexed="true" stored="true"/>
+	<!-- metadata -->
+	<field name="creator" type="string" indexed="true" stored="false"/>
+	<field name="mimeType" type="string" indexed="true" stored="false" />
+	<field name="taggedTo" type="strings" indexed="true" stored="false"/>
+	<field name="inReplyTo" type="string" indexed="true" stored="false"/>
+	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
+	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
+	<field name="containerId" type="string" indexed="true" stored="false"/>
+	<field name="sharedWith" type="strings" indexed="true" stored="false"/>
+	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
+	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
 	<!-- catch all / copy fields -->
 	<copyField source="id" dest="ntiid"/>
 	<copyField source="*" dest="_text_"/>
