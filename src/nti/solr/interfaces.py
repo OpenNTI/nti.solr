@@ -20,3 +20,6 @@ class IAttributeValue(interface.Interface):
         """
         Return the attribute value for a given adapted object
         """
+
+class ICreatorValue(IAttributeValue):
+    pass
