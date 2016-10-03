@@ -144,14 +144,45 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 	</fieldType>
+	<fieldType name="text_suggest" class="solr.TextField" positionIncrementGap="100">
+		<analyzer>
+			<tokenizer class="solr.UAX29URLEmailTokenizerFactory"/>
+			<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.EnglishPossessiveFilterFactory"/>
+		</analyzer>
+	</fieldType>
+	<fieldType name="text_suggest_ngram" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.UAX29URLEmailTokenizerFactory"/>
+			<filter class="solr.StopFilterFactory" 
+					ignoreCase="true"
+					words="stopwords.txt" />
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.EnglishPossessiveFilterFactory"/>
+			<filter class="solr.EdgeNGramFilterFactory" maxGramSize="10" minGramSize="2"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.UAX29URLEmailTokenizerFactory"/>
+			<filter class="solr.StopFilterFactory" 
+					ignoreCase="true" 
+					words="stopwords.txt" />
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.EnglishPossessiveFilterFactory"/>
+		</analyzer>
+	</fieldType>
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="type" type="strings"/>
 	<field name="purpose" type="strings"/>
-	<field name="video" type="string" indexed="true" required="true" stored="true"/>
+	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content field(s) -->
-	<dynamicField name="*_en" type="text_en" indexed="true" stored="true"/>
+	<field 	name="content_en" type="text_en" indexed="true" stored="true"
+			termVectors="true" termPositions="true" termOffsets="true"/>
 	<!-- metadata -->
 	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
@@ -163,7 +194,12 @@
 	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
+	<!-- suggest -->
+	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
+	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
 	<!-- catch all / copy fields -->
 	<copyField source="id" dest="ntiid"/>
 	<copyField source="content_en" dest="_text_"/>
+	<copyField source="content_en" dest="suggest"/>
+	<copyField source="content_en" dest="suggest_ngram"/>
 </schema>
