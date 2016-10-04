@@ -16,9 +16,12 @@ import unittest
 
 from zope import interface
 
+from zope.mimetype.interfaces import IContentTypeAware
+
 from nti.coremetadata.interfaces import ICreated
 
 from nti.solr.interfaces import ICreatorValue
+from nti.solr.interfaces import IMimeTypeValue
 
 from nti.solr.tests import SOLRTestLayer
 
@@ -34,3 +37,12 @@ class TestAdpaters(unittest.TestCase):
 
 		value = ICreatorValue(Created()).value()
 		assert_that(value, is_('ichigo'))
+
+	def test_mimetype(self):
+
+		@interface.implementer(IContentTypeAware)
+		class Created(object):
+			mimeType = 'text/x-python'
+
+		value = IMimeTypeValue(Created()).value()
+		assert_that(value, is_('text/x-python'))

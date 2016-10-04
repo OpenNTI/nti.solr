@@ -18,4 +18,8 @@
 			 provides=".interfaces.IIDValue"
 			 for="*" />
  
+ 	<adapter factory=".adapters._DefaultMimeTypeValue"
+			 provides=".interfaces.IMimeTypeValue"
+			 for="*" />
+
 </configure>

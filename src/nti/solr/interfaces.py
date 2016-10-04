@@ -30,3 +30,8 @@ class IIDValue(IAttributeValue):
 	"""
 	Adapter interface to get the id value from a given object
 	"""
+
+class IMimeTypeValue(IAttributeValue):
+	"""
+	Adapter interface to get the mimeType value from a given object
+	"""

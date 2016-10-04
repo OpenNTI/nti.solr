@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -17,16 +16,19 @@ from zope import interface
 
 from zope.intid.interfaces import IIntIds
 
+from zope.mimetype.interfaces import IContentTypeAware
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICreatorValue
+from nti.solr.interfaces import IMimeTypeValue
 
-@interface.implementer(ICreatorValue)
-class _DefaultCreatorValue(object):
-
-	__slots__ = ('context',)
+class _BasicAttributeValue(object):
 
 	def __init__(self, context):
 		self.context = context
+
+@interface.implementer(ICreatorValue)
+class _DefaultCreatorValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
@@ -40,12 +42,7 @@ class _DefaultCreatorValue(object):
 		return None
 
 @interface.implementer(IIDValue)
-class _DefaultIDValue(object):
-
-	__slots__ = ('context',)
-
-	def __init__(self, context):
-		self.context = context
+class _DefaultIDValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
@@ -56,3 +53,11 @@ class _DefaultIDValue(object):
 		except (LookupError, KeyError):
 			pass
 		return None
+
+@interface.implementer(IMimeTypeValue)
+class _DefaultMimeTypeValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		context = IContentTypeAware(context, context)
+		return getattr(context, 'mimeType', None) or getattr(context, 'mime_type', None)
