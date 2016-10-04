@@ -17,7 +17,7 @@ import zope.testing.cleanup
 
 class SOLRTestLayer(ZopeComponentLayer, GCLayerMixin, ConfiguringLayerMixin):
 
-    set_up_packages = ('nti.solr',)
+    set_up_packages = ('nti.dataserver', 'nti.solr',)
 
     @classmethod
     def setUp(cls):

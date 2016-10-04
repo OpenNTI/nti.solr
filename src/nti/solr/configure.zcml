@@ -9,9 +9,13 @@
 	<include package="zope.component" />
 	<include package="zope.security" />
 
-	<!-- adapters -->
+	<!-- Adapters -->
 	<adapter factory=".adapters._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"
 			 for="*" />
-			 
+
+	<adapter factory=".adapters._DefaultIDValue"
+			 provides=".interfaces.IIDValue"
+			 for="*" />
+ 
 </configure>

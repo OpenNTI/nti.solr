@@ -12,14 +12,21 @@ logger = __import__('logging').getLogger(__name__)
 from zope import interface
 
 class IAttributeValue(interface.Interface):
-    """
-    Adapter interface to get the [field] value from a given object
-    """
+	"""
+	Adapter interface to get the [field] value from a given object
+	"""
 
-    def value():
-        """
-        Return the attribute value for a given adapted object
-        """
+	def value():
+		"""
+		Return the attribute value for a given adapted object
+		"""
 
 class ICreatorValue(IAttributeValue):
-    pass
+	"""
+	Adapter interface to get the creator value from a given object
+	"""
+
+class IIDValue(IAttributeValue):
+	"""
+	Adapter interface to get the id value from a given object
+	"""
