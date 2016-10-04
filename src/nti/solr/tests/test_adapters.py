@@ -19,9 +19,13 @@ from zope import interface
 from zope.mimetype.interfaces import IContentTypeAware
 
 from nti.coremetadata.interfaces import ICreated
+from nti.coremetadata.interfaces import ICreatedTime 
+from nti.coremetadata.interfaces import ILastModified 
 
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import ICreatedTimeValue
+from nti.solr.interfaces import ILastModifiedValue
 
 from nti.solr.tests import SOLRTestLayer
 
@@ -46,3 +50,14 @@ class TestAdpaters(unittest.TestCase):
 
 		value = IMimeTypeValue(Created()).value()
 		assert_that(value, is_('text/x-python'))
+		
+	def test_created_last_mod_times(self):
+
+		@interface.implementer(ICreatedTime, ILastModified)
+		class Created(object):
+			lastModified = createdTime = 1475604175.0
+
+		obj = Created()
+		for iface in (ICreatedTimeValue, ILastModifiedValue):
+			value = iface(obj).value()
+			assert_that(value, is_('2016-10-04T18:02:55Z'))

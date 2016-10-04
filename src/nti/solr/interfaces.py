@@ -35,3 +35,13 @@ class IMimeTypeValue(IAttributeValue):
 	"""
 	Adapter interface to get the mimeType value from a given object
 	"""
+
+class ICreatedTimeValue(IAttributeValue):
+	"""
+	Adapter interface to get the createdTime value from a given object
+	"""
+
+class ILastModifiedValue(IAttributeValue):
+	"""
+	Adapter interface to get the lastModified value from a given object
+	"""

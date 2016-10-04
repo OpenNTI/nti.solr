@@ -22,4 +22,12 @@
 			 provides=".interfaces.IMimeTypeValue"
 			 for="*" />
 
+ 	<adapter factory=".adapters._DefaultCreatedTimeValue"
+			 provides=".interfaces.ICreatedTimeValue"
+			 for="*" />
+
+ 	<adapter factory=".adapters._DefaultLastModifiedValue"
+			 provides=".interfaces.ILastModifiedValue"
+			 for="*" />
+
 </configure>
