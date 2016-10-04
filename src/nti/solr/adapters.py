@@ -10,16 +10,14 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-from zope import component
-from zope import interface
+import six
 
-from nti.dataserver.interfaces import ICreatedUsername
+from zope import interface
 
 from nti.solr.interfaces import ICreatorValue
 
 @interface.implementer(ICreatorValue)
-@component.adapts(interface.Interface)
-class DefaultCreatorValue(object):
+class _DefaultCreatorValue(object):
     
     __slots__ = ('context',)
 
@@ -28,6 +26,11 @@ class DefaultCreatorValue(object):
     
     def value(self, context=None):
         context = self.context if context is None else context
-        context = ICreatedUsername(context, None)
-        result = context.creator_username if context is not None else None
-        return result.lower() if result else None # normalize
+        try:
+            creator = context.creator
+            creator = getattr(creator, 'username', creator)
+            if isinstance(creator, six.string_types):
+                return creator.lower()
+        except (AttributeError,TypeError):
+            pass
+        return None
