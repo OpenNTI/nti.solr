@@ -55,3 +55,8 @@ class ISharedWithValue(IAttributeValue):
 	"""
 	Adapter interface to get the sharedWith value from a given object
 	"""
+
+class ITaggedToValue(IAttributeValue):
+	"""
+	Adapter interface to get the tagged-to value from a given object
+	"""

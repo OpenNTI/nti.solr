@@ -25,17 +25,23 @@ from nti.coremetadata.interfaces import ILastModified
 
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 
+from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IContained as INTIContained
+from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
 from nti.ntiids.ntiids import TYPE_OID
 from nti.ntiids.ntiids import TYPE_UUID
 from nti.ntiids.ntiids import TYPE_INTID
+from nti.ntiids.ntiids import TYPE_MEETINGROOM
+from nti.ntiids.ntiids import TYPE_NAMED_ENTITY
 
 from nti.ntiids.ntiids import is_ntiid_of_types
+from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import ITaggedToValue
 from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
@@ -127,3 +133,37 @@ class _DefaultSharedWithValue(_BasicAttributeValue):
 		if sharedWith is not None:
 			sharedWith = tuple(x.lower() for x in sharedWith)
 		return sharedWith
+
+@interface.implementer(ITaggedToValue)
+class _DefaultTaggedToValue(_BasicAttributeValue):
+
+	# Tags are normally lower cased, but depending on when we get called
+	# it's vaguely possible that we might see an upper-case value?
+	_ENTITY_TYPES = {TYPE_NAMED_ENTITY, TYPE_NAMED_ENTITY.lower(),
+					 TYPE_MEETINGROOM, TYPE_MEETINGROOM.lower()}
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if context is None:
+			return None
+		raw_tags = getattr(context, 'tags', None)
+		if not raw_tags:
+			return None
+
+		username_tags = set()
+		for raw_tag in raw_tags:
+			if is_ntiid_of_types(raw_tag, self._ENTITY_TYPES):
+				entity = find_object_with_ntiid(raw_tag)
+				if entity is not None:
+					# We actually have to be a bit careful here; we only want
+					# to catch certain types of entity tags, those that are either
+					# to an individual or those that participate in security
+					# relationships; (e.g., it doesn't help to use a regular FriendsList
+					# since that is effectively flattened).
+					# Currently, this abstraction doesn't exactly exist so we
+					# are very specific about it. See also :mod:`sharing`
+					if IUser.providedBy(entity):
+						username_tags.add(entity.username)
+					elif IDynamicSharingTargetFriendsList.providedBy(entity):
+						username_tags.add(entity.NTIID)
+		return tuple(username_tags)

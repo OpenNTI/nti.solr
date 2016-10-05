@@ -38,4 +38,8 @@
 			 provides=".interfaces.ISharedWithValue"
 			 for="*" />
 
+	<adapter factory=".adapters._DefaultTaggedToValue"
+			 provides=".interfaces.ITaggedToValue"
+			 for="*" />
+
 </configure>
