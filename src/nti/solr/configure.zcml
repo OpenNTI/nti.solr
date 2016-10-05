@@ -34,4 +34,8 @@
 			 provides=".interfaces.IContainerIdValue"
 			 for="*" />
 
+	<adapter factory=".adapters._DefaultSharedWithValue"
+			 provides=".interfaces.ISharedWithValue"
+			 for="*" />
+
 </configure>

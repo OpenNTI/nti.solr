@@ -24,6 +24,7 @@ from nti.coremetadata.interfaces import ILastModified
 
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
 
@@ -61,3 +62,11 @@ class TestAdpaters(unittest.TestCase):
 		for iface in (ICreatedTimeValue, ILastModifiedValue):
 			value = iface(obj).value()
 			assert_that(value, is_('2016-10-04T18:02:55Z'))
+			
+	def test_sharedWith(self):
+
+		class Created(object):
+			sharedWith = ("ichigo", 'Aizen')
+
+		value = ISharedWithValue(Created()).value()
+		assert_that(value, is_(('ichigo', 'aizen')))

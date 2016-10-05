@@ -36,6 +36,7 @@ from nti.ntiids.ntiids import is_ntiid_of_types
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
@@ -116,3 +117,13 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 			else:
 				return unicode(cid)
 		return None
+
+@interface.implementer(ISharedWithValue)
+class _DefaultSharedWithValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		sharedWith = getattr(context, "sharedWith", None)
+		if sharedWith is not None:
+			sharedWith = tuple(x.lower() for x in sharedWith)
+		return sharedWith
