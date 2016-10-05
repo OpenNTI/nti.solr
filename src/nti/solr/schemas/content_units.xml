@@ -194,7 +194,7 @@
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="ntiid" type="string" indexed="true" required="true" stored="true"/> <!-- unit ntiid -->
-	<field name="pacakge" type="string" indexed="true" required="true" stored="true"/> <!-- content pacakge ntiid -->
+	<field name="package" type="string" indexed="true" required="true" stored="true"/> <!-- content pacakge ntiid -->
 	<field name="keywords" type="strings" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content and title fields -->

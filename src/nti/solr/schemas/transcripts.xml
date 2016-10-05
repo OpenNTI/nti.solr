@@ -193,8 +193,7 @@
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="type" type="strings"/>
-	<field name="purpose" type="strings"/>
+	<field name="keywords" type="strings" indexed="true" stored="false"/>
 	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content field(s) -->
