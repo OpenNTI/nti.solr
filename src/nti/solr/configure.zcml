@@ -10,43 +10,43 @@
 	<include package="zope.security" />
 
 	<!-- Adapters -->
-	<adapter factory=".adapters._DefaultCreatorValue"
+	<adapter factory=".metadata._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"
 			 for="*" />
 
-	<adapter factory=".adapters._DefaultIDValue"
+	<adapter factory=".metadata._DefaultIDValue"
 			 provides=".interfaces.IIDValue"
 			 for="*" />
  
- 	<adapter factory=".adapters._DefaultMimeTypeValue"
+ 	<adapter factory=".metadata._DefaultMimeTypeValue"
 			 provides=".interfaces.IMimeTypeValue"
 			 for="*" />
 
- 	<adapter factory=".adapters._DefaultCreatedTimeValue"
+ 	<adapter factory=".metadata._DefaultCreatedTimeValue"
 			 provides=".interfaces.ICreatedTimeValue"
 			 for="*" />
 
- 	<adapter factory=".adapters._DefaultLastModifiedValue"
+ 	<adapter factory=".metadata._DefaultLastModifiedValue"
 			 provides=".interfaces.ILastModifiedValue"
 			 for="*" />
 
- 	<adapter factory=".adapters._DefaultContainerIdValue"
+ 	<adapter factory=".metadata._DefaultContainerIdValue"
 			 provides=".interfaces.IContainerIdValue"
 			 for="*" />
 
-	<adapter factory=".adapters._DefaultSharedWithValue"
+	<adapter factory=".metadata._DefaultSharedWithValue"
 			 provides=".interfaces.ISharedWithValue"
 			 for="*" />
 
-	<adapter factory=".adapters._DefaultTaggedToValue"
+	<adapter factory=".metadata._DefaultTaggedToValue"
 			 provides=".interfaces.ITaggedToValue"
 			 for="*" />
 
-	<adapter factory=".adapters._DefaultIsTopLevelContentValue"
+	<adapter factory=".metadata._DefaultIsTopLevelContentValue"
 			 provides=".interfaces.IIsTopLevelContentValue"
 			 for="*" />
 
-	<adapter factory=".adapters._DefaultIsDeletedObjectValue"
+	<adapter factory=".metadata._DefaultIsDeletedObjectValue"
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
