@@ -60,3 +60,13 @@ class ITaggedToValue(IAttributeValue):
 	"""
 	Adapter interface to get the tagged-to value from a given object
 	"""
+
+class IIsTopLevelContentValue(IAttributeValue):
+	"""
+	Adapter interface to get the isTopLevelContent value from a given object
+	"""
+
+class IIsDeletedObjectValue(IAttributeValue):
+	"""
+	Adapter interface to check if the object is deleted
+	"""

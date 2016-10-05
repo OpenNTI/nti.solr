@@ -24,9 +24,17 @@ from nti.coremetadata.interfaces import ICreatedTime
 from nti.coremetadata.interfaces import ILastModified
 
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
+from nti.dataserver.contenttypes.forums.interfaces import IHeadlinePost
+from nti.dataserver.contenttypes.forums.interfaces import IPersonalBlogEntryPost
 
 from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IDevice
+from nti.dataserver.interfaces import IThreadable
+from nti.dataserver.interfaces import IFriendsList
+from nti.dataserver.interfaces import IModeledContent
 from nti.dataserver.interfaces import IUserTaggedContent
+from nti.dataserver.interfaces import IDeletedObjectPlaceholder
+from nti.dataserver.interfaces import IInspectableWeakThreadable
 from nti.dataserver.interfaces import IContained as INTIContained
 from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
@@ -47,6 +55,8 @@ from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
+from nti.solr.interfaces import IIsDeletedObjectValue
+from nti.solr.interfaces import IIsTopLevelContentValue
 
 class _BasicAttributeValue(object):
 
@@ -93,7 +103,7 @@ class _DefaultCreatedTimeValue(_BasicAttributeValue):
 
 	attribute = 'createdTime'
 	interface = ICreatedTime
-	
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		context = self.interface(context, context)
@@ -142,7 +152,7 @@ class _DefaultTaggedToValue(_BasicAttributeValue):
 	# it's vaguely possible that we might see an upper-case value?
 	_ENTITY_TYPES = {TYPE_NAMED_ENTITY, TYPE_NAMED_ENTITY.lower(),
 					 TYPE_MEETINGROOM, TYPE_MEETINGROOM.lower()}
-	
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		context = IUserTaggedContent(context, None)
@@ -169,3 +179,40 @@ class _DefaultTaggedToValue(_BasicAttributeValue):
 					elif IDynamicSharingTargetFriendsList.providedBy(entity):
 						username_tags.add(entity.NTIID)
 		return tuple(username_tags)
+
+@interface.implementer(IIsTopLevelContentValue)
+class _DefaultIsTopLevelContentValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		# TODO: This is messy
+		# NOTE: This is referenced by persistent objects, must stay
+		if getattr(context, '__is_toplevel_content__', False):
+			return True
+
+		if IModeledContent.providedBy(context):
+			if IFriendsList.providedBy(context) or IDevice.providedBy(context):
+				# These things are modeled content, for some reason
+				return False
+			if IPersonalBlogEntryPost.providedBy(context):
+				return bool(context.sharedWith)
+
+			# HeadlinePosts (which are IMutedInStream) are threadable,
+			# but we don't consider them top-level. (At this writing,
+			# we don't consider the containing Topic to be top-level
+			# either, because it isn't IModeledContent.)
+			elif IHeadlinePost.providedBy(context):
+				return False
+
+			if IInspectableWeakThreadable.providedBy(context):
+				return bool(not context.isOrWasChildInThread())
+			if IThreadable.providedBy(context):
+				return bool(context.inReplyTo is None)
+			return True
+
+@interface.implementer(IIsDeletedObjectValue)
+class _DefaultIsDeletedObjectValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return IDeletedObjectPlaceholder.providedBy(context)

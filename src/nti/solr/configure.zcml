@@ -42,4 +42,12 @@
 			 provides=".interfaces.ITaggedToValue"
 			 for="*" />
 
+	<adapter factory=".adapters._DefaultIsTopLevelContentValue"
+			 provides=".interfaces.IIsTopLevelContentValue"
+			 for="*" />
+
+	<adapter factory=".adapters._DefaultIsDeletedObjectValue"
+			 provides=".interfaces.IIsDeletedObjectValue"
+			 for="*" />
+
 </configure>
