@@ -193,15 +193,14 @@
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="type" type="strings"/>
-	<field name="purpose" type="strings"/>
-	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
+	<field name="ntiid" type="string" indexed="true" required="true" stored="true"/> <!-- unit ntiid -->
+	<field name="pacakge" type="string" indexed="true" required="true" stored="true"/> <!-- content pacakge ntiid -->
+	<field name="keywords" type="strings" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
-	<!-- content field(s) -->
-	<field 	name="content_en" type="text_en" indexed="true" stored="true"
-			termVectors="true" termPositions="true" termOffsets="true"/>
+	<!-- content and title fields -->
+	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
+					termVectors="true" termPositions="true" termOffsets="true"/>
 	<!-- catch all / copy fields -->
-	<copyField source="id" dest="ntiid"/>
 	<copyField source="*_en" dest="_text_"/>
 	<copyField source="*_en" dest="suggest"/>
 	<copyField source="*_en" dest="suggest_ngram"/>
