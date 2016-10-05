@@ -26,6 +26,7 @@ from nti.coremetadata.interfaces import ILastModified
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 
 from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IUserTaggedContent
 from nti.dataserver.interfaces import IContained as INTIContained
 from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
@@ -144,9 +145,10 @@ class _DefaultTaggedToValue(_BasicAttributeValue):
 	
 	def value(self, context=None):
 		context = self.context if context is None else context
+		context = IUserTaggedContent(context, None)
 		if context is None:
 			return None
-		raw_tags = getattr(context, 'tags', None)
+		raw_tags = context.tags
 		if not raw_tags:
 			return None
 
