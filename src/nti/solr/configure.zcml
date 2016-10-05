@@ -30,4 +30,8 @@
 			 provides=".interfaces.ILastModifiedValue"
 			 for="*" />
 
+ 	<adapter factory=".adapters._DefaultContainerIdValue"
+			 provides=".interfaces.IContainerIdValue"
+			 for="*" />
+
 </configure>

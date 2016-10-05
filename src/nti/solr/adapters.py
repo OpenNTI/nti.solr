@@ -23,9 +23,20 @@ from zope.mimetype.interfaces import IContentTypeAware
 from nti.coremetadata.interfaces import ICreatedTime
 from nti.coremetadata.interfaces import ILastModified
 
+from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
+
+from nti.dataserver.interfaces import IContained as INTIContained
+
+from nti.ntiids.ntiids import TYPE_OID
+from nti.ntiids.ntiids import TYPE_UUID
+from nti.ntiids.ntiids import TYPE_INTID
+
+from nti.ntiids.ntiids import is_ntiid_of_types
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
 
@@ -88,3 +99,20 @@ class _DefaultCreatedTimeValue(_BasicAttributeValue):
 class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
 	attribute = 'lastModified'
 	interface = ILastModified
+
+@interface.implementer(IContainerIdValue)
+class _DefaultContainerIdValue(_BasicAttributeValue):
+
+	_IGNORED_TYPES = {TYPE_OID, TYPE_UUID, TYPE_INTID}
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		contained = INTIContained(context, None)
+		if contained is not None:
+			cid = contained.containerId
+			if		is_ntiid_of_types(cid, self._IGNORED_TYPES) \
+				and not ICommentPost.providedBy(context):
+				return None
+			else:
+				return unicode(cid)
+		return None

@@ -45,3 +45,8 @@ class ILastModifiedValue(IAttributeValue):
 	"""
 	Adapter interface to get the lastModified value from a given object
 	"""
+
+class IContainerIdValue(IAttributeValue):
+	"""
+	Adapter interface to get the containerId value from a given object
+	"""
