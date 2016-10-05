@@ -9,13 +9,18 @@ __docformat__ = "restructuredtext en"
 
 import unittest
 
+from nti.dataserver.tests.mock_dataserver import DSInjectorMixin
+
 from nti.testing.layers import GCLayerMixin
 from nti.testing.layers import ZopeComponentLayer
 from nti.testing.layers import ConfiguringLayerMixin
 
 import zope.testing.cleanup
 
-class SOLRTestLayer(ZopeComponentLayer, GCLayerMixin, ConfiguringLayerMixin):
+class SOLRTestLayer(ZopeComponentLayer,
+                    GCLayerMixin, 
+                    ConfiguringLayerMixin,
+                    DSInjectorMixin):
 
     set_up_packages = ('nti.dataserver', 'nti.solr',)
 
