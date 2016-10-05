@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema name="transcript-schema" version="1.6">
 	<uniqueKey>id</uniqueKey>
-	<!-- Field Types -->
+	<!--%%%-field-types-start-%%%-->
 	<fieldType name="tdate" class="solr.TrieDateField" precisionStep="4" positionIncrementGap="0"/>
 	<fieldType name="date" class="solr.TrieDateField" positionIncrementGap="0" docValues="true" precisionStep="0"/>
 	<fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
@@ -174,16 +174,8 @@
 			<filter class="solr.EnglishPossessiveFilterFactory"/>
 		</analyzer>
 	</fieldType>
-	<!-- fields -->
-	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="type" type="strings"/>
-	<field name="purpose" type="strings"/>
-	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
-	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
-	<!-- content field(s) -->
-	<field 	name="content_en" type="text_en" indexed="true" stored="true"
-			termVectors="true" termPositions="true" termOffsets="true"/>
-	<!-- metadata -->
+	<!--%%%-field-types-end-%%%-->
+	<!--%%%-metadata-start-%%%-->
 	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
 	<field name="taggedTo" type="strings" indexed="true" stored="true"/>
@@ -194,6 +186,16 @@
 	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
+	<!--%%%-metadata-end-%%%-->
+	<!-- fields -->
+	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+	<field name="type" type="strings"/>
+	<field name="purpose" type="strings"/>
+	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
+	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
+	<!-- content field(s) -->
+	<field 	name="content_en" type="text_en" indexed="true" stored="true"
+			termVectors="true" termPositions="true" termOffsets="true"/>
 	<!-- suggest -->
 	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
 	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
