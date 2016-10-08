@@ -42,6 +42,6 @@ def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='solr
 	for r in records[:max_words]:
 		word = r.token
 		terms = getattr(r, 'terms', ())
-		if terms: word = r.terms[0]  # pick the first word
+		word = terms[0] if terms else word  # pick the first word
 		keywords.append(to_unicode(word.lower()))
-	return keywords.sort()
+	return sorted(keywords)
