@@ -50,4 +50,7 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<!-- Utilities -->
+	<utility factory=".term_extract._DefaultKeyWordFilter" />
+
 </configure>
