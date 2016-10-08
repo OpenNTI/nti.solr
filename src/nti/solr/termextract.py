@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import interface
 
+from nti.common.string import to_unicode
+
 from nti.contentprocessing.keyword import term_extract_key_words
 
 from nti.contentprocessing.keyword.interfaces import ITermExtractFilter
@@ -28,7 +30,7 @@ class _DefaultKeyWordFilter(object):
 		result = result and len(word) > 1
 		return result
 
-def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='indexer'):
+def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='solr_en'):
 	"""
 	extract key words for the specified list of tokens
 
@@ -41,5 +43,5 @@ def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='inde
 		word = r.token
 		terms = getattr(r, 'terms', ())
 		if terms: word = r.terms[0]  # pick the first word
-		keywords.append(unicode(word.lower()))
+		keywords.append(to_unicode(word.lower()))
 	return keywords.sort()

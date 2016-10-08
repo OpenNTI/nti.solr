@@ -51,6 +51,6 @@
 			 for="*" />
 
 	<!-- Utilities -->
-	<utility factory=".term_extract._DefaultKeyWordFilter" />
+	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr_en' />
 
 </configure>
