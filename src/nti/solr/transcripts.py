@@ -19,14 +19,13 @@ from nti.contentindexing.media.interfaces import IVideoTranscriptParser
 
 from nti.contentlibrary.interfaces import IContentPackage
 
-from nti.contentprocessing.content_utils import tokenize_content
-
 from nti.contenttypes.presentation.interfaces import INTIVideo
 from nti.contenttypes.presentation.interfaces import INTITranscript
 
-from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import IIDValue, IKeywordsValue
 from nti.solr.interfaces import IContentValue
 
+from nti.solr.utils import get_keywords
 from nti.solr.utils import get_item_content_package
 
 from nti.traversal.traversal import find_interface
@@ -51,7 +50,6 @@ class _TranscriptContentValue(object):
 
 	@classmethod
 	def parse_content(cls, context, raw_content):
-		lang = context.lang or 'en'
 		type_ = context.type or "text/vtt"
 		if INTIVideo.providedBy(context.__parent_):
 			provided = IVideoTranscriptParser
@@ -60,7 +58,7 @@ class _TranscriptContentValue(object):
 		parser = component.queryUtility(provided, name=type_)
 		if parser is not None:
 			transcript = parser.parse(raw_content)
-			return tokenize_content(transcript.text, lang)
+			return transcript.text
 		return None
 
 	@classmethod
@@ -85,3 +83,12 @@ class _TranscriptContentValue(object):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return self.get_content(context)
+
+@component.adapts(INTITranscript)
+@interface.implementer(IKeywordsValue)
+class _TranscriptKeywordsValue(_TranscriptContentValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		text = super(_TranscriptKeywordsValue, self).value(context)
+		return get_keywords(text, context.lang)
