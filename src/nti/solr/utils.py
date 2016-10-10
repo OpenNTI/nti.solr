@@ -14,12 +14,16 @@ from nti.contentlibrary.indexed_data import get_library_catalog
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
+from nti.contentprocessing.keyword import extract_key_words
+
 from nti.contenttypes.courses.common import get_course_packages
 
 from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.ntiids.ntiids import find_object_with_ntiid
+
+from nti.solr.termextract import extract_key_words as term_extract_key_words
 
 from nti.traversal.traversal import find_interface
 
@@ -46,3 +50,9 @@ def get_item_content_package(item):
 	entries = catalog.get_containers(item)
 	result = get_content_package_from_ntiids(entries) if entries else None
 	return result
+
+def get_keywords(content, lang='en'):
+	keywords = extract_key_words(content, lang='en')
+	if not keywords:
+		keywords = term_extract_key_words(content, lang=lang)
+	return keywords
