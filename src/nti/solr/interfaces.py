@@ -79,3 +79,15 @@ class IContentPackageValue(IAttributeValue):
 	"""
 	Adapter interface to get the content pacakge ntiid value from a given object
 	"""
+
+# misc
+
+class IContentValue(IAttributeValue):
+	"""
+	Adapter interface to get the content value from a given object
+	"""
+	
+class IKeywordsValue(IAttributeValue):
+	"""
+	Adapter interface to get the keywords value from a given object
+	"""
