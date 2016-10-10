@@ -22,8 +22,9 @@ from nti.contentlibrary.interfaces import IContentPackage
 from nti.contenttypes.presentation.interfaces import INTIVideo
 from nti.contenttypes.presentation.interfaces import INTITranscript
 
-from nti.solr.interfaces import IIDValue, IKeywordsValue
+from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import IKeywordsValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import get_item_content_package
