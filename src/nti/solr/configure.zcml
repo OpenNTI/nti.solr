@@ -60,7 +60,15 @@
 	<adapter factory=".transcripts._TranscriptIDValue"
 			 provides=".interfaces.IIDValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-			 
+
+	<adapter factory=".transcripts._TranscriptContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+		 
+	<adapter factory=".transcripts._TranscriptKeywordsValue"
+			 provides=".interfaces.IKeywordsValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+
 	<!-- Utilities -->
 	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr' />
 
