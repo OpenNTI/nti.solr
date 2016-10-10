@@ -187,6 +187,17 @@
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="username" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
+	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
+	<field name="email" type="string" indexed="true" required="true" stored="true"/>
+	<!-- Each prof/educational entry may have multiple values for these fields -->
+	<field name="professional_company" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="professional_desc" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="professional_title" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="education_school" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="education_desc" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="education_degree" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="social_urls" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content and title fields -->
 	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
