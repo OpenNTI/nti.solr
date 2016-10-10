@@ -34,7 +34,7 @@ class _DefaultKeyWordFilter(object):
 		result = result and len(word) > 1
 		return result
 
-def extract_key_words(content, max_words=10, lang='en', filtername='solr_en'):
+def extract_key_words(content, max_words=10, lang='en', filtername='solr'):
 	"""
 	extract key words for the specified list of tokens
 

@@ -21,6 +21,8 @@ class IAttributeValue(interface.Interface):
 		Return the attribute value for a given adapted object
 		"""
 
+# metadata 
+
 class ICreatorValue(IAttributeValue):
 	"""
 	Adapter interface to get the creator value from a given object
@@ -69,4 +71,11 @@ class IIsTopLevelContentValue(IAttributeValue):
 class IIsDeletedObjectValue(IAttributeValue):
 	"""
 	Adapter interface to check if the object is deleted
+	"""
+	
+# content units
+
+class IContentPackageValue(IAttributeValue):
+	"""
+	Adapter interface to get the content pacakge ntiid value from a given object
 	"""

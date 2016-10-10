@@ -50,7 +50,11 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<adapter factory=".content_unit._DefaultContentPackageValue"
+			 provides=".interfaces.IContentPackageValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
 	<!-- Utilities -->
-	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr_en' />
+	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr' />
 
 </configure>
