@@ -10,6 +10,7 @@
 	<include package="zope.security" />
 
 	<!-- Adapters -->
+	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"
 			 for="*" />
@@ -50,10 +51,16 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
+	<!-- Transcripts -->
+	<adapter factory=".transcripts._TranscriptIDValue"
+			 provides=".interfaces.IIDValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+			 
 	<!-- Utilities -->
 	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr' />
 
