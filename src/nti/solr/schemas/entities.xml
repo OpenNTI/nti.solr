@@ -186,7 +186,7 @@
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="username" multiValued="true" type="string" indexed="true" required="true" stored="true"/>
+	<field name="username" multiValued="true" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
 	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
 	<field name="email" type="string" indexed="true" required="true" stored="true"/>
