@@ -9,9 +9,13 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
 from zope import interface
 
 from nti.common.string import to_unicode
+
+from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import term_extract_key_words
 
@@ -30,7 +34,7 @@ class _DefaultKeyWordFilter(object):
 		result = result and len(word) > 1
 		return result
 
-def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='solr_en'):
+def extract_key_words(content, max_words=10, lang='en', filtername='solr_en'):
 	"""
 	extract key words for the specified list of tokens
 
@@ -38,7 +42,9 @@ def extract_key_words(tokenized_words, max_words=10, lang='en', filtername='solr
 	:param max_words: Max number of words to return
 	"""
 	keywords = []
-	records = term_extract_key_words(tokenized_words, lang=lang, filtername=filtername)
+	if isinstance(content, six.string_types):
+		content = tokenize_content(content, lang=lang)
+	records = term_extract_key_words(content, lang=lang, filtername=filtername)
 	for r in records[:max_words]:
 		word = r.token
 		terms = getattr(r, 'terms', ())
