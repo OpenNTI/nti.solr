@@ -11,6 +11,10 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import interface
 
+from nti.schema.field import Bool
+from nti.schema.field import ValidTextLine
+from nti.schema.field import IndexedIterable
+
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -21,7 +25,7 @@ class IAttributeValue(interface.Interface):
 		Return the attribute value for a given adapted object
 		"""
 
-# metadata 
+# metadata
 
 class ICreatorValue(IAttributeValue):
 	"""
@@ -72,7 +76,7 @@ class IIsDeletedObjectValue(IAttributeValue):
 	"""
 	Adapter interface to check if the object is deleted
 	"""
-	
+
 # content units
 
 class IContentPackageValue(IAttributeValue):
@@ -86,7 +90,7 @@ class IContentValue(IAttributeValue):
 	"""
 	Adapter interface to get the content value from a given object
 	"""
-	
+
 class IKeywordsValue(IAttributeValue):
 	"""
 	Adapter interface to get the keywords value from a given object
@@ -98,4 +102,48 @@ class ICoreCatalog(interface.Interface):
 	pass
 
 class IMetadataCatalog(ICoreCatalog):
-	pass
+	creator = ValidTextLine(title='The creator', required=False)
+	creator.setTaggedValue('__solr_indexed__', True)
+	creator.setTaggedValue('__solr_stored__', True)
+
+	mimeType = ValidTextLine(title='The mime type', required=False)
+	mimeType.setTaggedValue('__solr_indexed__', True)
+	mimeType.setTaggedValue('__solr_stored__', True)
+
+	taggedTo = IndexedIterable(title='The entities identifiers',
+							   required=False,
+							   value_type=ValidTextLine(title="The entiy identifier"),
+							   min_length=0)
+	taggedTo.setTaggedValue('__solr_indexed__', True)
+	taggedTo.setTaggedValue('__solr_stored__', True)
+
+	inReplyTo = ValidTextLine(title='The replied to NTIID', required=False)
+	inReplyTo.setTaggedValue('__solr_indexed__', True)
+	inReplyTo.setTaggedValue('__solr_stored__', True)
+
+	containerId = ValidTextLine(title='The container NTIID', required=False)
+	containerId.setTaggedValue('__solr_indexed__', True)
+	containerId.setTaggedValue('__solr_stored__', True)
+
+	sharedWith = IndexedIterable(title='The entities shared with',
+							    required=False,
+							    value_type=ValidTextLine(title="The entiy"),
+							    min_length=0)
+	sharedWith.setTaggedValue('__solr_indexed__', True)
+	sharedWith.setTaggedValue('__solr_stored__', True)
+
+	createdTime = ValidTextLine(title='The %Y-%m-%dT%H:%M:%SZ created date', required=False)
+	createdTime.setTaggedValue('__solr_indexed__', True)
+	createdTime.setTaggedValue('__solr_stored__', False)
+
+	lastModified = ValidTextLine(title='The %Y-%m-%dT%H:%M:%SZ last modified date', required=False)
+	lastModified.setTaggedValue('__solr_indexed__', True)
+	lastModified.setTaggedValue('__solr_stored__', False)
+
+	isDeletedObject = Bool(title='Is deleted object flag', required=False)
+	isDeletedObject.setTaggedValue('__solr_indexed__', True)
+	isDeletedObject.setTaggedValue('__solr_stored__', False)
+
+	isTopLevelContent = Bool(title='Is top level object flag', required=False)
+	isTopLevelContent.setTaggedValue('__solr_indexed__', True)
+	isTopLevelContent.setTaggedValue('__solr_stored__', False)
