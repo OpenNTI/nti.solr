@@ -91,3 +91,8 @@ class IKeywordsValue(IAttributeValue):
 	"""
 	Adapter interface to get the keywords value from a given object
 	"""
+
+# core catalog
+
+class ICoreCatalog(interface.Interface):
+	pass
