@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import interface
 
+from nti.solr.schema import SolrDatetime
+
 from nti.schema.field import Bool
 from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
@@ -133,11 +135,11 @@ class IMetadataCatalog(ICoreCatalog):
 	sharedWith.setTaggedValue('__solr_indexed__', True)
 	sharedWith.setTaggedValue('__solr_stored__', True)
 
-	createdTime = ValidTextLine(title='The %Y-%m-%dT%H:%M:%SZ created date', required=False)
+	createdTime = SolrDatetime(title='The %Y-%m-%dT%H:%M:%SZ created date', required=False)
 	createdTime.setTaggedValue('__solr_indexed__', True)
 	createdTime.setTaggedValue('__solr_stored__', False)
 
-	lastModified = ValidTextLine(title='The %Y-%m-%dT%H:%M:%SZ last modified date', required=False)
+	lastModified = SolrDatetime(title='The %Y-%m-%dT%H:%M:%SZ last modified date', required=False)
 	lastModified.setTaggedValue('__solr_indexed__', True)
 	lastModified.setTaggedValue('__solr_stored__', False)
 
