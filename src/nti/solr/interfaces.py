@@ -17,6 +17,9 @@ from nti.schema.field import Bool
 from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
 
+class ICoreCatalog(interface.Interface):
+	pass
+
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -79,30 +82,6 @@ class IIsDeletedObjectValue(IAttributeValue):
 	Adapter interface to check if the object is deleted
 	"""
 
-# content units
-
-class IContentPackageValue(IAttributeValue):
-	"""
-	Adapter interface to get the content pacakge ntiid value from a given object
-	"""
-
-# misc
-
-class IContentValue(IAttributeValue):
-	"""
-	Adapter interface to get the content value from a given object
-	"""
-
-class IKeywordsValue(IAttributeValue):
-	"""
-	Adapter interface to get the keywords value from a given object
-	"""
-
-# core catalog
-
-class ICoreCatalog(interface.Interface):
-	pass
-
 class IMetadataCatalog(ICoreCatalog):
 
 	creator = ValidTextLine(title='The creator', required=False)
@@ -150,3 +129,22 @@ class IMetadataCatalog(ICoreCatalog):
 	isTopLevelContent = Bool(title='Is top level object flag', required=False)
 	isTopLevelContent.setTaggedValue('__solr_indexed__', True)
 	isTopLevelContent.setTaggedValue('__solr_stored__', False)
+
+# content units
+
+class IContentPackageValue(IAttributeValue):
+	"""
+	Adapter interface to get the content pacakge ntiid value from a given object
+	"""
+
+# misc
+
+class IContentValue(IAttributeValue):
+	"""
+	Adapter interface to get the content value from a given object
+	"""
+
+class IKeywordsValue(IAttributeValue):
+	"""
+	Adapter interface to get the keywords value from a given object
+	"""
