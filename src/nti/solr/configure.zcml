@@ -9,6 +9,9 @@
 	<include package="zope.component" />
 	<include package="zope.security" />
 
+	<include package="nti.contentindexing" />
+	<include package="nti.contentprocessing" />
+	
 	<!-- Adapters -->
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
