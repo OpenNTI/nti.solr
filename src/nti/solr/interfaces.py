@@ -96,3 +96,6 @@ class IKeywordsValue(IAttributeValue):
 
 class ICoreCatalog(interface.Interface):
 	pass
+
+class IMetadataCatalog(ICoreCatalog):
+	pass
