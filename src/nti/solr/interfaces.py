@@ -102,6 +102,7 @@ class ICoreCatalog(interface.Interface):
 	pass
 
 class IMetadataCatalog(ICoreCatalog):
+
 	creator = ValidTextLine(title='The creator', required=False)
 	creator.setTaggedValue('__solr_indexed__', True)
 	creator.setTaggedValue('__solr_stored__', True)
