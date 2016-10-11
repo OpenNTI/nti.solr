@@ -180,13 +180,9 @@
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
 	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
-	<!--%%%-suggest-start-%%%-->
-	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
-	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
-	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="username" multiValued="true" type="strings" indexed="true" required="true" stored="true"/>
+	<field name="username" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
 	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
 	<field name="email" type="string" indexed="true" required="true" stored="true"/>
@@ -198,12 +194,4 @@
 	<field name="education_desc" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="education_degree" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="social_urls" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
-	<!-- content and title fields -->
-	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
-					termVectors="true" termPositions="true" termOffsets="true"/>
-	<!-- catch all / copy fields -->
-	<copyField source="*_en" dest="_text_"/>
-	<copyField source="*_en" dest="suggest"/>
-	<copyField source="*_en" dest="suggest_ngram"/>
 </schema>
