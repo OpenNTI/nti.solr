@@ -14,7 +14,9 @@ from zope import interface
 
 from nti.dataserver.interfaces import IEntity
 
-from nti.dataserver.users.interfaces import IUserProfile, IFriendlyNamed
+from nti.dataserver.users.interfaces import IUserProfile
+from nti.dataserver.users.interfaces import IFriendlyNamed
+from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.solr.interfaces import IAliasValue
 from nti.solr.interfaces import IEmailValue
@@ -40,7 +42,8 @@ class _DefaultUsernameValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return getattr(context, 'username', None)
+		result = getattr(context, 'username', None)
+		return (result,) if result else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IEmailValue)
@@ -59,3 +62,30 @@ class _DefaultAliasValue(_BasicAttributeValue):
 class _DefaultRealnameValue(_BasicAttributeValue):
 	field = 'realname'
 	interface = IFriendlyNamed
+
+@component.adapter(IEntity)
+@interface.implementer(IUsernameValue)
+class _DefaultProfessionalCompanyValue(_BasicAttributeValue):
+
+	field = 'positions'
+	interface = IProfessionalProfile
+	
+	def value(self, context=None):
+		positions = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.companyName for x in positions) if positions else ()
+
+@component.adapter(IEntity)
+@interface.implementer(IUsernameValue)
+class _DefaultProfessionalDescriptionValue(_DefaultProfessionalCompanyValue):
+
+	def value(self, context=None):
+		positions = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.description for x in positions) if positions else ()
+
+@component.adapter(IEntity)
+@interface.implementer(IUsernameValue)
+class _DefaultProfessionalTitleValue(_DefaultProfessionalCompanyValue):
+
+	def value(self, context=None):
+		positions = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.title for x in positions) if positions else ()

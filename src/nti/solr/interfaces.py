@@ -90,63 +90,50 @@ class IIsTopLevelContentValue(IAttributeValue):
 	Adapter interface to get the isTopLevelContent value from a given object
 	"""
 
+def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True):
+	field.setTaggedValue('__solr_stored__', stored)
+	field.setTaggedValue('__solr_indexed__', indexed)
+	field.setTaggedValue('__solr_multiValued__', multiValued)
+	field.setTaggedValue('__solr_value_interface__', adapter)
+
 class IMetadataCatalog(ICoreCatalog):
 
 	creator = ValidTextLine(title='The creator', required=False)
-	creator.setTaggedValue('__solr_stored__', True)
-	creator.setTaggedValue('__solr_indexed__', True)
-	creator.setTaggedValue('__solr_value_interface__', ICreatorValue)
 
 	mimeType = ValidTextLine(title='The mime type', required=False)
-	mimeType.setTaggedValue('__solr_stored__', True)
-	mimeType.setTaggedValue('__solr_indexed__', True)
-	mimeType.setTaggedValue('__solr_value_interface__', IMimeTypeValue)
 
 	taggedTo = IndexedIterable(title='The entities identifiers',
 							   required=False,
 							   value_type=ValidTextLine(title="The entiy identifier"),
 							   min_length=0)
-	taggedTo.setTaggedValue('__solr_stored__', True)
-	taggedTo.setTaggedValue('__solr_indexed__', True)
-	taggedTo.setTaggedValue('__solr_value_interface__', ITaggedToValue)
 
 	inReplyTo = ValidTextLine(title='The replied to NTIID', required=False)
-	inReplyTo.setTaggedValue('__solr_stored__', True)
-	inReplyTo.setTaggedValue('__solr_indexed__', True)
-	inReplyTo.setTaggedValue('__solr_value_interface__', IInReplyToValue)
 
 	containerId = ValidTextLine(title='The container NTIID', required=False)
-	containerId.setTaggedValue('__solr_stored__', True)
-	containerId.setTaggedValue('__solr_indexed__', True)
-	containerId.setTaggedValue('__solr_value_interface__', IContainerIdValue)
 
 	sharedWith = IndexedIterable(title='The entities shared with',
 								required=False,
 								value_type=ValidTextLine(title="The entiy"),
 								min_length=0)
-	sharedWith.setTaggedValue('__solr_stored__', True)
-	sharedWith.setTaggedValue('__solr_indexed__', True)
-	sharedWith.setTaggedValue('__solr_value_interface__', ISharedWithValue)
 
-	createdTime = SolrDatetime(title='The %Y-%m-%dT%H:%M:%SZ created date', required=False)
-	createdTime.setTaggedValue('__solr_stored__', False)
-	createdTime.setTaggedValue('__solr_indexed__', True)
-	createdTime.setTaggedValue('__solr_value_interface__', ICreatedTimeValue)
+	createdTime = SolrDatetime(title='The created date', required=False)
 
-	lastModified = SolrDatetime(title='The %Y-%m-%dT%H:%M:%SZ last modified date', required=False)
-	lastModified.setTaggedValue('__solr_stored__', False)
-	lastModified.setTaggedValue('__solr_indexed__', True)
-	lastModified.setTaggedValue('__solr_value_interface__', ILastModifiedValue)
+	lastModified = SolrDatetime(title='The last modified date', required=False)
 
 	isDeletedObject = Bool(title='Is deleted object flag', required=False)
-	isDeletedObject.setTaggedValue('__solr_stored__', False)
-	isDeletedObject.setTaggedValue('__solr_indexed__', True)
-	isDeletedObject.setTaggedValue('__solr_value_interface__', IIsDeletedObjectValue)
 
 	isTopLevelContent = Bool(title='Is top level object flag', required=False)
-	isTopLevelContent.setTaggedValue('__solr_stored__', False)
-	isTopLevelContent.setTaggedValue('__solr_indexed__', True)
-	isTopLevelContent.setTaggedValue('__solr_value_interface__', IIsTopLevelContentValue)
+
+tagField(IMetadataCatalog['creator'], True, ICreatorValue)
+tagField(IMetadataCatalog['mimeType'], True, IMimeTypeValue)
+tagField(IMetadataCatalog['inReplyTo'], True, IInReplyToValue)
+tagField(IMetadataCatalog['containerId'], True, IContainerIdValue)
+tagField(IMetadataCatalog['taggedTo'], True, ITaggedToValue, True)
+tagField(IMetadataCatalog['createdTime'], False, ICreatedTimeValue)
+tagField(IMetadataCatalog['lastModified'], False, ILastModifiedValue)
+tagField(IMetadataCatalog['sharedWith'], True, ISharedWithValue, True)
+tagField(IMetadataCatalog['isDeletedObject'], False, IIsDeletedObjectValue)
+tagField(IMetadataCatalog['isTopLevelContent'], False, IIsTopLevelContentValue)
 
 # misc
 
@@ -187,47 +174,135 @@ class IEmailValue(IAttributeValue):
 	Adapter interface to get the email value from a given object
 	"""
 
+class IProfessionalTitleValue(IAttributeValue):
+	"""
+	Adapter interface to get the professional titles from a given entity object
+	"""
+
+class IProfessionalCompanyValue(IAttributeValue):
+	"""
+	Adapter interface to get the professional companies from a given entity object
+	"""
+	
+class IProfessionalDescriptionValue(IAttributeValue):
+	"""
+	Adapter interface to get the professional descriptions from a given entity object
+	"""
+
+class IEducationSchoolValue(IAttributeValue):
+	"""
+	Adapter interface to get the education schools from a given entity object
+	"""
+
+class IEducationDegreeValue(IAttributeValue):
+	"""
+	Adapter interface to get the education degrees from a given entity object
+	"""
+	
+class IEducationDescriptionValue(IAttributeValue):
+	"""
+	Adapter interface to get the education descriptions from a given entity object
+	"""
+
+class ISocialURLValue(IAttributeValue):
+	"""
+	Adapter interface to get the social URLs from a given entity object
+	"""
+
 class IEntitiesCatalog(IMetadataCatalog):
 
-	username = ValidTextLine(title='The username', required=False)
-	username.setTaggedValue('__solr_stored__', False)
-	username.setTaggedValue('__solr_indexed__', True)
-	username.setTaggedValue('__solr_multiValued__', True)
-	username.setTaggedValue('__solr_value_interface__', IUsernameValue)
+	username = IndexedIterable(title='The username identifiers',
+							   required=False,
+							   value_type=ValidTextLine(title="The username"),
+							   min_length=1)
 
 	alias = ValidTextLine(title='The alias', required=False)
-	alias.setTaggedValue('__solr_stored__', False)
-	alias.setTaggedValue('__solr_indexed__', True)
-	alias.setTaggedValue('__solr_multiValued__', True)
-	alias.setTaggedValue('__solr_value_interface__', IAliasValue)
-	
-	realname = ValidTextLine(title='The realname', required=False)
-	realname.setTaggedValue('__solr_stored__', False)
-	realname.setTaggedValue('__solr_indexed__', True)
-	realname.setTaggedValue('__solr_multiValued__', True)
-	realname.setTaggedValue('__solr_value_interface__', IRealnameValue)
 	
 	email = ValidTextLine(title='The username', required=False)
-	email.setTaggedValue('__solr_stored__', False)
-	email.setTaggedValue('__solr_indexed__', True)
-	email.setTaggedValue('__solr_value_interface__', IEmailValue)
+		
+	realname = ValidTextLine(title='The realname', required=False)
 	
+	education_school = IndexedIterable(title='The school names',
+							   		   required=False,
+							   		   value_type=ValidTextLine(title="The school name"),
+							   		   min_length=0)
+
+	education_degree = IndexedIterable(title='The school degrees',
+							   		   required=False,
+							   		   value_type=ValidTextLine(title="The school degree"),
+							   		   min_length=0)
+	
+	education_description = IndexedIterable(title='The education descriptions',
+							   			    required=False,
+							   			    value_type=ValidTextLine(title="The description"),
+							   			    min_length=0)
+
+	professional_description = IndexedIterable(title='The professional company descriptions',
+							   			   	  required=False,
+							   			   	  value_type=ValidTextLine(title="The description"),
+							   			      min_length=0)
+	
+	
+	professional_title = IndexedIterable(title='The company names',
+							   			 required=False,
+							   			 value_type=ValidTextLine(title="The company name"),
+							   			 min_length=0)
+
+	professional_company = IndexedIterable(title='The company names',
+							   			   required=False,
+							   			   value_type=ValidTextLine(title="The company name"),
+							   			   min_length=0)
+	
+	professional_description = IndexedIterable(title='The professional company descriptions',
+							   			   	  required=False,
+							   			   	  value_type=ValidTextLine(title="The description"),
+							   			      min_length=0)
+	
+	social_url = IndexedIterable(title='The social URLS',
+							   	 required=False,
+							   	 value_type=ValidTextLine(title="The url"),
+							   	 min_length=0)
+
+tagField(IEntitiesCatalog['email'], True, IEmailValue)
+tagField(IEntitiesCatalog['alias'], True, IAliasValue)
+tagField(IEntitiesCatalog['realname'], True, IRealnameValue)
+tagField(IEntitiesCatalog['username'], True, IUsernameValue, True)
+tagField(IEntitiesCatalog['social_url'], True, ISocialURLValue, True)
+tagField(IEntitiesCatalog['education_school'], True, IEducationSchoolValue, True)
+tagField(IEntitiesCatalog['education_degree'], True, IEducationDegreeValue, True)
+tagField(IEntitiesCatalog['education_description'], True, IEducationDescriptionValue, True)
+tagField(IEntitiesCatalog['professional_title'], True, IProfessionalTitleValue, True)
+tagField(IEntitiesCatalog['professional_company'], True, IProfessionalCompanyValue, True)
+tagField(IEntitiesCatalog['professional_description'], True, IProfessionalDescriptionValue, True)
+
+# 	<!-- Each prof/educational entry may have multiple values for these fields -->
+# 	
+# 	<field name="education_school" type="strings" indexed="true" required="true" stored="true"/>
+# 	<field name="education_desc" type="strings" indexed="true" required="true" stored="true"/>
+# 	<field name="education_degree" type="strings" indexed="true" required="true" stored="true"/>
+# 	<field name="social_urls" type="strings" indexed="true" required="true" stored="true"/>
+
 # transcripts
+
+class IMediaNTIIDValue(IAttributeValue):
+	"""
+	Adapter interface to get the media (video/audio) NTIID associated with a transcript object
+	"""
 
 class ITranscriptCatalog(IMetadataCatalog):
 
 	context_en = ValidText(title='Text to index', required=False)
-	context_en.setTaggedValue('__solr_stored__', False)
-	context_en.setTaggedValue('__solr_indexed__', True)
-	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
+	
+	media = ValidText(title='The media ntiid', required=False)
 
 	keywords = IndexedIterable(title='The keywords',
 							   required=False,
 							   value_type=ValidTextLine(title="The keyword"),
 							   min_length=0)
-	keywords.setTaggedValue('__solr_stored__', True)
-	keywords.setTaggedValue('__solr_indexed__', True)
-	keywords.setTaggedValue('__solr_value_interface__', IKeywordsValue)
+
+tagField(ITranscriptCatalog['media'], True, IMediaNTIIDValue)
+tagField(ITranscriptCatalog['context_en'], True, IContentValue)
+tagField(ITranscriptCatalog['keywords'], False, IKeywordsValue, True)
 
 # content units
 
@@ -238,25 +313,18 @@ class IContentPackageValue(IAttributeValue):
 
 class IContentUnitCatalog(IMetadataCatalog):
 
-	ntiid = ValidTextLine(title='Text ntiid', required=False)
-	ntiid.setTaggedValue('__solr_stored__', False)
-	ntiid.setTaggedValue('__solr_indexed__', True)
-	ntiid.setTaggedValue('__solr_value_interface__', INTIIDValue)
+	ntiid = ValidTextLine(title='Content unit ntiid', required=False)
+
+	package = ValidTextLine(title='Content package ntiid', required=False)
 
 	context_en = ValidText(title='Text to index', required=False)
-	context_en.setTaggedValue('__solr_stored__', False)
-	context_en.setTaggedValue('__solr_indexed__', True)
-	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
 
 	keywords = IndexedIterable(title='The keywords',
 							   required=False,
 							   value_type=ValidTextLine(title="The keyword"),
 							   min_length=0)
-	keywords.setTaggedValue('__solr_stored__', True)
-	keywords.setTaggedValue('__solr_indexed__', True)
-	keywords.setTaggedValue('__solr_value_interface__', IKeywordsValue)
 
-	package = ValidTextLine(title='Content pacakge ntiid', required=False)
-	package.setTaggedValue('__solr_stored__', False)
-	package.setTaggedValue('__solr_indexed__', True)
-	package.setTaggedValue('__solr_value_interface__', IContentPackageValue)
+tagField(IContentUnitCatalog['ntiid'], True, INTIIDValue)
+tagField(IContentUnitCatalog['context_en'], True, IContentValue)
+tagField(IContentUnitCatalog['package'], True, IContentPackageValue)
+tagField(IContentUnitCatalog['keywords'], False, IKeywordsValue, True)

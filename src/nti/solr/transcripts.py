@@ -25,29 +25,41 @@ from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IMediaNTIIDValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import get_item_content_package
 
 from nti.traversal.traversal import find_interface
 
+class _BasicAttributeValue(object):
+
+	def __init__(self, context=None):
+		self.context = context
+
 @component.adapter(INTITranscript)
 @interface.implementer(IIDValue)
-class _TranscriptIDValue(object):
-
-	def __init__(self, context):
-		self.context = context
+class _TranscriptIDValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return context.ntiid
 
 @component.adapter(INTITranscript)
-@interface.implementer(IContentValue)
-class _TranscriptContentValue(object):
+@interface.implementer(IMediaNTIIDValue)
+class _TranscriptMediaNTIIDValue(_BasicAttributeValue):
 
-	def __init__(self, context):
-		self.context = context
+	def value(self, context=None):
+		context = self.context if context is None else context
+		try:
+			parent = context.__parent__
+			return parent.ntiid
+		except AttributeError:
+			return None
+
+@component.adapter(INTITranscript)
+@interface.implementer(IContentValue)
+class _TranscriptContentValue(_BasicAttributeValue):
 
 	@classmethod
 	def parse_content(cls, context, raw_content):
