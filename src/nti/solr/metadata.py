@@ -10,8 +10,6 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import six
-import pytz
-from datetime import datetime
 
 from zope import component
 from zope import interface
@@ -58,6 +56,8 @@ from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
 from nti.solr.interfaces import IIsDeletedObjectValue
 from nti.solr.interfaces import IIsTopLevelContentValue
+
+from nti.solr.schema import SolrDatetime
 
 class _BasicAttributeValue(object):
 
@@ -110,8 +110,8 @@ class _DefaultCreatedTimeValue(_BasicAttributeValue):
 		context = self.interface(context, context)
 		if context is not None:
 			result = getattr(context, self.attribute, None) or 0
-			result = datetime.fromtimestamp(result, pytz.utc)
-			return result.astimezone(pytz.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+			result = SolrDatetime.convert(result)
+			return SolrDatetime.toUnicode(result) if result else None
 		return None
 
 @interface.implementer(ILastModifiedValue)

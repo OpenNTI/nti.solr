@@ -34,7 +34,8 @@ class SolrDatetime(Orderable, Field):
 	def __init__(self, *args, **kw):
 		super(SolrDatetime, self).__init__(*args, **kw)
 
-	def _validate(self, value):
+	@staticmethod
+	def convert(self, value):
 		if isinstance(value, six.string_types):
 			try:
 				return self.fromUnicode(value)
@@ -44,6 +45,10 @@ class SolrDatetime(Orderable, Field):
 			return datetime.fromtimestamp(value, pytz.utc)
 		elif isinstance(value, datetime):
 			return value
+		return None
+
+	def _validate(self, value):
+		self.convert(value)
 		Field._validate(self, value)
 
 	def get(self, obj):
@@ -59,7 +64,7 @@ class SolrDatetime(Orderable, Field):
 		return None
 
 	def set(self, obj, value):
-		value = self._validate(value)
+		value = self.convert(value)
 		Field.set(self, obj, value)
 
 	@staticmethod
