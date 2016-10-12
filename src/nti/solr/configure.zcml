@@ -46,6 +46,10 @@
 			 provides=".interfaces.ITaggedToValue"
 			 for="*" />
 
+	<adapter factory=".metadata._DefaultInReplyToValue"
+			 provides=".interfaces.IInReplyToValue"
+			 for="*" />
+
 	<adapter factory=".metadata._DefaultIsTopLevelContentValue"
 			 provides=".interfaces.IIsTopLevelContentValue"
 			 for="*" />

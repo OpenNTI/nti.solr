@@ -51,6 +51,7 @@ from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import ITaggedToValue
+from nti.solr.interfaces import IInReplyToValue
 from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
@@ -63,6 +64,19 @@ class _BasicAttributeValue(object):
 	def __init__(self, context):
 		self.context = context
 
+@interface.implementer(IIDValue)
+class _DefaultIDValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		try:
+			initds = component.getUtility(IIntIds)
+			result = initds.queryId(context)
+			return unicode(result) if result is not None else None
+		except (LookupError, KeyError):
+			pass
+		return None
+
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
 
@@ -74,19 +88,6 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 			if isinstance(creator, six.string_types):
 				return creator.lower()
 		except (AttributeError, TypeError):
-			pass
-		return None
-
-@interface.implementer(IIDValue)
-class _DefaultIDValue(_BasicAttributeValue):
-
-	def value(self, context=None):
-		context = self.context if context is None else context
-		try:
-			initds = component.getUtility(IIntIds)
-			result = initds.queryId(context)
-			return unicode(result) if result is not None else None
-		except (LookupError, KeyError):
 			pass
 		return None
 
@@ -134,6 +135,17 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 			else:
 				return unicode(cid)
 		return None
+
+@interface.implementer(IInReplyToValue)
+class _DefaultInReplyToValue(_BasicAttributeValue):
+
+	def __init__(self, context, default):
+		self.context = context
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		result = getattr(context, "inReplyTo", None)
+		return result.lower() if result else None
 
 @interface.implementer(ISharedWithValue)
 class _DefaultSharedWithValue(_BasicAttributeValue):
