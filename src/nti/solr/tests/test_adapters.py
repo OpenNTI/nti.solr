@@ -22,13 +22,27 @@ from nti.coremetadata.interfaces import ICreated
 from nti.coremetadata.interfaces import ICreatedTime 
 from nti.coremetadata.interfaces import ILastModified 
 
+from nti.dataserver.users import User
+
+from nti.dataserver.users.interfaces import ICompleteUserProfile
+
+from nti.dataserver.users.user_profile import Education
+from nti.dataserver.users.user_profile import ProfessionalPosition
+
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IInReplyToValue
+from nti.solr.interfaces import ISocialURLValue
 from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import ILastModifiedValue
+from nti.solr.interfaces import IEducationDegreeValue
+from nti.solr.interfaces import IEducationSchoolValue
+from nti.solr.interfaces import IProfessionalTitleValue
+from nti.solr.interfaces import IProfessionalCompanyValue
+from nti.solr.interfaces import IEducationDescriptionValue
+from nti.solr.interfaces import IProfessionalDescriptionValue
 
 from nti.solr.tests import SOLRTestLayer
 
@@ -89,3 +103,42 @@ class TestAdpaters(unittest.TestCase):
 
 		value = IInReplyToValue(Created()).value()
 		assert_that(value, is_('aizen'))
+		
+	def test_entities(self):
+		user = User("ichigo@bleach.org")
+		prof = ICompleteUserProfile(user)
+		prof.alias = 'Ichigo'
+		prof.realname = 'Ichigo Kurosaki'
+		
+		prof.twitter = str('https://twitter.com/ichigo')
+		prof.positions = [ProfessionalPosition(	startYear=1998,
+												endYear=2009,
+												companyName='RMG',
+												title='Developer',
+												description='Software Developer')]
+		prof.education = [Education(startYear=1994,
+									endYear=1997,
+									school='OU',
+									degree='Master',
+									description='Computer Science')]
+	
+		value = ISocialURLValue(user).value()
+		assert_that(value, is_(('https://twitter.com/ichigo',)))
+		
+		value = IProfessionalTitleValue(user).value()
+		assert_that(value, is_(('Developer',)))
+
+		value = IProfessionalCompanyValue(user).value()
+		assert_that(value, is_(('RMG',)))
+		
+		value = IProfessionalDescriptionValue(user).value()
+		assert_that(value, is_(('Software Developer',)))
+		
+		value = IEducationDegreeValue(user).value()
+		assert_that(value, is_(('Master',)))
+
+		value = IEducationSchoolValue(user).value()
+		assert_that(value, is_(('OU',)))
+		
+		value = IEducationDescriptionValue(user).value()
+		assert_that(value, is_(('Computer Science',)))

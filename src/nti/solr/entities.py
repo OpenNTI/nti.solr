@@ -138,5 +138,5 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
 					  profile.googlePlus, profile.linkedIn}
 			result.discard(u'')
 			result.discard(None)
-			return sorted(result)
+			return tuple(result)
 		return ()

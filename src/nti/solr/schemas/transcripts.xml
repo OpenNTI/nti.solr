@@ -174,6 +174,16 @@
 			<filter class="solr.EnglishPossessiveFilterFactory"/>
 		</analyzer>
 	</fieldType>
+	<fieldType name="text_lower" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
 	<!--%%%-field-types-end-%%%-->
 	<!--%%%-metadata-start-%%%-->
 	<field name="creator" type="string" indexed="true" stored="true"/>
@@ -193,7 +203,7 @@
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="keywords" type="strings" indexed="true" stored="false"/>
+	<field name="keywords" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="media" type="string" indexed="true" required="true" stored="true"/> <!-- video / audio ntiid -->
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content field(s) -->
@@ -202,6 +212,9 @@
 	<!-- catch all / copy fields -->
 	<copyField source="id" dest="ntiid"/>
 	<copyField source="*_en" dest="_text_"/>
+	<copyField source="keywords" dest="_text_"/>
 	<copyField source="*_en" dest="suggest"/>
 	<copyField source="*_en" dest="suggest_ngram"/>
+	<copyField source="keywords" dest="suggest"/>
+	<copyField source="keywords" dest="suggest_ngram"/>
 </schema>

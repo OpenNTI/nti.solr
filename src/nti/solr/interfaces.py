@@ -90,11 +90,13 @@ class IIsTopLevelContentValue(IAttributeValue):
 	Adapter interface to get the isTopLevelContent value from a given object
 	"""
 
-def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True):
+def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True, type_=None):
 	field.setTaggedValue('__solr_stored__', stored)
 	field.setTaggedValue('__solr_indexed__', indexed)
 	field.setTaggedValue('__solr_multiValued__', multiValued)
 	field.setTaggedValue('__solr_value_interface__', adapter)
+	if type_ is not None:
+		field.setTaggedValue('__solr_type__', type_)
 
 class IMetadataCatalog(ICoreCatalog):
 
@@ -302,7 +304,7 @@ class ITranscriptCatalog(IMetadataCatalog):
 
 tagField(ITranscriptCatalog['media'], True, IMediaNTIIDValue)
 tagField(ITranscriptCatalog['context_en'], True, IContentValue)
-tagField(ITranscriptCatalog['keywords'], False, IKeywordsValue, True)
+tagField(ITranscriptCatalog['keywords'], False, IKeywordsValue, True, 'text_lower')
 
 # content units
 
@@ -327,4 +329,4 @@ class IContentUnitCatalog(IMetadataCatalog):
 tagField(IContentUnitCatalog['ntiid'], True, INTIIDValue)
 tagField(IContentUnitCatalog['context_en'], True, IContentValue)
 tagField(IContentUnitCatalog['package'], True, IContentPackageValue)
-tagField(IContentUnitCatalog['keywords'], False, IKeywordsValue, True)
+tagField(IContentUnitCatalog['keywords'], False, IKeywordsValue, True, 'text_lower')
