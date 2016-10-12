@@ -14,18 +14,48 @@ from zope import interface
 
 from nti.dataserver.interfaces import IEntity
 
+from nti.dataserver.users.interfaces import IUserProfile, IFriendlyNamed
+
+from nti.solr.interfaces import IAliasValue
+from nti.solr.interfaces import IEmailValue
+from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
 
-@component.adapter(IEntity)
-@interface.implementer(IUsernameValue)
-class _DefaultUsernameValue(object):
+class _BasicAttributeValue(object):
 
-	def __init__(self, context):
+	field = None
+	interface = None
+
+	def __init__(self, context=None):
 		self.context = context
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		try:
-			return context.username
-		except AttributeError:
-			return None
+		profile = self.interface(context, None)
+		return getattr(profile, self.field, None)
+
+@component.adapter(IEntity)
+@interface.implementer(IUsernameValue)
+class _DefaultUsernameValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return getattr(context, 'username', None)
+
+@component.adapter(IEntity)
+@interface.implementer(IEmailValue)
+class _DefaultEmailValue(_BasicAttributeValue):
+	field = 'email'
+	interface = IUserProfile
+
+@component.adapter(IEntity)
+@interface.implementer(IAliasValue)
+class _DefaultAliasValue(_BasicAttributeValue):
+	field = 'alias'
+	interface = IFriendlyNamed
+	
+@component.adapter(IEntity)
+@interface.implementer(IRealnameValue)
+class _DefaultRealnameValue(_BasicAttributeValue):
+	field = 'realname'
+	interface = IFriendlyNamed

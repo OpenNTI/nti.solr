@@ -62,7 +62,7 @@ from nti.solr.schema import SolrDatetime
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context):
+	def __init__(self, context=None):
 		self.context = context
 
 @interface.implementer(IIDValue)

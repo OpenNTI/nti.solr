@@ -66,7 +66,19 @@
 	<adapter factory=".entities._DefaultUsernameValue"
 			 provides=".interfaces.IUsernameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
+			 
+	<adapter factory=".entities._DefaultEmailValue"
+			 provides=".interfaces.IEmailValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+			 
+	<adapter factory=".entities._DefaultAliasValue"
+			 provides=".interfaces.IAliasValue"
+			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".entities._DefaultRealnameValue"
+			 provides=".interfaces.IRealnameValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+			 
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
