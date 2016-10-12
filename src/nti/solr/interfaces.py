@@ -109,7 +109,7 @@ class IMetadataCatalog(ICoreCatalog):
 	taggedTo.setTaggedValue('__solr_stored__', True)
 	taggedTo.setTaggedValue('__solr_indexed__', True)
 	taggedTo.setTaggedValue('__solr_value_interface__', ITaggedToValue)
-	
+
 	inReplyTo = ValidTextLine(title='The replied to NTIID', required=False)
 	inReplyTo.setTaggedValue('__solr_stored__', True)
 	inReplyTo.setTaggedValue('__solr_indexed__', True)
@@ -121,9 +121,9 @@ class IMetadataCatalog(ICoreCatalog):
 	containerId.setTaggedValue('__solr_value_interface__', IContainerIdValue)
 
 	sharedWith = IndexedIterable(title='The entities shared with',
-							    required=False,
-							    value_type=ValidTextLine(title="The entiy"),
-							    min_length=0)
+								required=False,
+								value_type=ValidTextLine(title="The entiy"),
+								min_length=0)
 	sharedWith.setTaggedValue('__solr_stored__', True)
 	sharedWith.setTaggedValue('__solr_indexed__', True)
 	sharedWith.setTaggedValue('__solr_value_interface__', ISharedWithValue)
@@ -165,6 +165,53 @@ class INTIIDValue(IAttributeValue):
 	Adapter interface to get the ntiid value from a given object
 	"""
 
+# entities
+
+class IUsernameValue(IAttributeValue):
+	"""
+	Adapter interface to get the username value from a given object
+	"""
+
+class IAliasValue(IAttributeValue):
+	"""
+	Adapter interface to get the alias value from a given object
+	"""
+
+class IRealnameValue(IAttributeValue):
+	"""
+	Adapter interface to get the realname value from a given object
+	"""
+
+class IEmailValue(IAttributeValue):
+	"""
+	Adapter interface to get the email value from a given object
+	"""
+
+class IEntitiesCatalog(IMetadataCatalog):
+
+	username = ValidTextLine(title='The username', required=False)
+	username.setTaggedValue('__solr_stored__', False)
+	username.setTaggedValue('__solr_indexed__', True)
+	username.setTaggedValue('__solr_multiValued__', True)
+	username.setTaggedValue('__solr_value_interface__', IUsernameValue)
+
+	alias = ValidTextLine(title='The alias', required=False)
+	alias.setTaggedValue('__solr_stored__', False)
+	alias.setTaggedValue('__solr_indexed__', True)
+	alias.setTaggedValue('__solr_multiValued__', True)
+	alias.setTaggedValue('__solr_value_interface__', IAliasValue)
+	
+	realname = ValidTextLine(title='The realname', required=False)
+	realname.setTaggedValue('__solr_stored__', False)
+	realname.setTaggedValue('__solr_indexed__', True)
+	realname.setTaggedValue('__solr_multiValued__', True)
+	realname.setTaggedValue('__solr_value_interface__', IRealnameValue)
+	
+	email = ValidTextLine(title='The username', required=False)
+	email.setTaggedValue('__solr_stored__', False)
+	email.setTaggedValue('__solr_indexed__', True)
+	email.setTaggedValue('__solr_value_interface__', IEmailValue)
+	
 # transcripts
 
 class ITranscriptCatalog(IMetadataCatalog):
@@ -173,7 +220,7 @@ class ITranscriptCatalog(IMetadataCatalog):
 	context_en.setTaggedValue('__solr_stored__', False)
 	context_en.setTaggedValue('__solr_indexed__', True)
 	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
-	
+
 	keywords = IndexedIterable(title='The keywords',
 							   required=False,
 							   value_type=ValidTextLine(title="The keyword"),
@@ -195,12 +242,12 @@ class IContentUnitCatalog(IMetadataCatalog):
 	ntiid.setTaggedValue('__solr_stored__', False)
 	ntiid.setTaggedValue('__solr_indexed__', True)
 	ntiid.setTaggedValue('__solr_value_interface__', INTIIDValue)
-	
+
 	context_en = ValidText(title='Text to index', required=False)
 	context_en.setTaggedValue('__solr_stored__', False)
 	context_en.setTaggedValue('__solr_indexed__', True)
 	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
-	
+
 	keywords = IndexedIterable(title='The keywords',
 							   required=False,
 							   value_type=ValidTextLine(title="The keyword"),

@@ -183,8 +183,8 @@
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="username" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
-	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
+	<field name="alias" type="strings" indexed="true" required="true" stored="true"/>
+	<field name="realname" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="email" type="string" indexed="true" required="true" stored="true"/>
 	<!-- Each prof/educational entry may have multiple values for these fields -->
 	<field name="professional_company" type="strings" indexed="true" required="true" stored="true"/>

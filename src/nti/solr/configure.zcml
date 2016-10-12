@@ -62,6 +62,11 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<!-- Entities -->
+	<adapter factory=".entities._DefaultUsernameValue"
+			 provides=".interfaces.IUsernameValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
