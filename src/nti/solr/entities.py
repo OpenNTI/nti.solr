@@ -16,12 +16,21 @@ from nti.dataserver.interfaces import IEntity
 
 from nti.dataserver.users.interfaces import IUserProfile
 from nti.dataserver.users.interfaces import IFriendlyNamed
+from nti.dataserver.users.interfaces import IEducationProfile
+from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.solr.interfaces import IAliasValue
 from nti.solr.interfaces import IEmailValue
 from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
+from nti.solr.interfaces import ISocialURLValue
+from nti.solr.interfaces import IEducationDegreeValue
+from nti.solr.interfaces import IEducationSchoolValue
+from nti.solr.interfaces import IProfessionalTitleValue
+from nti.solr.interfaces import IProfessionalCompanyValue
+from nti.solr.interfaces import IEducationDescriptionValue
+from nti.solr.interfaces import IProfessionalDescriptionValue
 
 class _BasicAttributeValue(object):
 
@@ -64,28 +73,70 @@ class _DefaultRealnameValue(_BasicAttributeValue):
 	interface = IFriendlyNamed
 
 @component.adapter(IEntity)
-@interface.implementer(IUsernameValue)
-class _DefaultProfessionalCompanyValue(_BasicAttributeValue):
+@interface.implementer(IProfessionalTitleValue)
+class _DefaultProfessionalTitleValue(_BasicAttributeValue):
 
 	field = 'positions'
 	interface = IProfessionalProfile
+
+	def value(self, context=None):
+		positions = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.title for x in positions) if positions else ()
+
+@component.adapter(IEntity)
+@interface.implementer(IProfessionalCompanyValue)
+class _DefaultProfessionalCompanyValue(_DefaultProfessionalTitleValue):
 	
 	def value(self, context=None):
 		positions = _BasicAttributeValue.value(self, context) or ()
 		return tuple(x.companyName for x in positions) if positions else ()
 
 @component.adapter(IEntity)
-@interface.implementer(IUsernameValue)
-class _DefaultProfessionalDescriptionValue(_DefaultProfessionalCompanyValue):
+@interface.implementer(IProfessionalDescriptionValue)
+class _DefaultProfessionalDescriptionValue(_DefaultProfessionalTitleValue):
 
 	def value(self, context=None):
 		positions = _BasicAttributeValue.value(self, context) or ()
 		return tuple(x.description for x in positions) if positions else ()
 
 @component.adapter(IEntity)
-@interface.implementer(IUsernameValue)
-class _DefaultProfessionalTitleValue(_DefaultProfessionalCompanyValue):
+@interface.implementer(IEducationDegreeValue)
+class _DefaultEducationDegreeValue(_BasicAttributeValue):
+
+	field = 'education'
+	interface = IEducationProfile
 
 	def value(self, context=None):
-		positions = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.title for x in positions) if positions else ()
+		education = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.degree for x in education) if education else ()
+
+@component.adapter(IEntity)
+@interface.implementer(IEducationSchoolValue)
+class _DefaultEducationSchoolValue(_DefaultEducationDegreeValue):
+	
+	def value(self, context=None):
+		education = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.school for x in education) if education else ()
+
+@component.adapter(IEntity)
+@interface.implementer(IEducationDescriptionValue)
+class _DefaultEducationDescriptionValue(_DefaultEducationDegreeValue):
+
+	def value(self, context=None):
+		education = _BasicAttributeValue.value(self, context) or ()
+		return tuple(x.description for x in education) if education else ()
+
+@component.adapter(IEntity)
+@interface.implementer(ISocialURLValue)
+class _DefaultSocialURLValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		profile = ISocialMediaProfile(context, None)
+		if profile is not None:
+			result = {profile.twitter, profile.facebook, 
+					  profile.googlePlus, profile.linkedIn}
+			result.discard(u'')
+			result.discard(None)
+			return sorted(result)
+		return ()

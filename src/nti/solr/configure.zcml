@@ -78,7 +78,35 @@
 	<adapter factory=".entities._DefaultRealnameValue"
 			 provides=".interfaces.IRealnameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-			 
+		
+	<adapter factory=".entities._DefaultProfessionalTitleValue"
+			 provides=".interfaces.IProfessionalTitleValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+	
+	<adapter factory=".entities._DefaultProfessionalCompanyValue"
+			 provides=".interfaces.IProfessionalCompanyValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+			
+	<adapter factory=".entities._DefaultProfessionalDescriptionValue"
+			 provides=".interfaces.IProfessionalDescriptionValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
+	<adapter factory=".entities._DefaultEducationDegreeValue"
+			 provides=".interfaces.IEducationDegreeValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
+	<adapter factory=".entities._DefaultEducationSchoolValue"
+			 provides=".interfaces.IEducationSchoolValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
+	<adapter factory=".entities._DefaultEducationDescriptionValue"
+			 provides=".interfaces.IEducationDescriptionValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
+	<adapter factory=".entities._DefaultSocialURLValue"
+			 provides=".interfaces.ISocialURLValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
