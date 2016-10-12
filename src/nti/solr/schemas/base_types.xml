@@ -172,4 +172,14 @@
 			<filter class="solr.EnglishPossessiveFilterFactory"/>
 		</analyzer>
 	</fieldType>
+	<fieldType name="text_lower" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+		</analyzer>
+	</fieldType>
 </schema>
