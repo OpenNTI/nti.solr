@@ -16,6 +16,7 @@ from zope.index.interfaces import IInjection
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
+from nti.schema.field import ValidText
 from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
 
@@ -147,13 +148,6 @@ class IMetadataCatalog(ICoreCatalog):
 	isTopLevelContent.setTaggedValue('__solr_indexed__', True)
 	isTopLevelContent.setTaggedValue('__solr_value_interface__', IIsTopLevelContentValue)
 
-# content units
-
-class IContentPackageValue(IAttributeValue):
-	"""
-	Adapter interface to get the content pacakge ntiid value from a given object
-	"""
-
 # misc
 
 class IContentValue(IAttributeValue):
@@ -164,4 +158,28 @@ class IContentValue(IAttributeValue):
 class IKeywordsValue(IAttributeValue):
 	"""
 	Adapter interface to get the keywords value from a given object
+	"""
+
+# transcripts
+
+class ITranscriptCatalog(IMetadataCatalog):
+
+	context_en = ValidText(title='Text to index', required=False)
+	context_en.setTaggedValue('__solr_stored__', False)
+	context_en.setTaggedValue('__solr_indexed__', True)
+	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
+	
+	keywords = IndexedIterable(title='The keywords',
+							   required=False,
+							   value_type=ValidTextLine(title="The keyword"),
+							   min_length=0)
+	keywords.setTaggedValue('__solr_stored__', True)
+	keywords.setTaggedValue('__solr_indexed__', True)
+	keywords.setTaggedValue('__solr_value_interface__', IKeywordsValue)
+
+# content units
+
+class IContentPackageValue(IAttributeValue):
+	"""
+	Adapter interface to get the content pacakge ntiid value from a given object
 	"""
