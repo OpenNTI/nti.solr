@@ -46,6 +46,7 @@ from nti.ntiids.ntiids import is_ntiid_of_types
 from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import ITaggedToValue
@@ -90,6 +91,13 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 		except (AttributeError, TypeError):
 			pass
 		return None
+
+@interface.implementer(INTIIDValue)
+class _DefaultNTIIDValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return getattr(context, 'ntiid', None) or getattr(context, 'NTIID', None)
 
 @interface.implementer(IMimeTypeValue)
 class _DefaultMimeTypeValue(_BasicAttributeValue):

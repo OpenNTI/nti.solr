@@ -160,6 +160,11 @@ class IKeywordsValue(IAttributeValue):
 	Adapter interface to get the keywords value from a given object
 	"""
 
+class INTIIDValue(IAttributeValue):
+	"""
+	Adapter interface to get the ntiid value from a given object
+	"""
+
 # transcripts
 
 class ITranscriptCatalog(IMetadataCatalog):
@@ -183,3 +188,28 @@ class IContentPackageValue(IAttributeValue):
 	"""
 	Adapter interface to get the content pacakge ntiid value from a given object
 	"""
+
+class IContentUnitCatalog(IMetadataCatalog):
+
+	ntiid = ValidTextLine(title='Text ntiid', required=False)
+	ntiid.setTaggedValue('__solr_stored__', False)
+	ntiid.setTaggedValue('__solr_indexed__', True)
+	ntiid.setTaggedValue('__solr_value_interface__', INTIIDValue)
+	
+	context_en = ValidText(title='Text to index', required=False)
+	context_en.setTaggedValue('__solr_stored__', False)
+	context_en.setTaggedValue('__solr_indexed__', True)
+	context_en.setTaggedValue('__solr_value_interface__', IContentValue)
+	
+	keywords = IndexedIterable(title='The keywords',
+							   required=False,
+							   value_type=ValidTextLine(title="The keyword"),
+							   min_length=0)
+	keywords.setTaggedValue('__solr_stored__', True)
+	keywords.setTaggedValue('__solr_indexed__', True)
+	keywords.setTaggedValue('__solr_value_interface__', IKeywordsValue)
+
+	package = ValidTextLine(title='Content pacakge ntiid', required=False)
+	package.setTaggedValue('__solr_stored__', False)
+	package.setTaggedValue('__solr_indexed__', True)
+	package.setTaggedValue('__solr_value_interface__', IContentPackageValue)

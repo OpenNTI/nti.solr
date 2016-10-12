@@ -26,6 +26,10 @@
 			 provides=".interfaces.IMimeTypeValue"
 			 for="*" />
 
+ 	<adapter factory=".metadata._DefaultNTIIDValue"
+			 provides=".interfaces.INTIIDValue"
+			 for="*" />
+
  	<adapter factory=".metadata._DefaultCreatedTimeValue"
 			 provides=".interfaces.ICreatedTimeValue"
 			 for="*" />

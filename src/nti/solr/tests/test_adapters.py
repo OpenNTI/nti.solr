@@ -22,6 +22,7 @@ from nti.coremetadata.interfaces import ICreated
 from nti.coremetadata.interfaces import ICreatedTime 
 from nti.coremetadata.interfaces import ILastModified 
 
+from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IInReplyToValue
@@ -53,6 +54,15 @@ class TestAdpaters(unittest.TestCase):
 		value = IMimeTypeValue(Created()).value()
 		assert_that(value, is_('text/x-python'))
 		
+	def test_ntiid(self):
+
+		@interface.implementer(IContentTypeAware)
+		class Created(object):
+			ntiid = 'foo'
+
+		value = INTIIDValue(Created()).value()
+		assert_that(value, is_('foo'))
+
 	def test_created_last_mod_times(self):
 
 		@interface.implementer(ICreatedTime, ILastModified)
