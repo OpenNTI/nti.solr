@@ -31,8 +31,7 @@ class _DefaultKeyWordFilter(object):
 	def __call__(self, word, occur, strength):
 		result = 	(strength == 1 and occur >= self.single_strength_min_occur) \
 				 or (strength <= self.max_limit_strength)
-		result = result and len(word) > 1
-		return result
+		return bool(result and len(word) > 1)
 
 def extract_key_words(content, max_words=10, lang='en', filtername='solr'):
 	"""
