@@ -193,5 +193,5 @@
 	<field name="education_school" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="education_description" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="education_degree" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="social_urls" type="strings" indexed="true" required="true" stored="true"/>
+	<field name="social_url" type="strings" indexed="true" required="true" stored="true"/>
 </schema>
