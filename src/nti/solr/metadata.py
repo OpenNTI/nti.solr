@@ -138,9 +138,6 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 
 @interface.implementer(IInReplyToValue)
 class _DefaultInReplyToValue(_BasicAttributeValue):
-
-	def __init__(self, context, default):
-		self.context = context
 	
 	def value(self, context=None):
 		context = self.context if context is None else context

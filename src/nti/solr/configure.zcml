@@ -77,6 +77,6 @@
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
 	<!-- Utilities -->
-	<utility factory=".term_extract._DefaultKeyWordFilter" name='solr' />
+	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
 </configure>

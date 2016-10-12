@@ -31,7 +31,7 @@ from nti.solr.utils import get_item_content_package
 
 from nti.traversal.traversal import find_interface
 
-@component.adapts(INTITranscript)
+@component.adapter(INTITranscript)
 @interface.implementer(IIDValue)
 class _TranscriptIDValue(object):
 
@@ -42,7 +42,7 @@ class _TranscriptIDValue(object):
 		context = self.context if context is None else context
 		return context.ntiid
 
-@component.adapts(INTITranscript)
+@component.adapter(INTITranscript)
 @interface.implementer(IContentValue)
 class _TranscriptContentValue(object):
 
@@ -85,7 +85,7 @@ class _TranscriptContentValue(object):
 		context = self.context if context is None else context
 		return self.get_content(context)
 
-@component.adapts(INTITranscript)
+@component.adapter(INTITranscript)
 @interface.implementer(IKeywordsValue)
 class _TranscriptKeywordsValue(_TranscriptContentValue):
 

@@ -19,7 +19,7 @@ from nti.solr.interfaces import IContentPackageValue
 
 from nti.traversal.traversal import find_interface
 
-@component.adapts(IContentUnit)
+@component.adapter(IContentUnit)
 @interface.implementer(IContentPackageValue)
 class _DefaultContentPackageValue(object):
 
