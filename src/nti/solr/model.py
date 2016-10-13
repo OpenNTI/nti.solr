@@ -13,11 +13,14 @@ import six
 
 from zope import interface
 
+from zope.event import notify
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog 
-from nti.solr.interfaces import ICoreDocument
+from nti.solr.interfaces import ObjectIndexedEvent
+from nti.solr.interfaces import ObjectUnindexedEvent
 
-from nti.schema.interfaces import find_most_derived_interface
+from nti.solr.utils import object_finder
 
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
@@ -26,8 +29,9 @@ class CoreCatalog(object):
         doc_id = IIDValue(value).value()
         return self.index_doc(doc_id, value)
 
-    def index_doc(self, doc_id, alue):
-        find_most_derived_interface(self, ICoreDocument)
+    def index_doc(self, doc_id, value):
+        # TODO: call SOLR
+        notify(ObjectIndexedEvent(value))
 
     def remove(self, value):
         if isinstance(value, int):
@@ -37,4 +41,7 @@ class CoreCatalog(object):
         return self.unindex_doc(value)
     
     def unindex_doc(self, doc_id):
-        pass
+        # TODO: call SOLR
+        obj = object_finder(doc_id)
+        if obj is not None:
+            notify(ObjectUnindexedEvent(obj))
