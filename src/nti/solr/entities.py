@@ -22,10 +22,11 @@ from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr.interfaces import IAliasValue, IEntityDocument
+from nti.solr.interfaces import IAliasValue
 from nti.solr.interfaces import IEmailValue
 from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
+from nti.solr.interfaces import IEntityDocument 
 from nti.solr.interfaces import ISocialURLValue
 from nti.solr.interfaces import IEducationDegreeValue
 from nti.solr.interfaces import IEducationSchoolValue
