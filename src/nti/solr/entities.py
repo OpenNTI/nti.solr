@@ -20,7 +20,9 @@ from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
 
-from nti.solr.interfaces import IAliasValue
+from nti.schema.fieldproperty import createDirectFieldProperties
+
+from nti.solr.interfaces import IAliasValue, IEntityDocument
 from nti.solr.interfaces import IEmailValue
 from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
@@ -31,6 +33,10 @@ from nti.solr.interfaces import IProfessionalTitleValue
 from nti.solr.interfaces import IProfessionalCompanyValue
 from nti.solr.interfaces import IEducationDescriptionValue
 from nti.solr.interfaces import IProfessionalDescriptionValue
+
+from nti.solr.metadata import MetadataDocument
+
+from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
@@ -140,3 +146,14 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
 			result.discard(None)
 			return tuple(result)
 		return ()
+
+@interface.implementer(IEntityDocument)
+class EntityDocument(MetadataDocument):
+	createDirectFieldProperties(IEntityDocument)
+
+	mimeType = mime_type = u'application/vnd.nextthought.solr.entitydocument'
+		
+@component.adapter(IEntity)
+@interface.implementer(IEntityDocument)
+def entity_document_creator(obj, factory=EntityDocument):
+	return document_creator(obj, factory=factory)

@@ -116,6 +116,10 @@
 			 provides=".interfaces.ITranscriptDocument"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
+	<adapter factory=".entities.entity_document_creator"
+			 provides=".interfaces.IEntityDocument"
+			 for="nti.dataserver.interfaces.IEntity" />
+
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
@@ -146,9 +150,15 @@
 	<include package="nti.externalization" />
 
 	<ext:registerAutoPackageIO
-		root_interfaces=".interfaces.IMetadataDocument
+		root_interfaces=".interfaces.IEntityDocument 
+						 .interfaces.IMetadataDocument
 						 .interfaces.ITranscriptDocument"
-		modules=".metadata .transcripts" />
+		modules=".metadata .transcripts .entities" />
+
+	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
+			 for=".interfaces.IEntityDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
 
 	<adapter factory=".externalization._MetadataDocumentSOLRExternalizer"
 			 for=".interfaces.IMetadataDocument"

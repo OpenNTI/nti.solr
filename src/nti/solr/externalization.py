@@ -18,6 +18,7 @@ from nti.externalization.interfaces import IInternalObjectExternalizer
 
 from nti.externalization.interfaces import StandardExternalFields
 
+from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ITranscriptDocument
 
@@ -31,6 +32,11 @@ class _BasicSOLRExternalizer(InterfaceObjectIO):
 		for name in ALL_EXTERNAL_FIELDS:
 			result.pop(name, None)
 		return result
+
+@component.adapter(IEntityDocument)
+@interface.implementer(IInternalObjectExternalizer)
+class _EntityDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+	_ext_iface_upper_bound = IEntityDocument
 
 @component.adapter(IMetadataDocument)
 @interface.implementer(IInternalObjectExternalizer)

@@ -285,7 +285,7 @@ class IMediaNTIIDValue(IAttributeValue):
 
 class ITranscriptDocument(IMetadataDocument):
 
-	context_en = ValidText(title='Text to index', required=False)
+	content_en = ValidText(title='Text to index', required=False)
 	
 	media = ValidText(title='The media ntiid', required=False)
 
@@ -295,7 +295,7 @@ class ITranscriptDocument(IMetadataDocument):
 							   min_length=0)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
-tagField(ITranscriptDocument['context_en'], True, IContentValue)
+tagField(ITranscriptDocument['content_en'], True, IContentValue)
 tagField(ITranscriptDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
 
 # content units
@@ -311,7 +311,7 @@ class IContentUnitDocument(IMetadataDocument):
 
 	package = ValidTextLine(title='Content package ntiid', required=False)
 
-	context_en = ValidText(title='Text to index', required=False)
+	content_en = ValidText(title='Text to index', required=False)
 
 	keywords = IndexedIterable(title='The keywords',
 							   required=False,
@@ -319,7 +319,7 @@ class IContentUnitDocument(IMetadataDocument):
 							   min_length=0)
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
-tagField(IContentUnitDocument['context_en'], True, IContentValue)
+tagField(IContentUnitDocument['content_en'], True, IContentValue)
 tagField(IContentUnitDocument['package'], True, IContentPackageValue)
 tagField(IContentUnitDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
 
