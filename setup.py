@@ -52,7 +52,8 @@ setup(
         'solrcloudpy',
         'nti.async',
         'nti.contentindexing',
-        'nti.contentprocessing'
+        'nti.contentprocessing',
+        'nti.externalization'
     ],
     extras_require={
         'test': TESTS_REQUIRE,

@@ -107,6 +107,10 @@
 			 provides=".interfaces.ISocialURLValue"
 			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".metadata.metadata_document_createor"
+			 provides=".interfaces.IMetadataDocument"
+			 for="*" />
+
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
@@ -131,5 +135,13 @@
 
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
+
+	<!-- Externalization -->
+	<include package="nti.externalization" file="meta.zcml" />
+	<include package="nti.externalization" />
+
+	<ext:registerAutoPackageIO
+		root_interfaces=".interfaces.IMetadataDocument"
+		modules=".metadata" />
 
 </configure>
