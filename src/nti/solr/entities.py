@@ -155,5 +155,5 @@ class EntityDocument(MetadataDocument):
 		
 @component.adapter(IEntity)
 @interface.implementer(IEntityDocument)
-def entity_document_creator(obj, factory=EntityDocument):
+def _EntityDocumentCreator(obj, factory=EntityDocument):
 	return document_creator(obj, factory=factory)

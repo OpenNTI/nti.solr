@@ -247,5 +247,5 @@ class MetadataDocument(SchemaConfigured):
 	mimeType = mime_type = u'application/vnd.nextthought.solr.metadatadocument'
 
 @interface.implementer(IMetadataDocument)
-def metadata_document_creator(obj, factory=MetadataDocument):
+def _MetadataDocumentCreator(obj, factory=MetadataDocument):
 	return document_creator(obj, factory=factory)

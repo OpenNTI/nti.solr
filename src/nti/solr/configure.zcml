@@ -13,6 +13,17 @@
 	<include package="nti.contentindexing" />
 	<include package="nti.contentprocessing" />
 	
+	<!-- Externalization -->
+	<include package="nti.externalization" file="meta.zcml" />
+	<include package="nti.externalization" />
+
+	<ext:registerAutoPackageIO
+		root_interfaces=".interfaces.IEntityDocument 
+						 .interfaces.IMetadataDocument
+						 .interfaces.ITranscriptDocument
+						 .interfaces.IContentUnitDocument"
+		modules=".metadata .transcripts .entities .content_unit" />
+		
 	<!-- Adapters -->
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
@@ -63,6 +74,15 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<adapter factory=".metadata._MetadataDocumentCreator"
+			 provides=".interfaces.IMetadataDocument"
+			 for="*" />
+
+	<adapter factory=".externalization._MetadataDocumentSOLRExternalizer"
+			 for=".interfaces.IMetadataDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
 	<!-- Entities -->
 	<adapter factory=".entities._DefaultUsernameValue"
 			 provides=".interfaces.IUsernameValue"
@@ -107,23 +127,37 @@
 	<adapter factory=".entities._DefaultSocialURLValue"
 			 provides=".interfaces.ISocialURLValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".metadata.metadata_document_creator"
-			 provides=".interfaces.IMetadataDocument"
-			 for="*" />
-
-	<adapter factory=".transcripts.transcript_document_creator"
-			 provides=".interfaces.ITranscriptDocument"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".entities.entity_document_creator"
+	
+	<adapter factory=".entities._EntityDocumentCreator"
 			 provides=".interfaces.IEntityDocument"
 			 for="nti.dataserver.interfaces.IEntity" />
+			 
+	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
+			 for=".interfaces.IEntityDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
 
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".content_unit._DefaultContentUnitContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+		 
+	<adapter factory=".content_unit._DefaultContentUnitKeywordsValue"
+			 provides=".interfaces.IKeywordsValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+			 
+	<adapter factory=".content_unit._ContentUnitDocumentCreator"
+			 provides=".interfaces.IContentUnitDocument"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
+			 for=".interfaces.IContentUnitDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
 
 	<!-- Transcripts -->
 	<adapter factory=".transcripts._TranscriptIDValue"
@@ -142,32 +176,16 @@
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
-	<!-- Utilities -->
-	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
-
-	<!-- Externalization -->
-	<include package="nti.externalization" file="meta.zcml" />
-	<include package="nti.externalization" />
-
-	<ext:registerAutoPackageIO
-		root_interfaces=".interfaces.IEntityDocument 
-						 .interfaces.IMetadataDocument
-						 .interfaces.ITranscriptDocument"
-		modules=".metadata .transcripts .entities" />
-
-	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
-			 for=".interfaces.IEntityDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
-
-	<adapter factory=".externalization._MetadataDocumentSOLRExternalizer"
-			 for=".interfaces.IMetadataDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
+	<adapter factory=".transcripts._TranscriptDocumentCreator"
+			 provides=".interfaces.ITranscriptDocument"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
 	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"
 			 for=".interfaces.ITranscriptDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
+	
+	<!-- Utilities -->
+	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
 </configure>
