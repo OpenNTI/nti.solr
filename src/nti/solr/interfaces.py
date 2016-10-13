@@ -20,15 +20,6 @@ from nti.schema.field import ValidText
 from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
 
-class ICoreCatalog(IInjection):
-
-	def index_doc(value):
-		"""
-		Add a document to the index.
-
-		@param value: the value to be indexed
-		"""
-
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -39,12 +30,12 @@ class IAttributeValue(interface.Interface):
 		Return the attribute value for a given adapted object
 		"""
 
-# metadata
-
 class IIDValue(IAttributeValue):
 	"""
 	Adapter interface to get the id value from a given object
 	"""
+
+# metadata
 
 class ICreatorValue(IAttributeValue):
 	"""
@@ -103,6 +94,25 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True, 
 	field.setTaggedValue('__solr_value_interface__', adapter)
 	if type_ is not None:
 		field.setTaggedValue('__solr_type__', type_)
+
+class ICoreCatalog(IInjection):
+
+	id = ValidTextLine(title='The id', required=True)
+	
+	def index_doc(value):
+		"""
+		Add a document to the index.
+
+		@param value: the value to be indexed
+		"""
+
+	def toJSON(value):
+		"""
+		return a SOLR JSON document from the specifed value
+		
+		@param value: the value to be outputed
+		"""
+tagField(ICoreCatalog['id'], True, IIDValue)
 
 class IMetadataCatalog(ICoreCatalog):
 
