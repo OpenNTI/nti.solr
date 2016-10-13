@@ -14,8 +14,6 @@ import six
 from zope import component
 from zope import interface
 
-from zope.interface.interfaces import IMethod
-
 from zope.intid.interfaces import IIntIds
 
 from zope.mimetype.interfaces import IContentTypeAware
@@ -47,7 +45,10 @@ from nti.ntiids.ntiids import TYPE_NAMED_ENTITY
 from nti.ntiids.ntiids import is_ntiid_of_types
 from nti.ntiids.ntiids import find_object_with_ntiid
 
-from nti.solr.interfaces import IIDValue, IMetadataDocument
+from nti.schema.field import SchemaConfigured
+from nti.schema.fieldproperty import createDirectFieldProperties
+
+from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
@@ -56,14 +57,14 @@ from nti.solr.interfaces import IInReplyToValue
 from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ICreatedTimeValue
+from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ILastModifiedValue
 from nti.solr.interfaces import IIsDeletedObjectValue
 from nti.solr.interfaces import IIsTopLevelContentValue
 
 from nti.solr.schema import SolrDatetime
 
-from nti.schema.field import SchemaConfigured
-from nti.schema.fieldproperty import createDirectFieldProperties
+from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
@@ -243,19 +244,8 @@ class _DefaultIsDeletedObjectValue(_BasicAttributeValue):
 class MetadataDocument(SchemaConfigured):
 	createDirectFieldProperties(IMetadataDocument)
 
-@component.adapter(interface.Interface)
+	mimeType = mime_type = u'application/vnd.nextthought.solr.metadatadocument'
+
 @interface.implementer(IMetadataDocument)
-def metadata_document_createor(obj, factory=MetadataDocument):
-	result = factory()
-	for k, v in IMetadataDocument.namesAndDescriptions(all=True):
-		__traceback_info__ = k, v
-		if IMethod.providedBy(v):
-			continue
-		value_interface = v.queryTaggedValue('__solr_value_interface__')
-		if value_interface is None:
-			continue
-		adapted = value_interface(obj, None)
-		if adapted is not None:
-			value = adapted.value()
-			setattr(result, k, value)
-	return result
+def metadata_document_creator(obj, factory=MetadataDocument):
+	return document_creator(obj, factory=factory)

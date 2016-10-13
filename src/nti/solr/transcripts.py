@@ -22,12 +22,18 @@ from nti.contentlibrary.interfaces import IContentPackage
 from nti.contenttypes.presentation.interfaces import INTIVideo
 from nti.contenttypes.presentation.interfaces import INTITranscript
 
+from nti.schema.fieldproperty import createDirectFieldProperties
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IMediaNTIIDValue
+from nti.solr.interfaces import ITranscriptDocument
+
+from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import get_keywords
+from nti.solr.utils import document_creator
 from nti.solr.utils import get_item_content_package
 
 from nti.traversal.traversal import find_interface
@@ -105,3 +111,14 @@ class _TranscriptKeywordsValue(_TranscriptContentValue):
 		context = self.context if context is None else context
 		text = super(_TranscriptKeywordsValue, self).value(context)
 		return get_keywords(text, context.lang)
+
+@interface.implementer(ITranscriptDocument)
+class TranscriptDocument(MetadataDocument):
+	createDirectFieldProperties(ITranscriptDocument)
+
+	mimeType = mime_type = u'application/vnd.nextthought.solr.transcriptdocument'
+		
+@component.adapter(INTITranscript)
+@interface.implementer(ITranscriptDocument)
+def transcript_document_creator(obj, factory=TranscriptDocument):
+	return document_creator(obj, factory=factory)

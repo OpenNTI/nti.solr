@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+from zope.interface.interfaces import IMethod
+
 from nti.contentlibrary.indexed_data import get_library_catalog
 
 from nti.contentlibrary.interfaces import IContentUnit
@@ -56,3 +58,18 @@ def get_keywords(content, lang='en'):
 	if not keywords:
 		keywords = term_extract_key_words(content, lang=lang)
 	return keywords
+
+def document_creator(obj, factory, provided):
+	result = factory()
+	for k, v in provided.namesAndDescriptions(all=True):
+		__traceback_info__ = k, v
+		if IMethod.providedBy(v):
+			continue
+		value_interface = v.queryTaggedValue('__solr_value_interface__')
+		if value_interface is None:
+			continue
+		adapted = value_interface(obj, None)
+		if adapted is not None:
+			value = adapted.value()
+			setattr(result, k, value)
+	return result

@@ -108,9 +108,13 @@
 			 provides=".interfaces.ISocialURLValue"
 			 for="nti.dataserver.interfaces.IEntity" />
 
-	<adapter factory=".metadata.metadata_document_createor"
+	<adapter factory=".metadata.metadata_document_creator"
 			 provides=".interfaces.IMetadataDocument"
 			 for="*" />
+
+	<adapter factory=".transcripts.transcript_document_creator"
+			 provides=".interfaces.ITranscriptDocument"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
 	<!-- Content Units -->
 	<adapter factory=".content_unit._DefaultContentPackageValue"
@@ -142,7 +146,8 @@
 	<include package="nti.externalization" />
 
 	<ext:registerAutoPackageIO
-		root_interfaces=".interfaces.IMetadataDocument"
-		modules=".metadata" />
+		root_interfaces=".interfaces.IMetadataDocument
+						 .interfaces.ITranscriptDocument"
+		modules=".metadata .transcripts" />
 
 </configure>
