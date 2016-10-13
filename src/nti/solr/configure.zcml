@@ -150,4 +150,14 @@
 						 .interfaces.ITranscriptDocument"
 		modules=".metadata .transcripts" />
 
+	<adapter factory=".externalization._MetadataDocumentSOLRExternalizer"
+			 for=".interfaces.IMetadataDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
+	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"
+			 for=".interfaces.ITranscriptDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
 </configure>
