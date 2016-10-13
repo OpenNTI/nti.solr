@@ -28,9 +28,11 @@ ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 @interface.implementer(IInternalObjectExternalizer)
 class _BasicSOLRExternalizer(InterfaceObjectIO):
 
+	_fields_to_remove = ALL_EXTERNAL_FIELDS
+
 	def toExternalObject(self, *args, **kwargs):
 		result = super(_BasicSOLRExternalizer, self).toExternalObject(*args, **kwargs)
-		for name in ALL_EXTERNAL_FIELDS:
+		for name in self._fields_to_remove:
 			result.pop(name, None)
 		return result
 
