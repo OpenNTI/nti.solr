@@ -13,6 +13,9 @@ from zope import interface
 
 from zope.index.interfaces import IInjection
 
+from zope.interface.interfaces import ObjectEvent
+from zope.interface.interfaces import IObjectEvent
+
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
@@ -345,3 +348,17 @@ class ICoreCatalog(IInjection):
 		
 		@param value: the value to be outputed
 		"""
+
+class IObjectIndexedEvent(IObjectEvent):
+	pass
+
+@interface.implementer(IObjectIndexedEvent)
+class ObjectIndexedEvent(ObjectEvent):
+	pass
+
+class IObjectUnindexedEvent(IObjectEvent):
+	pass
+
+@interface.implementer(IObjectUnindexedEvent)
+class ObjectUnindexedEvent(ObjectEvent):
+	pass
