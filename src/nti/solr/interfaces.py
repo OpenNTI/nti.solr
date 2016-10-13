@@ -95,26 +95,11 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True, 
 	if type_ is not None:
 		field.setTaggedValue('__solr_type__', type_)
 
-class ICoreCatalog(IInjection):
-
+class ICoreDocument(interface.Interface):
 	id = ValidTextLine(title='The id', required=True)
-	
-	def index_doc(value):
-		"""
-		Add a document to the index.
+tagField(ICoreDocument['id'], True, IIDValue)
 
-		@param value: the value to be indexed
-		"""
-
-	def toJSON(value):
-		"""
-		return a SOLR JSON document from the specifed value
-		
-		@param value: the value to be outputed
-		"""
-tagField(ICoreCatalog['id'], True, IIDValue)
-
-class IMetadataCatalog(ICoreCatalog):
+class IMetadataDocument(ICoreDocument):
 
 	creator = ValidTextLine(title='The creator', required=False)
 
@@ -142,16 +127,16 @@ class IMetadataCatalog(ICoreCatalog):
 
 	isTopLevelContent = Bool(title='Is top level object flag', required=False)
 
-tagField(IMetadataCatalog['creator'], True, ICreatorValue)
-tagField(IMetadataCatalog['mimeType'], True, IMimeTypeValue)
-tagField(IMetadataCatalog['inReplyTo'], True, IInReplyToValue)
-tagField(IMetadataCatalog['containerId'], True, IContainerIdValue)
-tagField(IMetadataCatalog['taggedTo'], True, ITaggedToValue, True)
-tagField(IMetadataCatalog['createdTime'], False, ICreatedTimeValue)
-tagField(IMetadataCatalog['lastModified'], False, ILastModifiedValue)
-tagField(IMetadataCatalog['sharedWith'], True, ISharedWithValue, True)
-tagField(IMetadataCatalog['isDeletedObject'], False, IIsDeletedObjectValue)
-tagField(IMetadataCatalog['isTopLevelContent'], False, IIsTopLevelContentValue)
+tagField(IMetadataDocument['creator'], True, ICreatorValue)
+tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
+tagField(IMetadataDocument['inReplyTo'], True, IInReplyToValue)
+tagField(IMetadataDocument['containerId'], True, IContainerIdValue)
+tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, True)
+tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue)
+tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue)
+tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, True)
+tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
+tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
 
 # misc
 
@@ -227,7 +212,7 @@ class ISocialURLValue(IAttributeValue):
 	Adapter interface to get the social URLs from a given entity object
 	"""
 
-class IEntitiesCatalog(IMetadataCatalog):
+class IEntityDocument(IMetadataDocument):
 
 	username = IndexedIterable(title='The username identifiers',
 							   required=False,
@@ -281,17 +266,17 @@ class IEntitiesCatalog(IMetadataCatalog):
 							   	 value_type=ValidTextLine(title="The url"),
 							   	 min_length=0)
 
-tagField(IEntitiesCatalog['email'], True, IEmailValue)
-tagField(IEntitiesCatalog['alias'], True, IAliasValue)
-tagField(IEntitiesCatalog['realname'], True, IRealnameValue)
-tagField(IEntitiesCatalog['username'], True, IUsernameValue, True)
-tagField(IEntitiesCatalog['social_url'], True, ISocialURLValue, True)
-tagField(IEntitiesCatalog['education_school'], True, IEducationSchoolValue, True)
-tagField(IEntitiesCatalog['education_degree'], True, IEducationDegreeValue, True)
-tagField(IEntitiesCatalog['education_description'], True, IEducationDescriptionValue, True)
-tagField(IEntitiesCatalog['professional_title'], True, IProfessionalTitleValue, True)
-tagField(IEntitiesCatalog['professional_company'], True, IProfessionalCompanyValue, True)
-tagField(IEntitiesCatalog['professional_description'], True, IProfessionalDescriptionValue, True)
+tagField(IEntityDocument['email'], True, IEmailValue)
+tagField(IEntityDocument['alias'], True, IAliasValue)
+tagField(IEntityDocument['realname'], True, IRealnameValue)
+tagField(IEntityDocument['username'], True, IUsernameValue, True)
+tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
+tagField(IEntityDocument['education_school'], True, IEducationSchoolValue, True)
+tagField(IEntityDocument['education_degree'], True, IEducationDegreeValue, True)
+tagField(IEntityDocument['education_description'], True, IEducationDescriptionValue, True)
+tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, True)
+tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True)
+tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True)
 
 # 	<!-- Each prof/educational entry may have multiple values for these fields -->
 # 	
@@ -307,7 +292,7 @@ class IMediaNTIIDValue(IAttributeValue):
 	Adapter interface to get the media (video/audio) NTIID associated with a transcript object
 	"""
 
-class ITranscriptCatalog(IMetadataCatalog):
+class ITranscriptDocument(IMetadataDocument):
 
 	context_en = ValidText(title='Text to index', required=False)
 	
@@ -318,9 +303,9 @@ class ITranscriptCatalog(IMetadataCatalog):
 							   value_type=ValidTextLine(title="The keyword"),
 							   min_length=0)
 
-tagField(ITranscriptCatalog['media'], True, IMediaNTIIDValue)
-tagField(ITranscriptCatalog['context_en'], True, IContentValue)
-tagField(ITranscriptCatalog['keywords'], False, IKeywordsValue, True, 'text_lower')
+tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
+tagField(ITranscriptDocument['context_en'], True, IContentValue)
+tagField(ITranscriptDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
 
 # content units
 
@@ -329,7 +314,7 @@ class IContentPackageValue(IAttributeValue):
 	Adapter interface to get the content pacakge ntiid value from a given object
 	"""
 
-class IContentUnitCatalog(IMetadataCatalog):
+class IContentUnitDocument(IMetadataDocument):
 
 	ntiid = ValidTextLine(title='Content unit ntiid', required=False)
 
@@ -342,7 +327,23 @@ class IContentUnitCatalog(IMetadataCatalog):
 							   value_type=ValidTextLine(title="The keyword"),
 							   min_length=0)
 
-tagField(IContentUnitCatalog['ntiid'], True, INTIIDValue)
-tagField(IContentUnitCatalog['context_en'], True, IContentValue)
-tagField(IContentUnitCatalog['package'], True, IContentPackageValue)
-tagField(IContentUnitCatalog['keywords'], False, IKeywordsValue, True, 'text_lower')
+tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
+tagField(IContentUnitDocument['context_en'], True, IContentValue)
+tagField(IContentUnitDocument['package'], True, IContentPackageValue)
+tagField(IContentUnitDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
+
+class ICoreCatalog(IInjection):
+
+	def add(value):
+		"""
+		Add a document to the index.
+
+		@param value: the value to be indexed
+		"""
+
+	def toJSON(value):
+		"""
+		return a SOLR JSON document from the specifed value
+		
+		@param value: the value to be outputed
+		"""
