@@ -342,13 +342,6 @@ class ICoreCatalog(IInjection):
 		@param value: The object/id to remove
 		"""
 
-	def toJSON(value):
-		"""
-		return a SOLR JSON document from the specifed value
-		
-		@param value: the value to be outputed
-		"""
-
 class IObjectIndexedEvent(IObjectEvent):
 	pass
 
