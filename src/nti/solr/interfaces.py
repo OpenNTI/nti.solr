@@ -278,15 +278,6 @@ tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, T
 tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True)
 tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True)
 
-# 	<!-- Each prof/educational entry may have multiple values for these fields -->
-# 	
-# 	<field name="education_school" type="strings" indexed="true" required="true" stored="true"/>
-# 	<field name="education_desc" type="strings" indexed="true" required="true" stored="true"/>
-# 	<field name="education_degree" type="strings" indexed="true" required="true" stored="true"/>
-# 	<field name="social_urls" type="strings" indexed="true" required="true" stored="true"/>
-
-# transcripts
-
 class IMediaNTIIDValue(IAttributeValue):
 	"""
 	Adapter interface to get the media (video/audio) NTIID associated with a transcript object
@@ -338,7 +329,14 @@ class ICoreCatalog(IInjection):
 		"""
 		Add a document to the index.
 
-		@param value: the value to be indexed
+		@param value: the object to be indexed
+		"""
+
+	def remove(value):
+		"""
+		Remove a document from the index
+		
+		@param value: The object/id to remove
 		"""
 
 	def toJSON(value):
