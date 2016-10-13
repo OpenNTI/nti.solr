@@ -21,7 +21,13 @@ from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
 
 class ICoreCatalog(IInjection):
-	pass
+
+	def index_doc(value):
+		"""
+		Add a document to the index.
+
+		@param value: the value to be indexed
+		"""
 
 class IAttributeValue(interface.Interface):
 	"""
