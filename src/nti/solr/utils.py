@@ -9,7 +9,13 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
+from zope import component
+
 from zope.interface.interfaces import IMethod
+
+from zope.intid.interfaces import IIntIds
 
 from nti.contentlibrary.indexed_data import get_library_catalog
 
@@ -73,3 +79,16 @@ def document_creator(obj, factory, provided):
 			value = adapted.value()
 			setattr(result, k, value)
 	return result
+
+def object_finder(doc_id):
+	if doc_id is None:
+		return None
+	intids = component.getUtility(IIntIds)
+	try:
+		doc_id = int(doc_id)
+		return intids.queryObject(doc_id)
+	except (ValueError, TypeError):
+		pass
+	if isinstance(doc_id, six.string_types):
+		return find_object_with_ntiid(doc_id)
+	return None
