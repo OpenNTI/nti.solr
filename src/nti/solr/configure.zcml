@@ -142,6 +142,10 @@
 			 provides=".interfaces.IContentPackageValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
+	<adapter factory=".content_unit._DefaultTitleValue"
+			 provides=".interfaces.ITitleValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
 	<adapter factory=".content_unit._DefaultContentUnitContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />

@@ -15,6 +15,7 @@ from zope import interface
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
+from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import IContentPackageValue
 
 from nti.solr.interfaces import IContentUnitDocument
@@ -47,6 +48,14 @@ class _DefaultContentPackageValue(_BasicAttributeValue):
 			return package.ntiid
 		except AttributeError:
 			return None
+
+@component.adapter(IContentUnit)
+@interface.implementer(ITitleValue)
+class _DefaultTitleValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return context.title
 
 @component.adapter(IContentUnit)
 @interface.implementer(IContentValue)

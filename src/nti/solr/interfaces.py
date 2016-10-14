@@ -292,16 +292,21 @@ class ITranscriptDocument(IMetadataDocument):
 	
 	media = ValidText(title='The media ntiid', required=False)
 
-	keywords = IndexedIterable(title='The keywords',
-							   required=False,
-							   value_type=ValidTextLine(title="The keyword"),
-							   min_length=0)
+	keywords_en = IndexedIterable(title='The keywords',
+							   	  required=False,
+							   	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
 tagField(ITranscriptDocument['content_en'], True, IContentValue)
-tagField(ITranscriptDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
+tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
 # content units
+
+class ITitleValue(IAttributeValue):
+	"""
+	Adapter interface to get the title value from a given object
+	"""
 
 class IContentPackageValue(IAttributeValue):
 	"""
@@ -314,17 +319,48 @@ class IContentUnitDocument(IMetadataDocument):
 
 	package = ValidTextLine(title='Content package ntiid', required=False)
 
+	title_en = ValidTextLine(title='Title to index', required=False)
+
 	content_en = ValidText(title='Text to index', required=False)
 
-	keywords = IndexedIterable(title='The keywords',
-							   required=False,
-							   value_type=ValidTextLine(title="The keyword"),
-							   min_length=0)
+	keywords_en = IndexedIterable(title='The keywords',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
+tagField(IContentUnitDocument['title_en'], True, ITitleValue)
 tagField(IContentUnitDocument['content_en'], True, IContentValue)
 tagField(IContentUnitDocument['package'], True, IContentPackageValue)
-tagField(IContentUnitDocument['keywords'], False, IKeywordsValue, True, 'text_lower')
+tagField(IContentUnitDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+
+# user data
+
+class ITagsValue(IAttributeValue):
+	"""
+	Adapter interface to get the tag values from a given object
+	"""
+	
+class IUserDataDocument(IMetadataDocument):
+
+	content_en = ValidText(title='Text to index', required=False)
+	
+	title_en = ValidTextLine(title='Title to index', required=False)
+
+	tags = IndexedIterable(title='The tags',
+						   required=False,
+						   value_type=ValidTextLine(title="The tag"),
+						   min_length=0)
+
+	keywords_en = IndexedIterable(title='The keywords',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
+
+tagField(IUserDataDocument['tags'], True, ITagsValue)
+tagField(IUserDataDocument['title_en'], True, ITitleValue)
+tagField(IUserDataDocument['content_en'], True, IContentValue)
+tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
 class ICoreCatalog(IInjection):
 
