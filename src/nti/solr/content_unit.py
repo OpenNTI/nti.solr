@@ -51,6 +51,9 @@ class _DefaultContentPackageValue(_BasicAttributeValue):
 @interface.implementer(ITitleValue)
 class _DefaultTitleValue(_BasicAttributeValue):
 
+	def lang(self, context=None):
+		return 'en'
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return context.title
@@ -59,9 +62,13 @@ class _DefaultTitleValue(_BasicAttributeValue):
 @interface.implementer(IContentValue)
 class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
-	@classmethod
-	def get_content(cls, context):
+	language = 'en'
+
+	def get_content(self, context):
 		return None
+
+	def lang(self, context=None):
+		return self.language
 
 	def value(self, context=None):
 		context = self.context if context is None else context
@@ -69,12 +76,20 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
 @component.adapter(IContentUnit)
 @interface.implementer(IKeywordsValue)
-class _DefaultContentUnitKeywordsValue(_DefaultContentUnitContentValue):
+class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
+
+	language = 'en'
+	
+	def lang(self, context=None):
+		return self.language
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		text = super(_DefaultContentUnitKeywordsValue, self).value(context)
-		return get_keywords(text, context.lang)
+		adapted = IContentValue(context, None)
+		if adapted is not None:
+			self.language = adapted.lang()
+			return get_keywords(adapted.value(), self.language)
+		return ()
 
 @interface.implementer(IContentUnitDocument)
 class ContentUnitDocument(MetadataDocument):

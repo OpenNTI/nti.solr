@@ -35,6 +35,9 @@ class _BasicAttributeValue(object):
 @component.adapter(IUserGeneratedData)
 class _DefaultUserDataTitleValue(_BasicAttributeValue):
 
+	def lang(self, context):
+		return 'en'
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return getattr(context, 'title', None)
@@ -43,8 +46,12 @@ class _DefaultUserDataTitleValue(_BasicAttributeValue):
 @component.adapter(IUserGeneratedData)
 class _DefaultUserDataContentValue(_BasicAttributeValue):
 
-	@classmethod
-	def get_content(cls, context):
+	language = 'en'
+
+	def lang(self, context=None):
+		return self.language
+
+	def get_content(self, context):
 		return None
 
 	def value(self, context=None):
@@ -53,12 +60,20 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IKeywordsValue)
-class _DefaultUserDataKeywordsValue(_DefaultUserDataContentValue):
+class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
+
+	language = 'en'
+
+	def lang(self, context=None):
+		return self.language
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		text = super(_DefaultUserDataKeywordsValue, self).value(context)
-		return get_keywords(text, context.lang)
+		adapted = IContentValue(context, None)
+		if adapted is not None:
+			self.language = adapted.lang()
+			return get_keywords(adapted.value(), self.language)
+		return ()
 
 @interface.implementer(IUserDataDocument)
 class UserDataDocument(MetadataDocument):

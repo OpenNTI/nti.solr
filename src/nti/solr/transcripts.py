@@ -99,18 +99,28 @@ class _TranscriptContentValue(_BasicAttributeValue):
 			return cls.parse_content(context, raw_content)
 		return None
 
+	def lang(self, context=None):
+		context = self.context if context is None else context
+		return context.lang
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return self.get_content(context)
 
 @component.adapter(INTITranscript)
 @interface.implementer(IKeywordsValue)
-class _TranscriptKeywordsValue(_TranscriptContentValue):
+class _TranscriptKeywordsValue(_BasicAttributeValue):
 
+	def lang(self, context=None):
+		context = self.context if context is None else context
+		return context.lang
+	
 	def value(self, context=None):
 		context = self.context if context is None else context
-		text = super(_TranscriptKeywordsValue, self).value(context)
-		return get_keywords(text, context.lang)
+		adapted = IContentValue(context, None)
+		if adapted is not None:
+			return get_keywords(adapted.value(), self.lang(context))
+		return ()
 
 @interface.implementer(ITranscriptDocument)
 class TranscriptDocument(MetadataDocument):

@@ -40,9 +40,14 @@ class IIDValue(IAttributeValue):
 
 class IStringValue(IAttributeValue):
 	"""
-	Marker interface to get the 'a string' value from a given object
+	Marker interface to get a 'string' value from a given object
 	"""
 	
+	def lang():
+		"""
+		Return the lang code for a 'string' value from a given object
+		"""
+		
 # metadata
 
 class ICreatorValue(IAttributeValue):
@@ -157,6 +162,11 @@ class IKeywordsValue(IAttributeValue):
 	"""
 	Adapter interface to get the keywords value from a given object
 	"""
+
+	def lang():
+		"""
+		Return the lang code for a keywords value from a given object
+		"""
 
 class INTIIDValue(IAttributeValue):
 	"""

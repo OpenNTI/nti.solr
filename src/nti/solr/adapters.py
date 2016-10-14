@@ -20,5 +20,5 @@ class _StringValue(object):
 		self.context = context
 
 	def value(self, context=None):
-		context = context if context else self.context
+		context = self.context if context is None else context
 		return to_unicode(context) if context else None
