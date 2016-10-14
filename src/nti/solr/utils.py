@@ -35,7 +35,7 @@ from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.ntiids.ntiids import find_object_with_ntiid
 
-from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import IStringValue
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
 
@@ -73,7 +73,7 @@ def resolve_content_parts(data):
 	result = []
 	data = [data] if isinstance(data, six.string_types) else data
 	for item in data or ():
-		adapted = IContentValue(item, None)
+		adapted = IStringValue(item, None)
 		if adapted is not None:
 			result.append(adapted.value())
 	result = u' '.join(x for x in result if x is not None)
