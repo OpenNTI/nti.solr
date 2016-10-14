@@ -12,6 +12,8 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
+from nti.coremetadata.interfaces import IModeledContentBody
+
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.schema.fieldproperty import createDirectFieldProperties
@@ -25,6 +27,7 @@ from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
+from nti.solr.utils import resolve_content_parts
 
 class _BasicAttributeValue(object):
 
@@ -52,6 +55,8 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 		return self.language
 
 	def get_content(self, context):
+		if IModeledContentBody.providedBy(context):
+			return resolve_content_parts(context.body)
 		return None
 
 	def value(self, context=None):
