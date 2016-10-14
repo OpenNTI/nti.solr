@@ -35,6 +35,9 @@ class _BasicSOLRExternalizer(InterfaceObjectIO):
 		result = super(_BasicSOLRExternalizer, self).toExternalObject(*args, **kwargs)
 		for name in self._fields_to_remove:
 			result.pop(name, None)
+		for name, value in list(result.items()):
+			if value in ([], (), None):
+				result.pop(name, None)
 		return result
 
 @component.adapter(IEntityDocument)
