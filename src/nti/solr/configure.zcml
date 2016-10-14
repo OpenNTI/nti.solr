@@ -25,6 +25,10 @@
 		modules=".metadata .transcripts .entities .content_unit" />
 		
 	<!-- Adapters -->
+	<adapter factory=".adapters._StringValue"
+			 provides=".interfaces.IStringValue"
+			 for="basestring" />
+
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"

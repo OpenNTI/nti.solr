@@ -38,6 +38,11 @@ class IIDValue(IAttributeValue):
 	Adapter interface to get the id value from a given object
 	"""
 
+class IStringValue(IAttributeValue):
+	"""
+	Marker interface to get the 'a string' value from a given object
+	"""
+	
 # metadata
 
 class ICreatorValue(IAttributeValue):
@@ -143,7 +148,7 @@ tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
 
 # misc
 
-class IContentValue(IAttributeValue):
+class IContentValue(IStringValue):
 	"""
 	Adapter interface to get the content value from a given object
 	"""
@@ -303,7 +308,7 @@ tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_
 
 # content units
 
-class ITitleValue(IAttributeValue):
+class ITitleValue(IStringValue):
 	"""
 	Adapter interface to get the title value from a given object
 	"""

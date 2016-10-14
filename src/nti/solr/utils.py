@@ -17,10 +17,14 @@ from zope.interface.interfaces import IMethod
 
 from zope.intid.interfaces import IIntIds
 
+from nti.common.string import to_unicode
+
 from nti.contentlibrary.indexed_data import get_library_catalog
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+
+from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import extract_key_words
 
@@ -30,6 +34,8 @@ from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.ntiids.ntiids import find_object_with_ntiid
+
+from nti.solr.interfaces import IContentValue
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
 
@@ -57,6 +63,25 @@ def get_item_content_package(item):
 	catalog = get_library_catalog()
 	entries = catalog.get_containers(item)
 	result = get_content_package_from_ntiids(entries) if entries else None
+	return result
+
+def resolve_content_parts(data):
+	result = []
+	data = [data] if isinstance(data, six.string_types) else data
+	for item in data or ():
+		adapted = IContentValue(item, None)
+		if adapted:
+			result.append(adapted.content)
+	result = u' '.join(x for x in result if x is not None)
+	return result
+
+def get_content(text=None, lang="en"):
+	if not text or not isinstance(text, six.string_types):
+		result = u''
+	else:
+		text = to_unicode(text)
+		result = tokenize_content(text, lang)
+		result = ' '.join(result) if result else text
 	return result
 
 def get_keywords(content, lang='en'):
