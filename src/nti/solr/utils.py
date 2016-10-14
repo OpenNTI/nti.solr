@@ -70,8 +70,8 @@ def resolve_content_parts(data):
 	data = [data] if isinstance(data, six.string_types) else data
 	for item in data or ():
 		adapted = IContentValue(item, None)
-		if adapted:
-			result.append(adapted.content)
+		if adapted is not None:
+			result.append(adapted.value())
 	result = u' '.join(x for x in result if x is not None)
 	return result
 
