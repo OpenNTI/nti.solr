@@ -189,6 +189,28 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 	
+	<!-- User Generated Data -->
+	<adapter factory=".user_data._DefaultUserDataTitleValue"
+			 provides=".interfaces.ITitleValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".user_data._DefaultUserDataContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+		 
+	<adapter factory=".user_data._DefaultUserDataKeywordsValue"
+			 provides=".interfaces.IKeywordsValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".user_data._UserDataDocumentCreator"
+			 provides=".interfaces.IUserDataDocument"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
+			 for=".interfaces.IUserDataDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 

@@ -68,5 +68,5 @@ class UserDataDocument(MetadataDocument):
 		
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IUserDataDocument)
-def _UserDocumentCreator(obj, factory=UserDataDocument):
+def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 	return document_creator(obj, factory=factory)

@@ -20,6 +20,7 @@ from nti.externalization.interfaces import StandardExternalFields
 
 from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import IMetadataDocument
+from nti.solr.interfaces import IUserDataDocument
 from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import IContentUnitDocument
 
@@ -55,3 +56,8 @@ class _MetadataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 @interface.implementer(IInternalObjectExternalizer)
 class _TranscriptDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 	_ext_iface_upper_bound = ITranscriptDocument
+
+@component.adapter(IUserDataDocument)
+@interface.implementer(IInternalObjectExternalizer)
+class _UserDataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+	_ext_iface_upper_bound = IUserDataDocument
