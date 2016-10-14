@@ -76,7 +76,7 @@ def resolve_content_parts(data):
 		adapted = IStringValue(item, None)
 		if adapted is not None:
 			result.append(adapted.value())
-	result = u' '.join(x for x in result if x is not None)
+	result = u'\n'.join(x for x in result if x is not None)
 	return result
 
 def get_content(text=None, lang="en"):
