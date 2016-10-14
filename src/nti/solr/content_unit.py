@@ -15,17 +15,15 @@ from zope import interface
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
-from nti.solr.interfaces import ITitleValue
-from nti.solr.interfaces import IContentPackageValue
+from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IContentPackageValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.metadata import MetadataDocument
-
-from nti.schema.fieldproperty import createDirectFieldProperties
-
-from nti.solr.interfaces import IContentValue
-from nti.solr.interfaces import IKeywordsValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -79,12 +77,12 @@ class _DefaultContentUnitKeywordsValue(_DefaultContentUnitContentValue):
 		return get_keywords(text, context.lang)
 
 @interface.implementer(IContentUnitDocument)
-class ContentUnitDocumentDocument(MetadataDocument):
+class ContentUnitDocument(MetadataDocument):
 	createDirectFieldProperties(IContentUnitDocument)
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.contentunitdocument'
 		
 @component.adapter(IContentUnit)
 @interface.implementer(IContentUnitDocument)
-def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocumentDocument):
+def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
 	return document_creator(obj, factory=factory)
