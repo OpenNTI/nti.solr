@@ -41,6 +41,8 @@ from nti.solr.termextract import extract_key_words as term_extract_key_words
 
 from nti.traversal.traversal import find_interface
 
+# assets
+
 def get_content_package_from_ntiids(ntiids):
 	result = None
 	for ntiid in ntiids or ():
@@ -64,6 +66,8 @@ def get_item_content_package(item):
 	entries = catalog.get_containers(item)
 	result = get_content_package_from_ntiids(entries) if entries else None
 	return result
+
+# content
 
 def resolve_content_parts(data):
 	result = []
@@ -89,6 +93,8 @@ def get_keywords(content, lang='en'):
 	if not keywords:
 		keywords = term_extract_key_words(content, lang=lang)
 	return keywords
+
+# documents
 
 def document_creator(obj, factory, provided):
 	result = factory()
