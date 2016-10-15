@@ -45,3 +45,6 @@ class CoreCatalog(object):
         obj = object_finder(doc_id)
         if obj is not None:
             notify(ObjectUnindexedEvent(obj))
+
+    def clear(self):
+        raise NotImplementedError()
