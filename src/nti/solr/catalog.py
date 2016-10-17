@@ -44,9 +44,9 @@ class CoreCatalog(object):
         self.client = pysolr.Solr(url, timeout=config.timeout)
         return self.client
 
-    def add(self, value):
+    def add(self, value, commit=True):
         doc_id = IIDValue(value).value()
-        return self.index_doc(doc_id, value)
+        return self.index_doc(doc_id, value, commit=commit)
 
     def index_doc(self, doc_id, value, commit=True):
         ext_obj = to_external_object(value, name='solr')
@@ -54,19 +54,19 @@ class CoreCatalog(object):
         self.client.add([ext_obj], commit=commit)
         notify(ObjectIndexedEvent(value))
 
-    def remove(self, value):
+    def remove(self, value, commit=True):
         if isinstance(value, int):
             value = str(int)
         elif not isinstance(value, six.string_types):
             value = IIDValue(value).value()
-        return self.unindex_doc(value)
+        return self.unindex_doc(value, commit=commit)
     
-    def unindex_doc(self, doc_id):
-        self.client.delete(id=doc_id)
+    def unindex_doc(self, doc_id, commit=True):
+        self.client.delete(id=doc_id, commit=commit)
         obj = object_finder(doc_id)
         if obj is not None:
             notify(ObjectUnindexedEvent(obj))
         return obj
 
-    def clear(self):
-        self.client.delete(q='*:*')
+    def clear(self, commit=True):
+        self.client.delete(q='*:*', commit=commit)
