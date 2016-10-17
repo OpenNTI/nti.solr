@@ -51,7 +51,8 @@ class CoreCatalog(object):
 
     def index_doc(self, doc_id, value, commit=True):
         ext_obj = to_external_object(value, name='solr')
-        ext_obj['id'] = doc_id # always add
+        if doc_id != ext_obj.get('id'):
+            ext_obj['id'] = doc_id
         self.client.add([ext_obj], commit=commit)
         notify(ObjectIndexedEvent(value))
 
