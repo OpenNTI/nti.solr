@@ -379,6 +379,8 @@ tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lo
 
 class ICoreCatalog(IInjection):
 
+	name = ValidTextLine(title="Core name", required=True)
+
 	def add(value):
 		"""
 		Add a document to the index.

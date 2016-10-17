@@ -25,6 +25,9 @@ from nti.solr.utils import object_finder
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
     
+    def __init__(self, name):
+        self.name = name
+
     def add(self, value):
         doc_id = IIDValue(value).value()
         return self.index_doc(doc_id, value)
