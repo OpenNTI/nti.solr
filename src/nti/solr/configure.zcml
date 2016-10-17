@@ -13,6 +13,8 @@
 	<include package="nti.contentindexing" />
 	<include package="nti.contentprocessing" />
 	
+	<include package="." file="meta.zcml" />
+
 	<!-- Externalization -->
 	<include package="nti.externalization" file="meta.zcml" />
 	<include package="nti.externalization" />
@@ -217,5 +219,18 @@
 
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
+
+	<!-- Subscribers -->
+	<subscriber handler=".subscribers._user_data_added"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+				
+	<subscriber handler=".subscribers._user_data_removed"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+				
+	<subscriber handler=".subscribers._user_data_modified"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
 </configure>
