@@ -406,3 +406,8 @@ class IObjectUnindexedEvent(IObjectEvent):
 @interface.implementer(IObjectUnindexedEvent)
 class ObjectUnindexedEvent(ObjectEvent):
 	pass
+
+# registration
+
+class ISOLR(interface.Interface):
+	URL = ValidTextLine(title="LDAP URL", required=True)
