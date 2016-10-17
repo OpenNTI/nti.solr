@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.contentfragments.interfaces import IPlainTextContentFragment
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -65,7 +66,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 	language = 'en'
 
 	def get_content(self, context):
-		return None
+		return context.read_contents()
 
 	def lang(self, context=None):
 		return self.language
@@ -88,7 +89,10 @@ class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 		adapted = IContentValue(context, None)
 		if adapted is not None:
 			self.language = adapted.lang()
-			return get_keywords(adapted.value(), self.language)
+			content = component.getAdapter(adapted.value(), 
+										   IPlainTextContentFragment, 
+										   name='text')
+			return get_keywords(content, self.language)
 		return ()
 
 @interface.implementer(IContentUnitDocument)
