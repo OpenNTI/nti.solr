@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.externalization.externalization import to_external_object
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -18,6 +17,8 @@ from zope import component
 from zope import interface
 
 from zope.event import notify
+
+from nti.externalization.externalization import to_external_object
 
 from nti.property.property import readproperty
 
