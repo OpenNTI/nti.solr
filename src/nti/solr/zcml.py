@@ -22,7 +22,7 @@ from nti.solr.interfaces import ISOLR
 from nti.solr.model import SOLR
 
 class IRegisterSOLR(interface.Interface):
-	url = fields.TextLine(title="ldap url", required=True)
+	url = fields.TextLine(title="SOLR url", required=True)
 	name = fields.TextLine(title="optional registration name", required=False)
 	
 def registerSOLR(_context, url, name=u''):
