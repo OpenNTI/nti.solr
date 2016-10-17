@@ -17,6 +17,8 @@ from zope.component.zcml import utility
 
 from zope.configuration import fields
 
+from nti.schema.field import Int
+
 from nti.solr.interfaces import ISOLR
 
 from nti.solr.model import SOLR
@@ -24,7 +26,9 @@ from nti.solr.model import SOLR
 class IRegisterSOLR(interface.Interface):
 	url = fields.TextLine(title="SOLR url", required=True)
 	name = fields.TextLine(title="optional registration name", required=False)
+	timeout = Int(title="timeout", required=False)
 	
-def registerSOLR(_context, url, name=u''):
-	factory = functools.partial(SOLR, URL=url)
+def registerSOLR(_context, url, timeout=None, name=u''):
+	assert not timeout or timeout > 0, 'Invalid SOLR timeout'
+	factory = functools.partial(SOLR, URL=url, Timeout=timeout or None)
 	utility(_context, provides=ISOLR, factory=factory, name=name)

@@ -24,3 +24,4 @@ class SOLR(SchemaConfigured):
 	createDirectFieldProperties(ISOLR)
 
 	url = alias('URL')
+	timeout = alias('Timeout')

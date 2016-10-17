@@ -413,3 +413,4 @@ class ObjectUnindexedEvent(ObjectEvent):
 
 class ISOLR(interface.Interface):
 	URL = ValidTextLine(title="LDAP URL", required=True)
+	Timeout = ValidTextLine(title="Timeout", required=False)
