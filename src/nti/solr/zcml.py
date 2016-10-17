@@ -30,5 +30,6 @@ class IRegisterSOLR(interface.Interface):
 	
 def registerSOLR(_context, url, timeout=None, name=u''):
 	assert not timeout or timeout > 0, 'Invalid SOLR timeout'
+	url = url[0:-1] if url.endswith('/') else url
 	factory = functools.partial(SOLR, URL=url, Timeout=timeout or None)
 	utility(_context, provides=ISOLR, factory=factory, name=name)
