@@ -8,6 +8,7 @@
 	<fieldType name="strings" class="solr.StrField" sortMissingLast="true" docValues="true" multiValued="true"/>
 	<fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
+			<charFilter class="solr.HTMLStripCharFilterFactory"/>
 			<charFilter class="solr.PatternReplaceCharFilterFactory"
 						pattern="([a-zA-Z])\1+"
 						replacement="$1$1"/>
