@@ -18,6 +18,7 @@ from nti.async import create_job
 from nti.solr import get_factory
 
 from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import ICoreCatalog 
 
 def datetime_isoformat(now=None):
 	now = now or datetime.now()
@@ -44,3 +45,7 @@ def queue_modified(name, obj):
 
 def queue_remove(name, func, obj):
 	pass
+
+def single_index_job(obj):
+	catalog = ICoreCatalog(obj)
+	return catalog.add(obj)

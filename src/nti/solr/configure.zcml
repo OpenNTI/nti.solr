@@ -34,6 +34,10 @@
 			 provides=".interfaces.IStringValue"
 			 for="basestring" />
 
+	<adapter factory=".adapters._UserDataCatalog"
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"
