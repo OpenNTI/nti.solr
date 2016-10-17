@@ -11,10 +11,16 @@ logger = __import__('logging').getLogger(__name__)
 
 import six
 
+import pysolr
+
+from zope import component
 from zope import interface
 
 from zope.event import notify
 
+from nti.property.property import readproperty
+
+from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog 
 from nti.solr.interfaces import ObjectIndexedEvent
@@ -25,8 +31,17 @@ from nti.solr.utils import object_finder
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
     
-    def __init__(self, name):
+    def __init__(self, name, client=None):
         self.name = name
+        if client is not None:
+            self.client = client
+
+    @readproperty
+    def client(self, name=u''):
+        config = component.getUtility(ISOLR, name=u'')
+        url = config.url + '/%s' % self.name
+        self.client = pysolr.Solr(url, timeout=config.timeout)
+        return self.client
 
     def add(self, value):
         doc_id = IIDValue(value).value()
