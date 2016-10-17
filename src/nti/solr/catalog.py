@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.externalization.externalization import to_external_object
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -37,8 +38,8 @@ class CoreCatalog(object):
             self.client = client
 
     @readproperty
-    def client(self, name=u''):
-        config = component.getUtility(ISOLR, name=u'')
+    def client(self):
+        config = component.getUtility(ISOLR)
         url = config.url + '/%s' % self.name
         self.client = pysolr.Solr(url, timeout=config.timeout)
         return self.client
@@ -47,8 +48,10 @@ class CoreCatalog(object):
         doc_id = IIDValue(value).value()
         return self.index_doc(doc_id, value)
 
-    def index_doc(self, doc_id, value):
-        # TODO: call SOLR
+    def index_doc(self, doc_id, value, commit=True):
+        ext_obj = to_external_object(value, name='solr')
+        ext_obj['id'] = doc_id # always add
+        self.client.add([ext_obj], commit=commit)
         notify(ObjectIndexedEvent(value))
 
     def remove(self, value):
