@@ -59,10 +59,11 @@ class CoreCatalog(object):
         return self.unindex_doc(value)
     
     def unindex_doc(self, doc_id):
-        # TODO: call SOLR
+        self.client.delete(id=doc_id)
         obj = object_finder(doc_id)
         if obj is not None:
             notify(ObjectUnindexedEvent(obj))
+        return obj
 
     def clear(self):
-        raise NotImplementedError()
+        self.client.delete(q='*:*')
