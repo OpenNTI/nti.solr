@@ -411,6 +411,11 @@ class ObjectUnindexedEvent(ObjectEvent):
 
 # registration
 
+class ISOLRQueueFactory(interface.Interface):
+	"""
+	A factory for SOLR processing queues.
+	"""
+
 class ISOLR(interface.Interface):
 	URL = ValidTextLine(title="LDAP URL", required=True)
 	Timeout = ValidTextLine(title="Timeout", required=False)
