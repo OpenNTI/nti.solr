@@ -2,12 +2,36 @@
 <schema name="user-data-schema" version="1.6">
 	<uniqueKey>id</uniqueKey>
 	<!--%%%-field-types-start-%%%-->
-	<fieldType name="tdate" class="solr.TrieDateField" precisionStep="4" positionIncrementGap="0"/>
+	<!-- Date fields -->
 	<fieldType name="date" class="solr.TrieDateField" positionIncrementGap="0" docValues="true" precisionStep="0"/>
+	<fieldType name="dates" class="solr.TrieDateField" docValues="true" precisionStep="0" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="tdate" class="solr.TrieDateField" precisionStep="4" positionIncrementGap="0"/>
+	<fieldType name="tdates" class="solr.TrieDateField" docValues="true" precisionStep="6" positionIncrementGap="0" multiValued="true"/>
+	<!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
 	<fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
 	<fieldType name="strings" class="solr.StrField" sortMissingLast="true" docValues="true" multiValued="true"/>
+	<!-- boolean type: "true" or "false" -->
 	<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
 	<fieldType name="booleans" class="solr.BoolField" sortMissingLast="true" multiValued="true"/>
+	<!-- Default numeric field types -->
+	<fieldType name="int" class="solr.TrieIntField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+	<fieldType name="ints" class="solr.TrieIntField" docValues="true" precisionStep="0" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="float" class="solr.TrieFloatField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+	<fieldType name="floats" class="solr.TrieFloatField" docValues="true" precisionStep="0" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="long" class="solr.TrieLongField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+	<fieldType name="longs" class="solr.TrieLongField" docValues="true" precisionStep="0" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="double" class="solr.TrieDoubleField" docValues="true" precisionStep="0" positionIncrementGap="0"/>
+	<fieldType name="doubles" class="solr.TrieDoubleField" docValues="true" precisionStep="0" positionIncrementGap="0" multiValued="true"/>
+	<!-- Numeric field types that index each value at various levels of precision field types -->
+	<fieldType name="tint" class="solr.TrieIntField" docValues="true" precisionStep="8" positionIncrementGap="0"/>
+	<fieldType name="tints" class="solr.TrieIntField" docValues="true" precisionStep="8" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="tfloat" class="solr.TrieFloatField" docValues="true" precisionStep="8" positionIncrementGap="0"/>
+	<fieldType name="tfloats" class="solr.TrieFloatField" docValues="true" precisionStep="8" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="tlong" class="solr.TrieLongField" docValues="true" precisionStep="8" positionIncrementGap="0"/>
+	<fieldType name="tlongs" class="solr.TrieLongField" docValues="true" precisionStep="8" positionIncrementGap="0" multiValued="true"/>
+	<fieldType name="tdouble" class="solr.TrieDoubleField" docValues="true" precisionStep="8" positionIncrementGap="0"/>
+	<fieldType name="tdoubles" class="solr.TrieDoubleField" docValues="true" precisionStep="8" positionIncrementGap="0" multiValued="true"/>
+	<!-- Text fields -->
 	<fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
 			<charFilter class="solr.HTMLStripCharFilterFactory"/>
