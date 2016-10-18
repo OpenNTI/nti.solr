@@ -24,18 +24,20 @@ from nti.solr import USER_DATA_QUEUE
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
+from nti.solr.common import single_index_job
+from nti.solr.common import single_unindex_job
 
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
 def _user_data_added(obj, event):
-	queue_add(USER_DATA_QUEUE, None, obj)
+	queue_add(USER_DATA_QUEUE, single_index_job, obj)
 
 @component.adapter(IUserGeneratedData, IObjectModifiedEvent)
 def _user_data_modified(obj, event):
 	if IDeletedObjectPlaceholder.providedBy(obj):
-		queue_remove(USER_DATA_QUEUE, obj)
+		queue_remove(USER_DATA_QUEUE, single_unindex_job, obj)
 	else:
-		queue_modified(USER_DATA_QUEUE, obj)
+		queue_modified(USER_DATA_QUEUE, single_index_job, obj)
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
 def _user_data_removed(obj, event):
-	queue_remove(USER_DATA_QUEUE, obj)
+	queue_remove(USER_DATA_QUEUE, single_unindex_job, obj)
