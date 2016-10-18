@@ -2,7 +2,8 @@
 <configure	xmlns="http://namespaces.zope.org/zope"
 			xmlns:i18n="http://namespaces.zope.org/i18n"
 			xmlns:zcml="http://namespaces.zope.org/zcml"
-			xmlns:ext="http://nextthought.com/ntp/ext"
+			xmlns:ext="http://nextthought.com/ntp/ext
+			xmlns:ext="http://nextthought.com/ntp/solr"
 			i18n_domain="zope">
 
 	<include package="zope.component" file="meta.zcml" />
@@ -239,5 +240,19 @@
 	<subscriber handler=".subscribers._user_data_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<!-- Queues -->
+	<configure zcml:condition="have devmode">
+		<configure zcml:condition="not-have testmode">
+			<solr:registerProcessingQueue />
+		</configure>
+
+		<configure zcml:condition="have testmode">
+			<solr:registerImmediateProcessingQueue />
+		</configure>
+	</configure>
+	<configure zcml:condition="not-have devmode">
+		<solr:registerRedisProcessingQueue />
+	</configure>
 
 </configure>
