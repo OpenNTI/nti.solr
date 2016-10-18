@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema name="metadata-schema" version="1.6">
+	<field name="_version_" type="long" indexed="true" stored="true"/>
 	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
 	<field name="taggedTo" type="strings" indexed="true" stored="true"/>
