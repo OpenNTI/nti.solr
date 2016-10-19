@@ -227,8 +227,8 @@
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
 	<!--%%%-suggest-start-%%%-->
-	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
-	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
+	<field name="suggest" multiValued="true" type="text_suggest" indexed="true" stored="false"/>
+	<field name="suggest_ngram" multiValued="true" type="text_suggest_ngram" indexed="true" stored="false"/>
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
