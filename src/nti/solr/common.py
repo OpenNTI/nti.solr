@@ -13,6 +13,8 @@ from datetime import datetime
 
 import isodate
 
+from zope import component
+
 from nti.async import create_job
 
 from nti.solr import get_factory
@@ -56,9 +58,11 @@ def queue_remove(name, func, obj, **kwargs):
 
 def single_index_job(doc_id, **kwargs):
 	obj = object_finder(doc_id)
-	if obj is not None:
-		catalog = ICoreCatalog(obj)
+	catalog = ICoreCatalog(obj, None)
+	if catalog is not None:
 		return catalog.add(obj)
 
-def single_unindex_job(doc_id, **kwargs):
-	pass
+def single_unindex_job(doc_id, core, **kwargs):
+	catalog = component.queryUtility(ICoreCatalog, name=core)
+	if catalog is not None:
+		catalog.unindex_doc(doc_id)

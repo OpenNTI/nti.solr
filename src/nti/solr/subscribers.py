@@ -27,6 +27,8 @@ from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 
+from nti.solr.interfaces import ICoreCatalog
+
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
 def _user_data_added(obj, event):
 	queue_add(USER_DATA_QUEUE, single_index_job, obj)
@@ -40,4 +42,9 @@ def _user_data_modified(obj, event):
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
 def _user_data_removed(obj, event):
-	queue_remove(USER_DATA_QUEUE, single_unindex_job, obj)
+	catalog = ICoreCatalog(obj, None)
+	if catalog is not None:
+		queue_remove(USER_DATA_QUEUE, 
+					 single_unindex_job,
+					 obj=obj,
+					 core=catalog.name)

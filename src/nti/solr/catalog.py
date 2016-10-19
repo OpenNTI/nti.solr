@@ -19,8 +19,11 @@ from zope import interface
 
 from zope.event import notify
 
+from zope.location.interfaces import IContained
+
 from nti.externalization.externalization import to_external_object
 
+from nti.property.property import alias
 from nti.property.property import readproperty
 
 from nti.solr.interfaces import ISOLR
@@ -31,9 +34,12 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 
 from nti.solr.utils import object_finder
 
-@interface.implementer(ICoreCatalog)
+@interface.implementer(ICoreCatalog, IContained)
 class CoreCatalog(object):
     
+    __parent__ = None
+    __name__ = alias('name')
+
     def __init__(self, name, client=None):
         self.name = name
         if client is not None:
@@ -69,9 +75,8 @@ class CoreCatalog(object):
     
     def unindex_doc(self, doc_id, commit=True):
         self.client.delete(id=doc_id, commit=commit)
-        obj = object_finder(doc_id)
-        if obj is not None:
-            notify(ObjectUnindexedEvent(obj, doc_id))
+        obj = object_finder(doc_id) # may be None
+        notify(ObjectUnindexedEvent(obj, doc_id))
         return obj
 
     def clear(self, commit=True):
