@@ -18,6 +18,8 @@ from zope.intid.interfaces import IIntIds
 
 from zope.mimetype.interfaces import IContentTypeAware
 
+from nti.common.string import to_unicode
+
 from nti.coremetadata.interfaces import ICreatedTime
 from nti.coremetadata.interfaces import ILastModified
 
@@ -79,7 +81,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 		try:
 			initds = component.getUtility(IIntIds)
 			result = initds.queryId(context)
-			return unicode(result) if result is not None else None
+			return to_unicode(result) if result is not None else None
 		except (LookupError, KeyError):
 			pass
 		return None
@@ -147,7 +149,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 				and not ICommentPost.providedBy(context):
 				return None
 			else:
-				return unicode(cid)
+				return to_unicode(cid)
 		return None
 
 @interface.implementer(IInReplyToValue)

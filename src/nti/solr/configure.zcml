@@ -187,6 +187,10 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
+ 	<adapter factory=".assets._DefaultContainerIdValue"
+			 provides=".interfaces.IContainerIdValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
 	<adapter factory=".assets._DefaultAssetKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />

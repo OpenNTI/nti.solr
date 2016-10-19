@@ -12,6 +12,10 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
+from nti.contentlibrary.interfaces import IContentUnit
+
+from nti.contenttypes.courses.interfaces import ICourseInstance
+
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.schema.fieldproperty import createDirectFieldProperties
@@ -21,11 +25,14 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IAssetDocument
+from nti.solr.interfaces import IContainerIdValue
 
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
+
+from nti.traversal.traversal import find_interface
 
 class _BasicAttributeValue(object):
 
@@ -57,6 +64,17 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 			  or getattr(context, 'creator', None)
 		result = getattr( result, 'username', result )
 		return result and result.lower()
+
+@component.adapter(IPresentationAsset)
+@interface.implementer(IContainerIdValue)
+class _DefaultContainerIdValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		container = find_interface(context, IContentUnit, strict=False)
+		if container is None:
+			container = find_interface(context, ICourseInstance, strict=False)
+		return container.ntiid if container is not None else None
 
 @interface.implementer(IContentValue)
 @component.adapter(IPresentationAsset)
