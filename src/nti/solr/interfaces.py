@@ -396,18 +396,24 @@ class ICoreCatalog(IInjection):
 		"""
 
 class IObjectIndexedEvent(IObjectEvent):
-	pass
+	doc_id = ValidTextLine(title='Document id')
 
 @interface.implementer(IObjectIndexedEvent)
 class ObjectIndexedEvent(ObjectEvent):
-	pass
+	
+	def __init__(self, obj, doc_id=None):
+		ObjectEvent.__init__(self, obj)
+		self.doc_id = doc_id
 
 class IObjectUnindexedEvent(IObjectEvent):
-	pass
+	doc_id = ValidTextLine(title='Document id')
 
 @interface.implementer(IObjectUnindexedEvent)
 class ObjectUnindexedEvent(ObjectEvent):
-	pass
+
+	def __init__(self, obj, doc_id=None):
+		ObjectEvent.__init__(self, obj)
+		self.doc_id = doc_id
 
 # registration
 

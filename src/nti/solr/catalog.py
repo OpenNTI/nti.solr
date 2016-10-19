@@ -10,6 +10,7 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import six
+from collections import Mapping
 
 import pysolr
 
@@ -50,11 +51,14 @@ class CoreCatalog(object):
         return self.index_doc(doc_id, value, commit=commit)
 
     def index_doc(self, doc_id, value, commit=True):
-        ext_obj = to_external_object(value, name='solr')
+        if isinstance(value, Mapping):
+            ext_obj = value
+        else:
+            ext_obj = to_external_object(value, name='solr')
         if doc_id != ext_obj.get('id'):
             ext_obj['id'] = doc_id
         self.client.add([ext_obj], commit=commit)
-        notify(ObjectIndexedEvent(value))
+        notify(ObjectIndexedEvent(value, doc_id))
 
     def remove(self, value, commit=True):
         if isinstance(value, int):
@@ -67,7 +71,7 @@ class CoreCatalog(object):
         self.client.delete(id=doc_id, commit=commit)
         obj = object_finder(doc_id)
         if obj is not None:
-            notify(ObjectUnindexedEvent(obj))
+            notify(ObjectUnindexedEvent(obj, doc_id))
         return obj
 
     def clear(self, commit=True):
