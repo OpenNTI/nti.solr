@@ -95,7 +95,7 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 			creator = context.creator
 			creator = getattr(creator, 'username', creator)
 			if isinstance(creator, six.string_types):
-				return creator.lower()
+				return to_unicode(creator.lower())
 		except (AttributeError, TypeError):
 			pass
 		return None
@@ -105,7 +105,8 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return getattr(context, 'ntiid', None) or getattr(context, 'NTIID', None)
+		result = getattr(context, 'ntiid', None) or getattr(context, 'NTIID', None)
+		return to_unicode(result) if result else None
 
 @interface.implementer(IMimeTypeValue)
 class _DefaultMimeTypeValue(_BasicAttributeValue):
@@ -113,7 +114,8 @@ class _DefaultMimeTypeValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		context = IContentTypeAware(context, context)
-		return getattr(context, 'mimeType', None) or getattr(context, 'mime_type', None)
+		result = getattr(context, 'mimeType', None) or getattr(context, 'mime_type', None)
+		return to_unicode(result) if result else None
 
 @interface.implementer(ICreatedTimeValue)
 class _DefaultCreatedTimeValue(_BasicAttributeValue):
@@ -158,7 +160,7 @@ class _DefaultInReplyToValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = getattr(context, "inReplyTo", None)
-		return result.lower() if result else None
+		return to_unicode(result.lower()) if result else None
 
 @interface.implementer(ISharedWithValue)
 class _DefaultSharedWithValue(_BasicAttributeValue):
@@ -167,7 +169,7 @@ class _DefaultSharedWithValue(_BasicAttributeValue):
 		context = self.context if context is None else context
 		sharedWith = getattr(context, "sharedWith", None)
 		if sharedWith is not None:
-			sharedWith = tuple(x.lower() for x in sharedWith)
+			sharedWith = tuple(to_unicode(x.lower()) for x in sharedWith)
 		return sharedWith
 
 @interface.implementer(ITaggedToValue)
