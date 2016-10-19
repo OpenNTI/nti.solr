@@ -13,31 +13,28 @@
 
 	<include package="nti.contentindexing" />
 	<include package="nti.contentprocessing" />
-	
+
 	<include package="." file="meta.zcml" />
 
 	<!-- Job runner -->
 	<include package="nti.async" />
-	
+
 	<!-- Externalization -->
 	<include package="nti.externalization" file="meta.zcml" />
 	<include package="nti.externalization" />
 
 	<ext:registerAutoPackageIO
-		root_interfaces=".interfaces.IEntityDocument 
+		root_interfaces=".interfaces.IAssetDocument
+						 .interfaces.IEntityDocument
 						 .interfaces.IMetadataDocument
 						 .interfaces.ITranscriptDocument
 						 .interfaces.IContentUnitDocument"
-		modules=".metadata .transcripts .entities .content_unit" />
-		
+		modules=".metadata .transcripts .entities .content_unit .assets" />
+
 	<!-- Adapters -->
 	<adapter factory=".adapters._StringValue"
 			 provides=".interfaces.IStringValue"
 			 for="basestring" />
-
-	<adapter factory=".adapters._UserDataCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultCreatorValue"
@@ -47,7 +44,7 @@
 	<adapter factory=".metadata._DefaultIDValue"
 			 provides=".interfaces.IIDValue"
 			 for="*" />
- 
+
  	<adapter factory=".metadata._DefaultMimeTypeValue"
 			 provides=".interfaces.IMimeTypeValue"
 			 for="*" />
@@ -101,11 +98,11 @@
 	<adapter factory=".entities._DefaultUsernameValue"
 			 provides=".interfaces.IUsernameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-			 
+
 	<adapter factory=".entities._DefaultEmailValue"
 			 provides=".interfaces.IEmailValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-			 
+
 	<adapter factory=".entities._DefaultAliasValue"
 			 provides=".interfaces.IAliasValue"
 			 for="nti.dataserver.interfaces.IEntity" />
@@ -113,15 +110,15 @@
 	<adapter factory=".entities._DefaultRealnameValue"
 			 provides=".interfaces.IRealnameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-		
+
 	<adapter factory=".entities._DefaultProfessionalTitleValue"
 			 provides=".interfaces.IProfessionalTitleValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-	
+
 	<adapter factory=".entities._DefaultProfessionalCompanyValue"
 			 provides=".interfaces.IProfessionalCompanyValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-			
+
 	<adapter factory=".entities._DefaultProfessionalDescriptionValue"
 			 provides=".interfaces.IProfessionalDescriptionValue"
 			 for="nti.dataserver.interfaces.IEntity" />
@@ -141,11 +138,11 @@
 	<adapter factory=".entities._DefaultSocialURLValue"
 			 provides=".interfaces.ISocialURLValue"
 			 for="nti.dataserver.interfaces.IEntity" />
-	
+
 	<adapter factory=".entities._EntityDocumentCreator"
 			 provides=".interfaces.IEntityDocument"
 			 for="nti.dataserver.interfaces.IEntity" />
-			 
+
 	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
 			 for=".interfaces.IEntityDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
@@ -163,17 +160,43 @@
 	<adapter factory=".content_unit._DefaultContentUnitContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
-		 
+
 	<adapter factory=".content_unit._DefaultContentUnitKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
-			 
+
 	<adapter factory=".content_unit._ContentUnitDocumentCreator"
 			 provides=".interfaces.IContentUnitDocument"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
 	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
 			 for=".interfaces.IContentUnitDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
+	<!-- Assets -->
+	<adapter factory=".assets._DefaultAssetTitleValue"
+			 provides=".interfaces.ITitleValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
+	<adapter factory=".assets._DefaultAssetCreatorValue"
+			 provides=".interfaces.ICreatorValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
+	<adapter factory=".assets._DefaultAssetContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
+	<adapter factory=".assets._DefaultAssetKeywordsValue"
+			 provides=".interfaces.IKeywordsValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
+	<adapter factory=".assets._AssetDocumentCreator"
+			 provides=".interfaces.IAssetDocument"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
+	<adapter factory=".externalization._AssetDocumentSOLRExternalizer"
+			 for=".interfaces.IAssetDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
@@ -189,7 +212,7 @@
 	<adapter factory=".transcripts._TranscriptContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-		 
+
 	<adapter factory=".transcripts._TranscriptKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
@@ -202,7 +225,7 @@
 			 for=".interfaces.ITranscriptDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
-	
+
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
@@ -211,15 +234,11 @@
 	<adapter factory=".userdata._DefaultUserDataContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-		 
+
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
-	<adapter factory=".userdata._UserDataDocumentCreator"
-			 provides=".interfaces.IUserDataDocument"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-			 
 	<adapter factory=".userdata._UserDataDocumentCreator"
 			 provides=".interfaces.IUserDataDocument"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
@@ -236,17 +255,20 @@
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
-	<utility factory=".catalog.UserDataCatalog" name='userdata' />
+	<!--
+	<utility factory=".catalog.UserDataCatalog"
+			 name='userdata' />
+	-->
 
 	<!-- Subscribers -->
 	<subscriber handler=".subscribers._userdata_added"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
-				
+
 	<subscriber handler=".subscribers._userdata_removed"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdRemovedEvent"/>
-				
+
 	<subscriber handler=".subscribers._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>

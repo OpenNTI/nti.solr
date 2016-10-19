@@ -42,12 +42,12 @@ class IStringValue(IAttributeValue):
 	"""
 	Marker interface to get a 'string' value from a given object
 	"""
-	
+
 	def lang():
 		"""
 		Return the lang code for a 'string' value from a given object
 		"""
-		
+
 # metadata
 
 class ICreatorValue(IAttributeValue):
@@ -204,7 +204,7 @@ class IProfessionalCompanyValue(IAttributeValue):
 	"""
 	Adapter interface to get the professional companies from a given entity object
 	"""
-	
+
 class IProfessionalDescriptionValue(IAttributeValue):
 	"""
 	Adapter interface to get the professional descriptions from a given entity object
@@ -219,7 +219,7 @@ class IEducationDegreeValue(IAttributeValue):
 	"""
 	Adapter interface to get the education degrees from a given entity object
 	"""
-	
+
 class IEducationDescriptionValue(IAttributeValue):
 	"""
 	Adapter interface to get the education descriptions from a given entity object
@@ -238,11 +238,11 @@ class IEntityDocument(IMetadataDocument):
 							   min_length=1)
 
 	alias = ValidTextLine(title='The alias', required=False)
-	
+
 	email = ValidTextLine(title='The username', required=False)
-		
+
 	realname = ValidTextLine(title='The realname', required=False)
-	
+
 	education_school = IndexedIterable(title='The school names',
 							   		   required=False,
 							   		   value_type=ValidTextLine(title="The school name"),
@@ -252,7 +252,7 @@ class IEntityDocument(IMetadataDocument):
 							   		   required=False,
 							   		   value_type=ValidTextLine(title="The school degree"),
 							   		   min_length=0)
-	
+
 	education_description = IndexedIterable(title='The education descriptions',
 							   			    required=False,
 							   			    value_type=ValidTextLine(title="The description"),
@@ -262,8 +262,8 @@ class IEntityDocument(IMetadataDocument):
 							   			   	  required=False,
 							   			   	  value_type=ValidTextLine(title="The description"),
 							   			      min_length=0)
-	
-	
+
+
 	professional_title = IndexedIterable(title='The company names',
 							   			 required=False,
 							   			 value_type=ValidTextLine(title="The company name"),
@@ -273,12 +273,12 @@ class IEntityDocument(IMetadataDocument):
 							   			   required=False,
 							   			   value_type=ValidTextLine(title="The company name"),
 							   			   min_length=0)
-	
+
 	professional_description = IndexedIterable(title='The professional company descriptions',
 							   			   	  required=False,
 							   			   	  value_type=ValidTextLine(title="The description"),
 							   			      min_length=0)
-	
+
 	social_url = IndexedIterable(title='The social URLS',
 							   	 required=False,
 							   	 value_type=ValidTextLine(title="The url"),
@@ -304,7 +304,7 @@ class IMediaNTIIDValue(IAttributeValue):
 class ITranscriptDocument(IMetadataDocument):
 
 	content_en = ValidText(title='Text to index', required=False)
-	
+
 	media = ValidText(title='The media ntiid', required=False)
 
 	keywords_en = IndexedIterable(title='The keywords',
@@ -355,11 +355,11 @@ class ITagsValue(IAttributeValue):
 	"""
 	Adapter interface to get the tag values from a given object
 	"""
-	
+
 class IUserDataDocument(IMetadataDocument):
 
 	content_en = ValidText(title='Text to index', required=False)
-	
+
 	title_en = ValidTextLine(title='Title to index', required=False)
 
 	tags = IndexedIterable(title='The tags',
@@ -377,6 +377,24 @@ tagField(IUserDataDocument['title_en'], True, ITitleValue)
 tagField(IUserDataDocument['content_en'], True, IContentValue)
 tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
+class IAssetDocument(IMetadataDocument):
+
+	ntiid = ValidTextLine(title='Asset ntiid', required=False)
+
+	title_en = ValidTextLine(title='Title to index', required=False)
+
+	content_en = ValidText(title='Text to index', required=False)
+
+	keywords_en = IndexedIterable(title='The keywords',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
+
+tagField(IAssetDocument['ntiid'], True, INTIIDValue)
+tagField(IAssetDocument['title_en'], True, ITitleValue)
+tagField(IAssetDocument['content_en'], True, IContentValue)
+tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+
 class ICoreCatalog(IInjection):
 
 	name = ValidTextLine(title="Core name", required=True)
@@ -391,7 +409,7 @@ class ICoreCatalog(IInjection):
 	def remove(value):
 		"""
 		Remove a document from the index
-		
+
 		@param value: The object/id to remove
 		"""
 

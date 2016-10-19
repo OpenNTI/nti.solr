@@ -18,6 +18,7 @@ from nti.externalization.interfaces import IInternalObjectExternalizer
 
 from nti.externalization.interfaces import StandardExternalFields
 
+from nti.solr.interfaces import IAssetDocument
 from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import IUserDataDocument
@@ -49,7 +50,7 @@ class _EntityDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 @interface.implementer(IInternalObjectExternalizer)
 class _ContentUnitDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 	_ext_iface_upper_bound = IContentUnitDocument
-	
+
 @component.adapter(IMetadataDocument)
 @interface.implementer(IInternalObjectExternalizer)
 class _MetadataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
@@ -64,3 +65,8 @@ class _TranscriptDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 @interface.implementer(IInternalObjectExternalizer)
 class _UserDataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
 	_ext_iface_upper_bound = IUserDataDocument
+
+@component.adapter(IAssetDocument)
+@interface.implementer(IInternalObjectExternalizer)
+class _AssetDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+	_ext_iface_upper_bound = IAssetDocument
