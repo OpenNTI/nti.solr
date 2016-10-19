@@ -10,7 +10,6 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import six
-from collections import Mapping
 
 import pysolr
 
@@ -28,7 +27,8 @@ from nti.property.property import readproperty
 
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
-from nti.solr.interfaces import ICoreCatalog 
+from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
 
@@ -36,52 +36,50 @@ from nti.solr.utils import object_finder
 
 @interface.implementer(ICoreCatalog, IContained)
 class CoreCatalog(object):
-    
-    __parent__ = None
-    __name__ = alias('name')
 
-    def __init__(self, name, client=None):
-        self.name = name
-        if client is not None:
-            self.client = client
+	__parent__ = None
+	__name__ = alias('name')
 
-    @readproperty
-    def client(self):
-        config = component.getUtility(ISOLR)
-        url = config.url + '/%s' % self.name
-        return pysolr.Solr(url, timeout=config.timeout)
+	def __init__(self, name, client=None):
+		self.name = name
+		if client is not None:
+			self.client = client
 
-    def add(self, value, commit=True):
-        doc_id = IIDValue(value).value()
-        return self.index_doc(doc_id, value, commit=commit)
+	@readproperty
+	def client(self):
+		config = component.getUtility(ISOLR)
+		url = config.url + '/%s' % self.name
+		return pysolr.Solr(url, timeout=config.timeout)
 
-    def index_doc(self, doc_id, value, commit=True):
-        if isinstance(value, Mapping):
-            ext_obj = value
-        else:
-            ext_obj = to_external_object(value, name='solr')
-        if doc_id != ext_obj.get('id'):
-            ext_obj['id'] = doc_id
-        self.client.add([ext_obj], commit=commit)
-        notify(ObjectIndexedEvent(value, doc_id))
+	def add(self, value, commit=True):
+		doc_id = IIDValue(value).value()
+		return self.index_doc(doc_id, value, commit=commit)
 
-    def remove(self, value, commit=True):
-        if isinstance(value, int):
-            value = str(int)
-        elif not isinstance(value, six.string_types):
-            value = IIDValue(value).value()
-        return self.unindex_doc(value, commit=commit)
-    
-    def unindex_doc(self, doc_id, commit=True):
-        self.client.delete(id=doc_id, commit=commit)
-        obj = object_finder(doc_id) # may be None
-        notify(ObjectUnindexedEvent(obj, doc_id))
-        return obj
+	def index_doc(self, doc_id, value, commit=True):
+		document = ICoreDocument(value, value)
+		ext_obj = to_external_object(document, name='solr')
+		if doc_id != ext_obj.get('id'):
+			ext_obj['id'] = doc_id
+		self.client.add([ext_obj], commit=commit)
+		notify(ObjectIndexedEvent(value, doc_id))
 
-    def clear(self, commit=True):
-        self.client.delete(q='*:*', commit=commit)
+	def remove(self, value, commit=True):
+		if isinstance(value, int):
+			value = str(int)
+		elif not isinstance(value, six.string_types):
+			value = IIDValue(value).value()
+		return self.unindex_doc(value, commit=commit)
+
+	def unindex_doc(self, doc_id, commit=True):
+		self.client.delete(id=doc_id, commit=commit)
+		obj = object_finder(doc_id)  # may be None
+		notify(ObjectUnindexedEvent(obj, doc_id))
+		return obj
+
+	def clear(self, commit=True):
+		self.client.delete(q='*:*', commit=commit)
 
 class UserDataCatalog(CoreCatalog):
-    
-    def __init__(self, client=None):
-        CoreCatalog.__init__(self, 'userdata', client)
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, 'userdata', client)
