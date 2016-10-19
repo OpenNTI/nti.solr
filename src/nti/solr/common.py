@@ -65,7 +65,7 @@ def single_index_job(doc_id, site=None, **kwargs):
 	obj = object_finder(doc_id)
 	catalog = ICoreCatalog(obj, None)
 	if catalog is not None:
-		return catalog.add(obj)
+		return catalog.index_doc(doc_id, obj)
 
 def single_unindex_job(doc_id, core, site=None, **kwargs):
 	catalog = component.queryUtility(ICoreCatalog, name=core)
