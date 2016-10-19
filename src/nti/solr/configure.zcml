@@ -273,18 +273,18 @@
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
-	<!-- Queues -->
+	<solr:registerImmediateProcessingQueue />
+		
+	<!-- Queues 
 	<configure zcml:condition="have devmode">
 		<configure zcml:condition="not-have testmode">
 			<solr:registerProcessingQueue />
 		</configure>
 
-		<configure zcml:condition="have testmode">
-			<solr:registerImmediateProcessingQueue />
-		</configure>
+		
 	</configure>
 	<configure zcml:condition="not-have devmode">
 		<solr:registerRedisProcessingQueue />
 	</configure>
-
+	-->
 </configure>
