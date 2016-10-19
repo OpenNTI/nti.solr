@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 entry_points = {
     'console_scripts': [
+        "nti_solr_processor = nti.solr.scripts.constructor:main",
     ],
 }
 
