@@ -255,7 +255,9 @@
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
-	<utility factory=".catalog.UserDataCatalog" name='userdata' />
+	<utility factory=".catalog.UserDataCatalog" 
+			 provides=".interfaces.ICoreCatalog"
+			 name='userdata' />
 
 	<!-- Subscribers -->
 	<subscriber handler=".subscribers._userdata_added"
@@ -270,6 +272,10 @@
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 		
+	<configure zcml:condition="have devmode">
+		<solr:registerSOLR url="http://localhost:8983/solr" />
+	</configure>
+
 	<!-- Queues -->
 	<configure zcml:condition="have devmode">
 		<configure zcml:condition="not-have testmode">
