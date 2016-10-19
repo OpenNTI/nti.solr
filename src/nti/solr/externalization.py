@@ -18,6 +18,7 @@ from nti.externalization.interfaces import IInternalObjectExternalizer
 
 from nti.externalization.interfaces import StandardExternalFields
 
+from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import IAssetDocument
 from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import IMetadataDocument
@@ -28,12 +29,15 @@ from nti.solr.interfaces import IContentUnitDocument
 ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 
 @interface.implementer(IInternalObjectExternalizer)
-class _BasicSOLRExternalizer(InterfaceObjectIO):
+class _CoreDocumentExternalizer(InterfaceObjectIO):
+
+	_ext_iface_upper_bound = ICoreDocument
 
 	_fields_to_remove = ALL_EXTERNAL_FIELDS
 
 	def toExternalObject(self, *args, **kwargs):
-		result = super(_BasicSOLRExternalizer, self).toExternalObject(*args, **kwargs)
+		kwargs['decorate'] = False
+		result = super(_CoreDocumentExternalizer, self).toExternalObject(*args, **kwargs)
 		for name in self._fields_to_remove:
 			result.pop(name, None)
 		for name, value in list(result.items()):
@@ -43,30 +47,30 @@ class _BasicSOLRExternalizer(InterfaceObjectIO):
 
 @component.adapter(IEntityDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _EntityDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _EntityDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = IEntityDocument
 
 @component.adapter(IContentUnitDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _ContentUnitDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _ContentUnitDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = IContentUnitDocument
 
 @component.adapter(IMetadataDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _MetadataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _MetadataDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = IMetadataDocument
 
 @component.adapter(ITranscriptDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _TranscriptDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _TranscriptDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = ITranscriptDocument
 
 @component.adapter(IUserDataDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _UserDataDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _UserDataDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = IUserDataDocument
 
 @component.adapter(IAssetDocument)
 @interface.implementer(IInternalObjectExternalizer)
-class _AssetDocumentSOLRExternalizer(_BasicSOLRExternalizer):
+class _AssetDocumentSOLRExternalizer(_CoreDocumentExternalizer):
 	_ext_iface_upper_bound = IAssetDocument
