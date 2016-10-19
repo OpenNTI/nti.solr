@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema name="user-data-schema" version="1.6">
+<schema name="userdata-schema" version="1.6">
 	<uniqueKey>id</uniqueKey>
 	<!--%%%-field-types-start-%%%-->
 	<!-- Date fields -->
