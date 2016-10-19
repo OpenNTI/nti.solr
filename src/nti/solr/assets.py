@@ -118,4 +118,4 @@ class AssetDocument(MetadataDocument):
 @component.adapter(IPresentationAsset)
 @interface.implementer(IAssetDocument)
 def _AssetDocumentCreator(obj, factory=AssetDocument):
-	return document_creator(obj, factory=factory)
+	return document_creator(obj, factory=factory, provided=IAssetDocument)

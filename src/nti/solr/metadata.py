@@ -250,4 +250,4 @@ class MetadataDocument(SchemaConfigured):
 
 @interface.implementer(IMetadataDocument)
 def _MetadataDocumentCreator(obj, factory=MetadataDocument):
-	return document_creator(obj, factory=factory)
+	return document_creator(obj, factory=factory, provided=IMetadataDocument)
