@@ -18,7 +18,10 @@ from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import USERDATA_CATALOG
+
 from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import ICoreCatalog 
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IUserDataDocument
@@ -90,3 +93,8 @@ class UserDataDocument(MetadataDocument):
 @interface.implementer(IUserDataDocument)
 def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 	return document_creator(obj, factory=factory)
+
+@interface.implementer(ICoreCatalog)
+@component.adapter(IUserGeneratedData)
+def _UserDataCatalog(obj):
+	return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)

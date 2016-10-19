@@ -49,8 +49,7 @@ class CoreCatalog(object):
     def client(self):
         config = component.getUtility(ISOLR)
         url = config.url + '/%s' % self.name
-        self.client = pysolr.Solr(url, timeout=config.timeout)
-        return self.client
+        return pysolr.Solr(url, timeout=config.timeout)
 
     def add(self, value, commit=True):
         doc_id = IIDValue(value).value()
@@ -81,3 +80,8 @@ class CoreCatalog(object):
 
     def clear(self, commit=True):
         self.client.delete(q='*:*', commit=commit)
+
+class UserDataCatalog(CoreCatalog):
+    
+    def __init__(self, client=None):
+        CoreCatalog.__init__(self, 'userdata', client)

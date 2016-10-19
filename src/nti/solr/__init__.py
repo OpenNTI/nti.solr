@@ -15,9 +15,11 @@ from nti.solr.interfaces import ISOLRQueueFactory
 
 QUEUE_NAME = '++etc++solr++queue'
 
-USER_DATA_QUEUE = QUEUE_NAME + '++userdata'
+USERDATA_QUEUE = QUEUE_NAME + '++userdata'
 
-QUEUE_NAMES = (USER_DATA_QUEUE,)
-               
+QUEUE_NAMES = (USERDATA_QUEUE,)
+  
+USERDATA_CATALOG = 'userdata'
+     
 def get_factory():
     return component.getUtility(ISOLRQueueFactory)

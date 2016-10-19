@@ -204,20 +204,28 @@
 			 name="solr" />
 	
 	<!-- User Generated Data -->
-	<adapter factory=".user_data._DefaultUserDataTitleValue"
+	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
-	<adapter factory=".user_data._DefaultUserDataContentValue"
+	<adapter factory=".userdata._DefaultUserDataContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 		 
-	<adapter factory=".user_data._DefaultUserDataKeywordsValue"
+	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
-	<adapter factory=".user_data._UserDataDocumentCreator"
+	<adapter factory=".userdata._UserDataDocumentCreator"
 			 provides=".interfaces.IUserDataDocument"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+			 
+	<adapter factory=".userdata._UserDataDocumentCreator"
+			 provides=".interfaces.IUserDataDocument"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".userdata._UserDataCatalog"
+			 provides=".interfaces.ICoreCatalog"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
 	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
@@ -228,16 +236,18 @@
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
+	<utility factory=".catalog.UserDataCatalog" name='userdata' />
+
 	<!-- Subscribers -->
-	<subscriber handler=".subscribers._user_data_added"
+	<subscriber handler=".subscribers._userdata_added"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
 				
-	<subscriber handler=".subscribers._user_data_removed"
+	<subscriber handler=".subscribers._userdata_removed"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdRemovedEvent"/>
 				
-	<subscriber handler=".subscribers._user_data_modified"
+	<subscriber handler=".subscribers._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
