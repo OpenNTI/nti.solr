@@ -255,10 +255,7 @@
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
-	<!--
-	<utility factory=".catalog.UserDataCatalog"
-			 name='userdata' />
-	-->
+	<utility factory=".catalog.UserDataCatalog" name='userdata' />
 
 	<!-- Subscribers -->
 	<subscriber handler=".subscribers._userdata_added"
