@@ -35,7 +35,10 @@ from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.ntiids.ntiids import find_object_with_ntiid
 
+from nti.schema.interfaces import find_most_derived_interface
+
 from nti.solr.interfaces import IStringValue
+from nti.solr.interfaces import ICoreDocument
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
 
@@ -96,8 +99,10 @@ def get_keywords(content, lang='en'):
 
 # documents
 
-def document_creator(obj, factory, provided):
+def document_creator(obj, factory, provided=None):
 	result = factory()
+	if provided is None:
+		provided = find_most_derived_interface(result, ICoreDocument)
 	for k, v in provided.namesAndDescriptions(all=True):
 		__traceback_info__ = k, v
 		if IMethod.providedBy(v):
