@@ -217,6 +217,7 @@
 	<field name="_version_" type="long" indexed="true" stored="true"/>
 	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
+	<field name="containerId" type="string" indexed="true" stored="true"/>
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
 	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
