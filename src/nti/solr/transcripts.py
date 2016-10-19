@@ -131,4 +131,4 @@ class TranscriptDocument(MetadataDocument):
 @component.adapter(INTITranscript)
 @interface.implementer(ITranscriptDocument)
 def _TranscriptDocumentCreator(obj, factory=TranscriptDocument):
-	return document_creator(obj, factory=factory)
+	return document_creator(obj, factory=factory, provided=ITranscriptDocument)

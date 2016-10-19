@@ -92,7 +92,7 @@ class UserDataDocument(MetadataDocument):
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IUserDataDocument)
 def _UserDataDocumentCreator(obj, factory=UserDataDocument):
-	return document_creator(obj, factory=factory)
+	return document_creator(obj, factory=factory, provided=IUserDataDocument)
 
 @interface.implementer(ICoreCatalog)
 @component.adapter(IUserGeneratedData)
