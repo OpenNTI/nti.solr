@@ -14,7 +14,8 @@ from zope import interface
 
 from nti.dataserver.interfaces import IEntity
 
-from nti.dataserver.users.interfaces import IUserProfile
+from nti.dataserver.users.interfaces import IUserProfile 
+from nti.dataserver.users.interfaces import IAboutProfile 
 from nti.dataserver.users.interfaces import IFriendlyNamed
 from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
@@ -22,6 +23,7 @@ from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr.interfaces import IAboutValue
 from nti.solr.interfaces import IAliasValue
 from nti.solr.interfaces import IEmailValue
 from nti.solr.interfaces import IRealnameValue
@@ -38,6 +40,7 @@ from nti.solr.interfaces import IProfessionalDescriptionValue
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
+from nti.solr.utils import resolve_content_parts
 
 class _BasicAttributeValue(object):
 
@@ -147,6 +150,17 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
 			result.discard(None)
 			return tuple(result)
 		return ()
+
+@component.adapter(IEntity)
+@interface.implementer(IAboutValue)
+class _DefaultAboutValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		profile = IAboutProfile(context, None)
+		if profile is not None:
+			return resolve_content_parts(profile.about)
+		return None
 
 @interface.implementer(IEntityDocument)
 class EntityDocument(MetadataDocument):

@@ -139,6 +139,10 @@
 			 provides=".interfaces.ISocialURLValue"
 			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".entities._DefaultAboutValue"
+			 provides=".interfaces.IAboutValue"
+			 for="nti.dataserver.interfaces.IEntity" />
+
 	<adapter factory=".entities._EntityDocumentCreator"
 			 provides=".interfaces.IEntityDocument"
 			 for="nti.dataserver.interfaces.IEntity" />

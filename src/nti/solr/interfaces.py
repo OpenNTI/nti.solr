@@ -230,6 +230,11 @@ class ISocialURLValue(IAttributeValue):
 	Adapter interface to get the social URLs from a given entity object
 	"""
 
+class IAboutValue(IAttributeValue):
+	"""
+	Adapter interface to get the about value from a given entity object
+	"""
+
 class IEntityDocument(IMetadataDocument):
 
 	username = IndexedIterable(title='The username identifiers',
@@ -242,6 +247,8 @@ class IEntityDocument(IMetadataDocument):
 	email = ValidTextLine(title='The username', required=False)
 
 	realname = ValidTextLine(title='The realname', required=False)
+	
+	about_en = ValidText(title='The about statement', required=False)
 
 	education_school = IndexedIterable(title='The school names',
 							   		   required=False,
@@ -286,6 +293,7 @@ class IEntityDocument(IMetadataDocument):
 
 tagField(IEntityDocument['email'], True, IEmailValue)
 tagField(IEntityDocument['alias'], True, IAliasValue)
+tagField(IEntityDocument['about_en'], False, IAboutValue)
 tagField(IEntityDocument['realname'], True, IRealnameValue)
 tagField(IEntityDocument['username'], True, IUsernameValue, True)
 tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)

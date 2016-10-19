@@ -225,6 +225,8 @@
 	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
 	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
 	<field name="email" type="string" indexed="true" required="true" stored="true"/>
+	<!-- about field -->
+	<dynamicField name="*_en" type="text_en" indexed="true" stored="false" />
 	<!-- Each prof/educational entry may have multiple values for these fields -->
 	<field name="professional_company" type="strings" indexed="true" required="true" stored="true"/>
 	<field name="professional_description" type="strings" indexed="true" required="true" stored="true"/>
