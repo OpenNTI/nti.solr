@@ -16,13 +16,20 @@ import isodate
 from zope import component
 
 from zope.component.hooks import getSite
+from zope.component.hooks import site as current_site
 
 from nti.async import create_job
+
+from nti.dataserver.interfaces import IDataserver
+
+from nti.site.site import get_site_for_site_names
+
+from nti.site.transient import TrivialSite
 
 from nti.solr import get_factory
 
 from nti.solr.interfaces import IIDValue
-from nti.solr.interfaces import ICoreCatalog 
+from nti.solr.interfaces import ICoreCatalog
 
 from nti.solr.utils import object_finder
 
@@ -61,13 +68,31 @@ def queue_remove(name, func, obj, site=None, **kwargs):
 
 # job funcs
 
+def get_job_site(job_site_name=None):
+	old_site = getSite()
+	if job_site_name is None:
+		job_site = old_site
+	else:
+		dataserver = component.getUtility(IDataserver)
+		ds_folder = dataserver.root_folder['dataserver2']
+		with current_site(ds_folder):
+			job_site = get_site_for_site_names((job_site_name,))
+
+		if job_site is None or isinstance(job_site, TrivialSite):
+			raise ValueError('No site found for (%s)' % job_site_name)
+	return job_site
+
 def single_index_job(doc_id, site=None, **kwargs):
-	obj = object_finder(doc_id)
-	catalog = ICoreCatalog(obj, None)
-	if catalog is not None:
-		return catalog.index_doc(doc_id, obj)
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = object_finder(doc_id)
+		catalog = ICoreCatalog(obj, None)
+		if catalog is not None:
+			return catalog.index_doc(doc_id, obj)
 
 def single_unindex_job(doc_id, core, site=None, **kwargs):
-	catalog = component.queryUtility(ICoreCatalog, name=core)
-	if catalog is not None:
-		catalog.unindex_doc(doc_id)
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		catalog = component.queryUtility(ICoreCatalog, name=core)
+		if catalog is not None:
+			catalog.unindex_doc(doc_id)
