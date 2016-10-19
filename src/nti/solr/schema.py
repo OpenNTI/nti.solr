@@ -46,10 +46,10 @@ class SolrDatetime(Orderable, Field):
 
 	def _validate(self, value):
 		try:
-			self.convert(value)
+			converted = self.convert(value)
 		except ValueError:
 			raise ConstraintNotSatisfied(value, self.__name__)
-		Field._validate(self, value)
+		Field._validate(self, converted)
 
 	def get(self, obj):
 		value = getattr(object, self.__name__)
