@@ -159,7 +159,7 @@ class IContentValue(IStringValue):
 	Adapter interface to get the content value from a given object
 	"""
 
-class IKeywordsValue(IAttributeValue):
+class IKeywordsValue(IStringValue):
 	"""
 	Adapter interface to get the keywords value from a given object
 	"""
@@ -231,7 +231,7 @@ class ISocialURLValue(IAttributeValue):
 	Adapter interface to get the social URLs from a given entity object
 	"""
 
-class IAboutValue(IAttributeValue):
+class IAboutValue(IStringValue):
 	"""
 	Adapter interface to get the about value from a given entity object
 	"""
