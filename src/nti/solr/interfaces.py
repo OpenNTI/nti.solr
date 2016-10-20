@@ -422,6 +422,24 @@ tagField(ICourseCatalogDocument['title_en'], True, ITitleValue)
 tagField(ICourseCatalogDocument['content_en'], True, IContentValue)
 tagField(ICourseCatalogDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
+class IEvaluationDocument(IMetadataDocument):
+
+	ntiid = ValidTextLine(title='Evaluation ntiid', required=False)
+
+	title_en = ValidTextLine(title='Title to index', required=False)
+
+	content_en = ValidText(title='Text to index', required=False)
+
+	keywords_en = IndexedIterable(title='The keywords',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
+
+tagField(IEvaluationDocument['ntiid'], True, INTIIDValue)
+tagField(IEvaluationDocument['title_en'], True, ITitleValue)
+tagField(IEvaluationDocument['content_en'], True, IContentValue)
+tagField(IEvaluationDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+
 class ICoreCatalog(IInjection, IIndexSearch):
 
 	name = ValidTextLine(title="Core name", required=True)

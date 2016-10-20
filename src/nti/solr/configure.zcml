@@ -232,6 +232,30 @@
 				 name="solr" />
 	</configure>
 
+	<!-- Assessments -->
+	<configure zcml:condition="installed nti.assessment">
+		<adapter factory=".evaluations._DefaultEvaluationTitleValue"
+				 provides=".interfaces.ITitleValue"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+
+		<adapter factory=".evaluations._DefaultEvaluationContentValue"
+				 provides=".interfaces.IContentValue"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+
+		<adapter factory=".evaluations._DefaultEvaluationKeywordsValue"
+				 provides=".interfaces.IKeywordsValue"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+
+		<adapter factory=".evaluations._EvaluationDocumentCreator"
+				 provides=".interfaces.IEvaluationDocument"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+
+		<adapter factory=".externalization._EvaluationDocumentSOLRExternalizer"
+				 for=".interfaces.IEvaluationDocument"
+				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+				 name="solr" />
+	</configure>
+
 	<!-- Transcripts -->
 	<adapter factory=".transcripts._TranscriptIDValue"
 			 provides=".interfaces.IIDValue"

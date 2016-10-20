@@ -5,13 +5,14 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.contentfragments.interfaces import IPlainTextContentFragment
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
 from zope import component
 from zope import interface
+
+from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
@@ -80,7 +81,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 
 	language = 'en'
-	
+
 	def lang(self, context=None):
 		return self.language
 
@@ -89,8 +90,8 @@ class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 		adapted = IContentValue(context, None)
 		if adapted is not None:
 			self.language = adapted.lang()
-			content = component.getAdapter(adapted.value(), 
-										   IPlainTextContentFragment, 
+			content = component.getAdapter(adapted.value(),
+										   IPlainTextContentFragment,
 										   name='text')
 			return get_keywords(content, self.language)
 		return ()
@@ -100,7 +101,7 @@ class ContentUnitDocument(MetadataDocument):
 	createDirectFieldProperties(IContentUnitDocument)
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.contentunitdocument'
-		
+
 @component.adapter(IContentUnit)
 @interface.implementer(IContentUnitDocument)
 def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):

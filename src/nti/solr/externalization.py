@@ -23,6 +23,7 @@ from nti.solr.interfaces import IAssetDocument
 from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import IUserDataDocument
+from nti.solr.interfaces import IEvaluationDocument
 from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import IContentUnitDocument
 from nti.solr.interfaces import ICourseCatalogDocument
@@ -80,3 +81,8 @@ class _AssetDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
 @interface.implementer(IInternalObjectExternalizer)
 class _CourseCatalogDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
 	_ext_iface_upper_bound = ICourseCatalogDocument
+
+@component.adapter(IEvaluationDocument)
+@interface.implementer(IInternalObjectExternalizer)
+class _EvaluationDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
+	_ext_iface_upper_bound = IEvaluationDocument
