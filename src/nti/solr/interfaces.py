@@ -12,6 +12,7 @@ logger = __import__('logging').getLogger(__name__)
 from zope import interface
 
 from zope.index.interfaces import IInjection
+from zope.index.interfaces import IIndexSearch
 
 from zope.interface.interfaces import ObjectEvent
 from zope.interface.interfaces import IObjectEvent
@@ -403,7 +404,7 @@ tagField(IAssetDocument['title_en'], True, ITitleValue)
 tagField(IAssetDocument['content_en'], True, IContentValue)
 tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
-class ICoreCatalog(IInjection):
+class ICoreCatalog(IInjection, IIndexSearch):
 
 	name = ValidTextLine(title="Core name", required=True)
 
