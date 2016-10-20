@@ -20,7 +20,9 @@ from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
+from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
+from nti.solr import EVALUATIONS_QUEUE
 
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
@@ -47,14 +49,25 @@ def _userdata_removed(obj, event):
 
 @component.adapter(IEntity, IIntIdAddedEvent)
 def _entity_added(obj, event):
-	queue_add(USERDATA_QUEUE, single_index_job, obj)
+	queue_add(ENTITIES_QUEUE, single_index_job, obj)
 
 @component.adapter(IEntity, IObjectModifiedEvent)
 def _entity_modified(obj, event):
-	queue_modified(USERDATA_QUEUE, single_index_job, obj)
+	queue_modified(ENTITIES_QUEUE, single_index_job, obj)
 
 @component.adapter(IEntity, IIntIdRemovedEvent)
 def _entity_removed(obj, event):
-	queue_remove(USERDATA_QUEUE, 
+	queue_remove(ENTITIES_QUEUE, 
+				 single_unindex_job,
+				 obj=obj)
+
+def _evaluation_added(obj, event):
+	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+
+def _evaluation_modified(obj, event):
+	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+
+def _evaluation_removed(obj, event):
+	queue_remove(EVALUATIONS_QUEUE, 
 				 single_unindex_job,
 				 obj=obj)
