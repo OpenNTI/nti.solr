@@ -286,7 +286,15 @@
 		<subscriber handler=".subscribers._evaluation_modified"
 					for="nti.assessment.interfaces.IQEvaluation
 						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+						 
+		<subscriber handler=".subscribers._evaluation_published"
+					for="nti.assessment.interfaces.IQEvaluation
+						 nti.coremetadata.interfaces.IObjectPublishedEvent"/>
  
+ 		<subscriber handler=".subscribers._evaluation_unpublished"
+					for="nti.assessment.interfaces.IQEvaluation
+						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
+
 	</configure>
 
 	<!-- Transcripts -->

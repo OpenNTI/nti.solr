@@ -63,12 +63,18 @@ def _entity_removed(obj, event):
 
 # Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
-	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+	if obj.isPublished():
+		queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
 
 def _evaluation_modified(obj, event):
-	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+	if obj.isPublished():
+		queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
 
+def _evaluation_published(obj, event):
+	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+	
+def _evaluation_unpublished(obj, event):
+	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+	
 def _evaluation_removed(obj, event):
-	queue_remove(EVALUATIONS_QUEUE, 
-				 single_unindex_job,
-				 obj=obj)
+	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
