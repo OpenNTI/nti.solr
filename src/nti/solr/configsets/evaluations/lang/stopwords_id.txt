@@ -1,1 +1,0 @@
-../../basic/conf/lang/stopwords_id.txt
