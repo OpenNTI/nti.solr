@@ -1,0 +1,1 @@
+../../basic/lang/stoptags_ja.txt

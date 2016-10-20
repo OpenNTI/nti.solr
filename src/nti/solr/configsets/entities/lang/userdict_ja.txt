@@ -1,0 +1,1 @@
+../../basic/lang/userdict_ja.txt
