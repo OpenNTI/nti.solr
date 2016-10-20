@@ -61,6 +61,7 @@ def _entity_removed(obj, event):
 				 single_unindex_job,
 				 obj=obj)
 
+# Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
 	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
 
