@@ -1,1 +1,0 @@
-../../basic/lang/stemdict_nl.txt
