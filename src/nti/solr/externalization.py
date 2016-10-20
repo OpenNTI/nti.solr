@@ -30,6 +30,7 @@ from nti.solr.interfaces import ICourseCatalogDocument
 
 ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 
+@component.adapter(ICoreDocument)
 @interface.implementer(IInternalObjectExternalizer)
 class _CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
