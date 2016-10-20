@@ -227,7 +227,6 @@
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- content and title fields -->
@@ -237,7 +236,4 @@
 	<copyField source="*_en" dest="_text_"/>
 	<copyField source="*_en" dest="suggest"/>
 	<copyField source="*_en" dest="suggest_ngram"/>
-	<copyField source="tags" dest="_text_"/>
-	<copyField source="tags" dest="suggest"/>
-	<copyField source="tags" dest="suggest_ngram"/>
 </schema>
