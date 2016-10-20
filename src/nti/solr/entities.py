@@ -23,9 +23,14 @@ from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import ENTITIES_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import IAboutValue
 from nti.solr.interfaces import IAliasValue
 from nti.solr.interfaces import IEmailValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
 from nti.solr.interfaces import IEntityDocument 
@@ -172,3 +177,13 @@ class EntityDocument(MetadataDocument):
 @interface.implementer(IEntityDocument)
 def _EntityDocumentCreator(obj, factory=EntityDocument):
 	return document_creator(obj, factory=factory, provided=IEntityDocument)
+
+@component.adapter(IEntity)
+@interface.implementer(ICoreCatalog)
+def _entity_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
+
+class EntitiesCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, ENTITIES_CATALOG, client)

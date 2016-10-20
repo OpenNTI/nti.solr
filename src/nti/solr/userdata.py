@@ -20,6 +20,8 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
 
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog 
 from nti.solr.interfaces import IContentValue
@@ -96,5 +98,10 @@ def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 
 @interface.implementer(ICoreCatalog)
 @component.adapter(IUserGeneratedData)
-def _UserDataCatalog(obj):
+def _userdata_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
+
+class UserDataCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, USERDATA_CATALOG, client)

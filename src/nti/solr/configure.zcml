@@ -147,6 +147,14 @@
 			 provides=".interfaces.IEntityDocument"
 			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".entities._entity_to_catalog"
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.dataserver.interfaces.IEntity" />
+
+	<utility factory=".entities.EntitiesCatalog"
+			 provides=".interfaces.ICoreCatalog"
+			 name='entities' />
+
 	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
 			 for=".interfaces.IEntityDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
@@ -299,9 +307,13 @@
 			 provides=".interfaces.IUserDataDocument"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
-	<adapter factory=".userdata._UserDataCatalog"
+	<adapter factory=".userdata._userdata_to_catalog"
 			 provides=".interfaces.ICoreCatalog"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<utility factory=".userdata.UserDataCatalog"
+			 provides=".interfaces.ICoreCatalog"
+			 name='userdata' />
 
 	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
 			 for=".interfaces.IUserDataDocument"
@@ -310,10 +322,6 @@
 
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
-
-	<utility factory=".catalog.UserDataCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 name='userdata' />
 
 	<!-- Subscribers -->
 	<subscriber handler=".subscribers._userdata_added"

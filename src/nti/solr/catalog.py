@@ -78,8 +78,3 @@ class CoreCatalog(object):
 
 	def clear(self, commit=True):
 		self.client.delete(q='*:*', commit=commit)
-
-class UserDataCatalog(CoreCatalog):
-
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, 'userdata', client)
