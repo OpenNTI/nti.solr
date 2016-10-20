@@ -9,8 +9,12 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
 from zope import component
 from zope import interface
+
+from nti.common.string import to_unicode
 
 from nti.dataserver.interfaces import IEntity
 
@@ -58,7 +62,10 @@ class _BasicAttributeValue(object):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		profile = self.interface(context, None)
-		return getattr(profile, self.field, None)
+		result = getattr(profile, self.field, None)
+		if isinstance(result, six.string_types):
+			result = to_unicode(result)
+		return result
 
 @component.adapter(IEntity)
 @interface.implementer(IUsernameValue)
@@ -67,13 +74,17 @@ class _DefaultUsernameValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = getattr(context, 'username', None)
-		return (result,) if result else ()
+		return (to_unicode(result),) if result else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IEmailValue)
 class _DefaultEmailValue(_BasicAttributeValue):
 	field = 'email'
 	interface = IUserProfile
+
+	def value(self, context=None):
+		result = _BasicAttributeValue.value(self, context)
+		return result.lower() if result else None
 
 @component.adapter(IEntity)
 @interface.implementer(IAliasValue)
@@ -95,24 +106,24 @@ class _DefaultProfessionalTitleValue(_BasicAttributeValue):
 	interface = IProfessionalProfile
 
 	def value(self, context=None):
-		positions = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.title for x in positions) if positions else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.title) for x in source if x.title) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalCompanyValue)
 class _DefaultProfessionalCompanyValue(_DefaultProfessionalTitleValue):
 	
 	def value(self, context=None):
-		positions = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.companyName for x in positions) if positions else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.companyName) for x in source if x.companyName) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalDescriptionValue)
 class _DefaultProfessionalDescriptionValue(_DefaultProfessionalTitleValue):
 
 	def value(self, context=None):
-		positions = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.description for x in positions) if positions else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationDegreeValue)
@@ -122,24 +133,24 @@ class _DefaultEducationDegreeValue(_BasicAttributeValue):
 	interface = IEducationProfile
 
 	def value(self, context=None):
-		education = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.degree for x in education) if education else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.degree) for x in source if x.degree) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationSchoolValue)
 class _DefaultEducationSchoolValue(_DefaultEducationDegreeValue):
 	
 	def value(self, context=None):
-		education = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.school for x in education) if education else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.school) for x in source if x.school) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationDescriptionValue)
 class _DefaultEducationDescriptionValue(_DefaultEducationDegreeValue):
 
 	def value(self, context=None):
-		education = _BasicAttributeValue.value(self, context) or ()
-		return tuple(x.description for x in education) if education else ()
+		source = _BasicAttributeValue.value(self, context) or ()
+		return tuple(to_unicode(x.description) for x in source) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(ISocialURLValue)
@@ -151,9 +162,7 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
 		if profile is not None:
 			result = {profile.twitter, profile.facebook, 
 					  profile.googlePlus, profile.linkedIn}
-			result.discard(u'')
-			result.discard(None)
-			return tuple(result)
+			return tuple(to_unicode(x.lower()) for x in result if x)
 		return ()
 
 @component.adapter(IEntity)
