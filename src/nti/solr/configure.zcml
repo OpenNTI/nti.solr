@@ -327,6 +327,18 @@
 	<subscriber handler=".subscribers._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+					 
+	<subscriber handler=".subscribers._entity_added"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".subscribers._entity_removed"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".subscribers._entity_modified"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
 	<configure zcml:condition="have devmode">
 		<solr:registerSOLR url="http://localhost:8983/solr" />

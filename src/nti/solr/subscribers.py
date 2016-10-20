@@ -16,6 +16,7 @@ from zope.intid.interfaces import IIntIdRemovedEvent
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
@@ -40,6 +41,20 @@ def _userdata_modified(obj, event):
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
 def _userdata_removed(obj, event):
+	queue_remove(USERDATA_QUEUE, 
+				 single_unindex_job,
+				 obj=obj)
+
+@component.adapter(IEntity, IIntIdAddedEvent)
+def _entity_added(obj, event):
+	queue_add(USERDATA_QUEUE, single_index_job, obj)
+
+@component.adapter(IEntity, IObjectModifiedEvent)
+def _entity_modified(obj, event):
+	queue_modified(USERDATA_QUEUE, single_index_job, obj)
+
+@component.adapter(IEntity, IIntIdRemovedEvent)
+def _entity_removed(obj, event):
 	queue_remove(USERDATA_QUEUE, 
 				 single_unindex_job,
 				 obj=obj)
