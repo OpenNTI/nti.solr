@@ -208,6 +208,30 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
+	<!-- Courses -->
+	<configure zcml:condition="installed nti.contenttypes.courses">
+		<adapter factory=".courses._DefaultCourseCatalogTitleValue"
+				 provides=".interfaces.ITitleValue"
+				 for="nti.contenttypes.courses.interfaces.ICourseCatalogEntry" />
+
+		<adapter factory=".courses._DefaultCourseCatalogContentValue"
+				 provides=".interfaces.IContentValue"
+				 for="nti.contenttypes.courses.interfaces.ICourseCatalogEntry" />
+
+		<adapter factory=".courses._DefaultCourseCatalogKeywordsValue"
+				 provides=".interfaces.IKeywordsValue"
+				 for="nti.contenttypes.courses.interfaces.ICourseCatalogEntry" />
+
+		<adapter factory=".courses._CourseCatalogDocumentCreator"
+				 provides=".interfaces.ICourseCatalogDocument"
+				 for="nti.contenttypes.courses.interfaces.ICourseCatalogEntry" />
+
+		<adapter factory=".externalization._CourseCatalogDocumentSOLRExternalizer"
+				 for=".interfaces.ICourseCatalogDocument"
+				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+				 name="solr" />
+	</configure>
+
 	<!-- Transcripts -->
 	<adapter factory=".transcripts._TranscriptIDValue"
 			 provides=".interfaces.IIDValue"
@@ -263,7 +287,7 @@
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
-	<utility factory=".catalog.UserDataCatalog" 
+	<utility factory=".catalog.UserDataCatalog"
 			 provides=".interfaces.ICoreCatalog"
 			 name='userdata' />
 
@@ -279,7 +303,7 @@
 	<subscriber handler=".subscribers._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-		
+
 	<configure zcml:condition="have devmode">
 		<solr:registerSOLR url="http://localhost:8983/solr" />
 	</configure>
@@ -291,7 +315,7 @@
 		</configure>
 		<configure zcml:condition="have testmode">
 			<solr:registerImmediateProcessingQueue />
-		</configure>	
+		</configure>
 	</configure>
 	<configure zcml:condition="not-have devmode">
 		<solr:registerRedisProcessingQueue />

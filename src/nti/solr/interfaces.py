@@ -248,7 +248,7 @@ class IEntityDocument(IMetadataDocument):
 	email = ValidTextLine(title='The username', required=False)
 
 	realname = ValidTextLine(title='The realname', required=False)
-	
+
 	about_en = ValidText(title='The about statement', required=False)
 
 	education_school = IndexedIterable(title='The school names',
@@ -404,6 +404,24 @@ tagField(IAssetDocument['title_en'], True, ITitleValue)
 tagField(IAssetDocument['content_en'], True, IContentValue)
 tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
+class ICourseCatalogDocument(IMetadataDocument):
+
+	ntiid = ValidTextLine(title='Course catalog ntiid', required=False)
+
+	title_en = ValidTextLine(title='Title to index', required=False)
+
+	content_en = ValidText(title='Text to index', required=False)
+
+	keywords_en = IndexedIterable(title='The keywords',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The keyword"),
+							   	  min_length=0)
+
+tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
+tagField(ICourseCatalogDocument['title_en'], True, ITitleValue)
+tagField(ICourseCatalogDocument['content_en'], True, IContentValue)
+tagField(ICourseCatalogDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+
 class ICoreCatalog(IInjection, IIndexSearch):
 
 	name = ValidTextLine(title="Core name", required=True)
@@ -427,7 +445,7 @@ class IObjectIndexedEvent(IObjectEvent):
 
 @interface.implementer(IObjectIndexedEvent)
 class ObjectIndexedEvent(ObjectEvent):
-	
+
 	def __init__(self, obj, doc_id=None):
 		ObjectEvent.__init__(self, obj)
 		self.doc_id = doc_id

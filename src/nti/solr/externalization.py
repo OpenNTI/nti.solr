@@ -25,6 +25,7 @@ from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import IUserDataDocument
 from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import IContentUnitDocument
+from nti.solr.interfaces import ICourseCatalogDocument
 
 ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 
@@ -74,3 +75,8 @@ class _UserDataDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
 @interface.implementer(IInternalObjectExternalizer)
 class _AssetDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
 	_ext_iface_upper_bound = IAssetDocument
+
+@component.adapter(ICourseCatalogDocument)
+@interface.implementer(IInternalObjectExternalizer)
+class _CourseCatalogDocumentSOLRExternalizer(_CoreDocumentSOLRExternalizer):
+	_ext_iface_upper_bound = ICourseCatalogDocument
