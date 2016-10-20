@@ -250,6 +250,10 @@
 				 provides=".interfaces.IContentValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />
 
+		<adapter factory=".evaluations._DefaultContainerIdValue"
+				 provides=".interfaces.IContainerIdValue"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+
 		<adapter factory=".evaluations._DefaultEvaluationKeywordsValue"
 				 provides=".interfaces.IKeywordsValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />

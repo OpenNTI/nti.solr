@@ -27,7 +27,6 @@ from nti.solr.catalog import CoreCatalog
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
-from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import IEvaluationDocument
@@ -53,26 +52,13 @@ class _DefaultEvaluationTitleValue(_BasicAttributeValue):
 		context = self.context if context is None else context
 		return getattr(context, 'title', None)
 
-@interface.implementer(ICreatorValue)
-@component.adapter(IQEvaluation)
-class _DefaultEvaluationCreatorValue(_BasicAttributeValue):
-
-	def lang(self, context):
-		return 'en'
-
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = getattr( context, 'creator', None)
-		result = getattr( result, 'username', result )
-		return result and result.lower()
-
 @component.adapter(IQEvaluation)
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		result = get_containerId( context )
+		result = get_containerId(context)
 		return result
 
 @interface.implementer(IContentValue)
@@ -85,7 +71,7 @@ class _DefaultEvaluationContentValue(_BasicAttributeValue):
 		return self.language
 
 	def get_content(self, context):
-		return getattr( context, 'content', None )
+		return getattr(context, 'content', None)
 
 	def value(self, context=None):
 		context = self.context if context is None else context
