@@ -58,13 +58,13 @@ def add_2_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	return None
 
 def queue_add(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site, 'added', **kwargs)
+	return add_2_queue(name, func, obj, site=site, jid='added', **kwargs)
 
 def queue_modified(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site, 'modified', **kwargs)
+	return add_2_queue(name, func, obj, site=site, jid='modified', **kwargs)
 
 def queue_remove(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site, 'removed', **kwargs)
+	return add_2_queue(name, func, obj, site=site, jid='removed', **kwargs)
 
 # job funcs
 
