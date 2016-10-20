@@ -82,7 +82,9 @@ class _DefaultEvaluationContentValue(_BasicAttributeValue):
 	def get_content(self, context):
 		result = getattr( context, 'content', None )
 		if result:
-			result = IPlainTextContentFragment( result, result )
+			result = component.getAdapter(result,
+										  IPlainTextContentFragment,
+										  name='text') or result
 		return result
 
 	def value(self, context=None):
@@ -103,7 +105,10 @@ class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
 		adapted = IContentValue(context, None)
 		if adapted is not None:
 			self.language = adapted.lang()
-			return get_keywords(adapted.value(), self.language)
+			content = component.getAdapter(adapted.value(),
+										   IPlainTextContentFragment,
+										   name='text')
+			return get_keywords(content, self.language)
 		return ()
 
 @interface.implementer(IEvaluationDocument)
