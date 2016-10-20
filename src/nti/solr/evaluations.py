@@ -80,12 +80,7 @@ class _DefaultEvaluationContentValue(_BasicAttributeValue):
 		return self.language
 
 	def get_content(self, context):
-		result = getattr( context, 'content', None )
-		if result:
-			result = component.getAdapter(result,
-										  IPlainTextContentFragment,
-										  name='text') or result
-		return result
+		return getattr( context, 'content', None )
 
 	def value(self, context=None):
 		context = self.context if context is None else context
