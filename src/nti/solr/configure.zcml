@@ -240,7 +240,7 @@
 				 name="solr" />
 	</configure>
 
-	<!-- Assessments -->
+	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
 		<adapter factory=".evaluations._DefaultEvaluationTitleValue"
 				 provides=".interfaces.ITitleValue"
@@ -257,6 +257,14 @@
 		<adapter factory=".evaluations._EvaluationDocumentCreator"
 				 provides=".interfaces.IEvaluationDocument"
 				 for="nti.assessment.interfaces.IQEvaluation" />
+
+		<adapter factory=".evaluations._evaluation_to_catalog"
+				 provides=".interfaces.ICoreCatalog"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+	
+		<utility factory=".evaluations.EvaluationsCatalog"
+				 provides=".interfaces.ICoreCatalog"
+				 name='evaluations' />
 
 		<adapter factory=".externalization._EvaluationDocumentSOLRExternalizer"
 				 for=".interfaces.IEvaluationDocument"

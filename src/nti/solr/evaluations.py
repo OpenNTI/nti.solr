@@ -20,12 +20,17 @@ from nti.assessment.interfaces import IQEvaluation
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import EVALUATIONS_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import ITitleValue
-from nti.solr.interfaces import ICreatorValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IEvaluationDocument
 from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IEvaluationDocument
 
 from nti.solr.metadata import MetadataDocument
 
@@ -116,3 +121,13 @@ class EvaluationDocument(MetadataDocument):
 @interface.implementer(IEvaluationDocument)
 def _EvaluationDocumentCreator(obj, factory=EvaluationDocument):
 	return document_creator(obj, factory=factory, provided=IEvaluationDocument)
+
+@component.adapter(IQEvaluation)
+@interface.implementer(ICoreCatalog)
+def _evaluation_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=EVALUATIONS_CATALOG)
+
+class EvaluationsCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, EVALUATIONS_CATALOG, client)
