@@ -215,19 +215,20 @@
 	<!--%%%-field-types-end-%%%-->
 	<!--%%%-metadata-start-%%%-->
 	<field name="_version_" type="long" indexed="true" stored="true"/>
+	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
 	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
 	<!--%%%-suggest-start-%%%-->
-	<field name="suggest" multiValued="true" type="text_suggest" indexed="true" stored="false"/>
-	<field name="suggest_ngram" multiValued="true" type="text_suggest_ngram" indexed="true" stored="false"/>
+	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
+	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
-	<!-- content and title fields -->
+	<!-- content (description) and title fields -->
 	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
 					termVectors="true" termPositions="true" termOffsets="true"/>
 	<!-- catch all / copy fields -->
