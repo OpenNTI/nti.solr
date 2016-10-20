@@ -293,17 +293,17 @@ class IEntityDocument(IMetadataDocument):
 							   	 min_length=0)
 
 tagField(IEntityDocument['email'], True, IEmailValue)
-tagField(IEntityDocument['alias'], True, IAliasValue)
+tagField(IEntityDocument['alias'], True, IAliasValue, type_='text_lower')
 tagField(IEntityDocument['about_en'], False, IAboutValue)
-tagField(IEntityDocument['realname'], True, IRealnameValue)
+tagField(IEntityDocument['realname'], True, IRealnameValue, type_='text_lower')
 tagField(IEntityDocument['username'], True, IUsernameValue, True)
 tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
-tagField(IEntityDocument['education_school'], True, IEducationSchoolValue, True)
-tagField(IEntityDocument['education_degree'], True, IEducationDegreeValue, True)
-tagField(IEntityDocument['education_description'], True, IEducationDescriptionValue, True)
-tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, True)
-tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True)
-tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True)
+tagField(IEntityDocument['education_school'], True, IEducationSchoolValue, True, type_='text_lower')
+tagField(IEntityDocument['education_degree'], True, IEducationDegreeValue, True, type_='text_lower')
+tagField(IEntityDocument['education_description'], True, IEducationDescriptionValue, True, type_='text_lower')
+tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, True, type_='text_lower')
+tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True, type_='text_lower')
+tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True, type_='text_lower')
 
 class IMediaNTIIDValue(IAttributeValue):
 	"""
