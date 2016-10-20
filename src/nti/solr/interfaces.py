@@ -20,9 +20,9 @@ from zope.interface.interfaces import IObjectEvent
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
-from nti.schema.field import ValidText
-from nti.schema.field import ValidTextLine
 from nti.schema.field import IndexedIterable
+from nti.schema.field import Text as ValidText
+from nti.schema.field import TextLine as ValidTextLine
 
 class IAttributeValue(interface.Interface):
 	"""
