@@ -89,16 +89,21 @@ class _DefaultIDValue(_BasicAttributeValue):
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
+	def _get_creator(self, context, name='creator'):
 		try:
-			creator = context.creator
+			creator = getattr(context, 'creator', None)
 			creator = getattr(creator, 'username', creator)
 			if isinstance(creator, six.string_types):
 				return to_unicode(creator.lower())
-		except (AttributeError, TypeError):
+		except (TypeError):
 			pass
 		return None
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		result = 	self._get_creator(context, 'creator') \
+				 or self._get_creator(context, 'Creator')
+		return result
 
 @interface.implementer(INTIIDValue)
 class _DefaultNTIIDValue(_BasicAttributeValue):
