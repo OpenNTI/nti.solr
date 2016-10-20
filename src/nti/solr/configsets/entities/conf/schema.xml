@@ -229,18 +229,18 @@
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="username" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="alias" type="string" indexed="true" required="true" stored="true"/>
-	<field name="realname" type="string" indexed="true" required="true" stored="true"/>
-	<field name="email" type="string" indexed="true" required="true" stored="true"/>
+	<field name="alias" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="realname" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="email" type="string" indexed="true" required="false" stored="true"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<!-- about field -->
 	<dynamicField name="*_en" type="text_en" indexed="true" stored="false" />
 	<!-- Each prof/educational entry may have multiple values for these fields -->
-	<field name="professional_company" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="professional_description" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="professional_title" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="education_school" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="education_description" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="education_degree" type="strings" indexed="true" required="true" stored="true"/>
-	<field name="social_url" type="strings" indexed="true" required="true" stored="true"/>
+	<field name="professional_company" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="professional_description" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="professional_title" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="education_school" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="education_description" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="education_degree" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="social_url" type="strings" indexed="true" required="false" stored="true"/>
 </schema>
