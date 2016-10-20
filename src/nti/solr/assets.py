@@ -14,8 +14,6 @@ from zope import interface
 
 from nti.contentlibrary.interfaces import IContentUnit
 
-from nti.contenttypes.courses.interfaces import ICourseInstance
-
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.schema.fieldproperty import createDirectFieldProperties
@@ -48,8 +46,8 @@ class _DefaultAssetTitleValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return getattr(context, 'title', None) \
-			or getattr(context, 'label', None)
+		return 		getattr(context, 'title', None) \
+				or	getattr(context, 'label', None)
 
 @interface.implementer(ICreatorValue)
 @component.adapter(IPresentationAsset)
@@ -60,10 +58,10 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		result = getattr(context, 'byline', None) \
-			  or getattr(context, 'creator', None)
-		result = getattr( result, 'username', result )
-		return result and result.lower()
+		result = 	getattr(context, 'byline', None) \
+			  	or	getattr(context, 'creator', None)
+		result = getattr(result, 'username', result)
+		return result.lower() if result else None
 
 @component.adapter(IPresentationAsset)
 @interface.implementer(IContainerIdValue)
@@ -73,7 +71,11 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 		context = self.context if context is None else context
 		container = find_interface(context, IContentUnit, strict=False)
 		if container is None:
-			container = find_interface(context, ICourseInstance, strict=False)
+			try:
+				from nti.contenttypes.courses.interfaces import ICourseInstance
+				container = find_interface(context, ICourseInstance, strict=False)
+			except ImportError:
+				pass
 		return container.ntiid if container is not None else None
 
 @interface.implementer(IContentValue)
@@ -86,7 +88,7 @@ class _DefaultAssetContentValue(_BasicAttributeValue):
 		return self.language
 
 	def get_content(self, context):
-		return getattr( context, 'description', None )
+		return getattr(context, 'description', None)
 
 	def value(self, context=None):
 		context = self.context if context is None else context
