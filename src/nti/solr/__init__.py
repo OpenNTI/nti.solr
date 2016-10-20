@@ -23,5 +23,7 @@ QUEUE_NAMES = (USERDATA_QUEUE, ENTITIES_QUEUE)
 ENTITIES_CATALOG = 'entities'  
 USERDATA_CATALOG = 'userdata'
   
+### from IPython.core.debugger import Tracer; Tracer()()
+
 def get_factory():
     return component.getUtility(ISOLRQueueFactory)
