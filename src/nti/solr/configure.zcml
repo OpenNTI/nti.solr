@@ -270,6 +270,19 @@
 				 for=".interfaces.IEvaluationDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
+				 
+		<subscriber handler=".subscribers._evaluation_added"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+		<subscriber handler=".subscribers._evaluation_removed"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.intid.interfaces.IIntIdRemovedEvent"/>
+	
+		<subscriber handler=".subscribers._evaluation_modified"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+ 
 	</configure>
 
 	<!-- Transcripts -->
