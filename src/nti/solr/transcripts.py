@@ -14,6 +14,8 @@ import six
 from zope import component
 from zope import interface
 
+from nti.common.string import to_unicode
+
 from nti.contentindexing.media.interfaces import IAudioTranscriptParser
 from nti.contentindexing.media.interfaces import IVideoTranscriptParser
 
@@ -75,20 +77,21 @@ class _TranscriptContentValue(_BasicAttributeValue):
 	@classmethod
 	def parse_content(cls, context, raw_content):
 		type_ = context.type or "text/vtt"
-		if INTIVideo.providedBy(context.__parent_):
+		if INTIVideo.providedBy(context.__parent__):
 			provided = IVideoTranscriptParser
 		else:
 			provided = IAudioTranscriptParser
 		parser = component.queryUtility(provided, name=type_)
 		if parser is not None:
-			transcript = parser.parse(raw_content)
-			return transcript.text
+			transcript = parser.parse(to_unicode(raw_content))
+			return to_unicode(transcript.text)
 		return None
 
 	@classmethod
 	def get_content(cls, context):
 		src = context.src
 		raw_content = None
+		from IPython.core.debugger import Tracer; Tracer()()
 		# is in content pkg ?
 		if 		isinstance(src, six.string_types) \
 			and not src.startswith('/')  \
