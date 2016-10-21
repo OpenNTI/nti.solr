@@ -22,6 +22,7 @@ from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
+from nti.solr import COURSES_QUEUE
 from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
 from nti.solr import EVALUATIONS_QUEUE
@@ -105,3 +106,17 @@ def _evaluation_unpublished(obj, event):
 	
 def _evaluation_removed(obj, event):
 	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+
+# Course subscribers
+# XXX. Don't include course imports in case the course pkg is not available
+def _course_added(obj, event):
+	queue_add(COURSES_QUEUE, single_index_job, obj)
+
+def _course_modified(obj, event):
+	queue_modified(COURSES_QUEUE, single_index_job, obj)
+
+def _course_removed(obj, event):
+	queue_remove(COURSES_QUEUE, single_unindex_job, obj=obj)
+
+def _index_course(obj, event):
+	_course_added(obj, None)

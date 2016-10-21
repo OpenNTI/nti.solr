@@ -270,10 +270,34 @@
 				 provides=".interfaces.ICourseCatalogDocument"
 				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
 
+		<adapter factory=".courses._course_to_catalog"
+				 provides=".interfaces.ICoreCatalog"
+			 	 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
+	
+		<utility factory=".courses.CoursesCatalog"
+			 	 provides=".interfaces.ICoreCatalog"
+			 	 name='courses' />
+				 
 		<adapter factory=".externalization._CourseCatalogDocumentSOLRExternalizer"
 				 for=".interfaces.ICourseCatalogDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
+				 
+		<subscriber handler=".subscribers._course_added"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+						 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+		<subscriber handler=".subscribers._course_removed"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+		<subscriber handler=".subscribers._course_modified"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+		<subscriber handler=".subscribers._index_course"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	.interfaces.IIndexObjectEvent"/>
 	</configure>
 
 	<!-- Assessments / Evaluations -->

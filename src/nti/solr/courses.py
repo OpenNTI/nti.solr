@@ -18,7 +18,12 @@ from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import COURSES_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import ICourseCatalogDocument
@@ -90,3 +95,13 @@ class CourseCatalogDocument(MetadataDocument):
 @interface.implementer(ICourseCatalogDocument)
 def _CourseCatalogDocumentCreator(obj, factory=CourseCatalogDocument):
 	return document_creator(obj, factory=factory, provided=ICourseCatalogDocument)
+
+@component.adapter(ICourseInstance)
+@interface.implementer(ICoreCatalog)
+def _course_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
+
+class CoursesCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, COURSES_CATALOG, client)
