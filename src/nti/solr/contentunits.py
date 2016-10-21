@@ -12,6 +12,8 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
+from nti.common.string import to_unicode
+
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.contentlibrary.interfaces import IContentUnit
@@ -72,7 +74,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 	language = 'en'
 
 	def get_content(self, context):
-		return context.read_contents()
+		return to_unicode(context.read_contents())
 
 	def lang(self, context=None):
 		return self.language
