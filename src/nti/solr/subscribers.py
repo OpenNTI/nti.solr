@@ -30,6 +30,7 @@ from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 
+# UGD subscribers
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
 def _userdata_added(obj, event):
 	queue_add(USERDATA_QUEUE, single_index_job, obj)
@@ -47,6 +48,7 @@ def _userdata_removed(obj, event):
 				 single_unindex_job,
 				 obj=obj)
 
+# Entity subscribers
 @component.adapter(IEntity, IIntIdAddedEvent)
 def _entity_added(obj, event):
 	queue_add(ENTITIES_QUEUE, single_index_job, obj)
@@ -61,7 +63,8 @@ def _entity_removed(obj, event):
 				 single_unindex_job,
 				 obj=obj)
 
-# Don't include assessment imports in case the assessment pkg is not available
+# Evaluation subscribers
+# XXX. Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
 	if obj.isPublished():
 		queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
