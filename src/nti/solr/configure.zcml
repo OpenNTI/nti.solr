@@ -28,8 +28,9 @@
 						 .interfaces.IEntityDocument
 						 .interfaces.IMetadataDocument
 						 .interfaces.ITranscriptDocument
-						 .interfaces.IContentUnitDocument"
-		modules=".metadata .transcripts .entities .contentunits .assets" />
+						 .interfaces.IContentUnitDocument
+						 .interfaces.ICourseCatalogDocument"
+		modules=".metadata .transcripts .entities .contentunits .assets .courses" />
 
 	<!-- Adapters -->
 	<adapter factory=".adapters._StringValue"
