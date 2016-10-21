@@ -40,13 +40,15 @@ def extract_key_words(content, max_words=10, lang='en', filtername='solr'):
 	:param tokenized_words: List of tokens (words)
 	:param max_words: Max number of words to return
 	"""
-	keywords = []
+	keywords = set()
 	if isinstance(content, six.string_types):
 		content = tokenize_content(content, lang=lang)
 	records = term_extract_key_words(content, lang=lang, filtername=filtername)
-	for r in records[:max_words]:
+	for r in records:
 		word = r.token
 		terms = getattr(r, 'terms', ())
 		word = terms[0] if terms else word  # pick the first word
-		keywords.append(to_unicode(word.lower()))
+		keywords.add(to_unicode(word.lower()))
+		if keywords >= max_words:
+			break
 	return sorted(keywords)
