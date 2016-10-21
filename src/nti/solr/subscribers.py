@@ -53,9 +53,11 @@ def _userdata_modified(obj, event):
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
 def _userdata_removed(obj, event):
-	queue_remove(USERDATA_QUEUE, 
-				 single_unindex_job,
-				 obj=obj)
+	queue_remove(USERDATA_QUEUE, single_unindex_job, obj=obj)
+
+@component.adapter(IUserGeneratedData, IIndexObjectEvent)
+def _index_userdata(obj, event):
+	queue_add(obj, None)
 
 # Entity subscribers
 @component.adapter(IEntity, IIntIdAddedEvent)
@@ -68,9 +70,7 @@ def _entity_modified(obj, event):
 
 @component.adapter(IEntity, IIntIdRemovedEvent)
 def _entity_removed(obj, event):
-	queue_remove(ENTITIES_QUEUE, 
-				 single_unindex_job,
-				 obj=obj)
+	queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)
 
 # Content units subscribers
 @component.adapter(IContentUnit, IIntIdAddedEvent)

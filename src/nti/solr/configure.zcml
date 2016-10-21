@@ -298,7 +298,7 @@
 
 		<subscriber handler=".subscribers._index_course"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	.interfaces.IIndexObjectEvent"/>
+					 	 .interfaces.IIndexObjectEvent"/>
 	</configure>
 
 	<!-- Assessments / Evaluations -->
@@ -358,7 +358,7 @@
 
 		<subscriber handler=".subscribers._index_evaluation"
 					for="nti.assessment.interfaces.IQEvaluation
-					 	.interfaces.IIndexObjectEvent"/>
+					 	 .interfaces.IIndexObjectEvent"/>
 	</configure>
 
 	<!-- Transcripts -->
@@ -383,8 +383,8 @@
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
 	<adapter factory=".transcripts._transcript_to_catalog"
-				 provides=".interfaces.ICoreCatalog"
-			 	 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 	
 	<utility factory=".transcripts.TranscriptsCatalog"
 			 	 provides=".interfaces.ICoreCatalog"
@@ -397,7 +397,7 @@
 
 	<subscriber handler=".subscribers._index_transcript"
 				for="nti.contenttypes.presentation.interfaces.INTITranscript
-				 	.interfaces.IIndexObjectEvent"/>
+				 	 .interfaces.IIndexObjectEvent"/>
 					 	
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
@@ -441,6 +441,10 @@
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
+	<subscriber handler=".subscribers._index_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 .interfaces.IIndexObjectEvent"/>
+				 	 
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
