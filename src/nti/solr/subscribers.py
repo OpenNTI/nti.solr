@@ -85,7 +85,7 @@ def _contentunit_removed(obj, event):
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
 def _index_contentunit(obj, event):
-	_contentunit_added(object, None)
+	_contentunit_added(obj, None)
 	
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available
