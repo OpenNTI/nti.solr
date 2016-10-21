@@ -24,7 +24,12 @@ from nti.contenttypes.presentation.interfaces import INTITranscript
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import TRANSCRIPTS_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IMediaNTIIDValue
@@ -132,3 +137,13 @@ class TranscriptDocument(MetadataDocument):
 @interface.implementer(ITranscriptDocument)
 def _TranscriptDocumentCreator(obj, factory=TranscriptDocument):
 	return document_creator(obj, factory=factory, provided=ITranscriptDocument)
+
+@component.adapter(INTITranscript)
+@interface.implementer(ICoreCatalog)
+def _transcript_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=TRANSCRIPTS_CATALOG)
+
+class TranscriptsCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, TRANSCRIPTS_CATALOG, client)

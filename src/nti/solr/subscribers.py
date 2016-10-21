@@ -18,6 +18,8 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contentlibrary.interfaces import IContentUnit
 
+from nti.contenttypes.presentation.interfaces import INTITranscript
+
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
@@ -26,6 +28,7 @@ from nti.solr import COURSES_QUEUE
 from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
 from nti.solr import EVALUATIONS_QUEUE
+from nti.solr import TRANSCRIPTS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
@@ -107,6 +110,9 @@ def _evaluation_unpublished(obj, event):
 def _evaluation_removed(obj, event):
 	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
 
+def _index_evaluation(obj, event):
+	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+
 # Course subscribers
 # XXX. Don't include course imports in case the course pkg is not available
 def _course_added(obj, event):
@@ -120,3 +126,9 @@ def _course_removed(obj, event):
 
 def _index_course(obj, event):
 	_course_added(obj, None)
+
+# Assets subscribers
+
+@component.adapter(INTITranscript, IIndexObjectEvent)
+def _index_transcript(obj, event):
+	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)

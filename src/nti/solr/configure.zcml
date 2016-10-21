@@ -356,6 +356,9 @@
 					for="nti.assessment.interfaces.IQEvaluation
 						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
 
+		<subscriber handler=".subscribers._index_evaluation"
+					for="nti.assessment.interfaces.IQEvaluation
+					 	.interfaces.IIndexObjectEvent"/>
 	</configure>
 
 	<!-- Transcripts -->
@@ -379,11 +382,23 @@
 			 provides=".interfaces.ITranscriptDocument"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
+	<adapter factory=".transcripts._transcript_to_catalog"
+				 provides=".interfaces.ICoreCatalog"
+			 	 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+	
+	<utility factory=".transcripts.TranscriptsCatalog"
+			 	 provides=".interfaces.ICoreCatalog"
+			 	 name='transcripts' />
+
 	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"
 			 for=".interfaces.ITranscriptDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
+	<subscriber handler=".subscribers._index_transcript"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	.interfaces.IIndexObjectEvent"/>
+					 	
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
