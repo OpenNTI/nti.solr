@@ -91,7 +91,6 @@ class _TranscriptContentValue(_BasicAttributeValue):
 	def get_content(cls, context):
 		src = context.src
 		raw_content = None
-		from IPython.core.debugger import Tracer; Tracer()()
 		# is in content pkg ?
 		if 		isinstance(src, six.string_types) \
 			and not src.startswith('/')  \
