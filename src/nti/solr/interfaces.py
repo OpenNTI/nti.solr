@@ -143,8 +143,8 @@ class IMetadataDocument(ICoreDocument):
 
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
-tagField(IMetadataDocument['inReplyTo'], True, IInReplyToValue)
-tagField(IMetadataDocument['containerId'], True, IContainerIdValue)
+tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
+tagField(IMetadataDocument['containerId'], False, IContainerIdValue)
 tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, True)
 tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue)
 tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue)
