@@ -36,7 +36,7 @@ class _CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
 	_ext_iface_upper_bound = ICoreDocument
 
-	_fields_to_remove = ALL_EXTERNAL_FIELDS
+	_fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {StandardExternalFields.CTA_MIMETYPE}
 
 	def toExternalObject(self, *args, **kwargs):
 		kwargs['decorate'] = False
