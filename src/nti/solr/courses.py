@@ -12,6 +12,8 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
+from nti.common.string import to_unicode
+
 from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseKeywords
 from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
@@ -49,7 +51,7 @@ class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return getattr(self.entry(context), 'title', None)
+		return to_unicode(getattr(self.entry(context), 'title', None))
 
 @component.adapter(ICourseInstance)
 @interface.implementer(IContentValue)
@@ -61,7 +63,7 @@ class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 		return self.language
 
 	def get_content(self, context):
-		return getattr(context, 'description', None)
+		return to_unicode(getattr(context, 'description', None))
 
 	def value(self, context=None):
 		context = self.context if context is None else context
