@@ -49,6 +49,6 @@ def extract_key_words(content, max_words=10, lang='en', filtername='solr'):
 		terms = getattr(r, 'terms', ())
 		word = terms[0] if terms else word  # pick the first word
 		keywords.add(to_unicode(word.lower()))
-		if keywords >= max_words:
+		if len(keywords) >= max_words:
 			break
 	return sorted(keywords)
