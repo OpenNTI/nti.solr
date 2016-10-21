@@ -91,7 +91,7 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 
 	def _get_creator(self, context, name='creator'):
 		try:
-			creator = getattr(context, 'creator', None)
+			creator = getattr(context, name, None)
 			creator = getattr(creator, 'username', creator)
 			if isinstance(creator, six.string_types):
 				return to_unicode(creator.lower())
