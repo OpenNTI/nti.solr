@@ -29,7 +29,7 @@
 						 .interfaces.IMetadataDocument
 						 .interfaces.ITranscriptDocument
 						 .interfaces.IContentUnitDocument"
-		modules=".metadata .transcripts .entities .content_unit .assets" />
+		modules=".metadata .transcripts .entities .contentunits .assets" />
 
 	<!-- Adapters -->
 	<adapter factory=".adapters._StringValue"
@@ -160,31 +160,63 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
+	<subscriber handler=".subscribers._entity_added"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".subscribers._entity_removed"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".subscribers._entity_modified"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
 	<!-- Content Units -->
-	<adapter factory=".content_unit._DefaultContentPackageValue"
+	<adapter factory=".contentunits._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
-	<adapter factory=".content_unit._DefaultTitleValue"
+	<adapter factory=".contentunits._DefaultTitleValue"
 			 provides=".interfaces.ITitleValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
-	<adapter factory=".content_unit._DefaultContentUnitContentValue"
+	<adapter factory=".contentunits._DefaultContentUnitContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
-	<adapter factory=".content_unit._DefaultContentUnitKeywordsValue"
+	<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
-	<adapter factory=".content_unit._ContentUnitDocumentCreator"
+	<adapter factory=".contentunits._ContentUnitDocumentCreator"
 			 provides=".interfaces.IContentUnitDocument"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
+	<adapter factory=".contentunits._contentunit_to_catalog"
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+	<utility factory=".contentunits.ContentUnitsCatalog"
+			 provides=".interfaces.ICoreCatalog"
+			 name='contentunits' />
+				 
 	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
 			 for=".interfaces.IContentUnitDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
+
+	<subscriber handler=".subscribers._contentunit_added"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".subscribers._contentunit_removed"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".subscribers._contentunit_modified"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
 	<!-- Assets -->
 	<adapter factory=".assets._DefaultAssetTitleValue"
@@ -353,10 +385,6 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<!-- Utilities -->
-	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
-
-	<!-- Subscribers -->
 	<subscriber handler=".subscribers._userdata_added"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
@@ -368,18 +396,11 @@
 	<subscriber handler=".subscribers._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-					 
-	<subscriber handler=".subscribers._entity_added"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
 
-	<subscriber handler=".subscribers._entity_removed"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+	<!-- Utilities -->
+	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
-	<subscriber handler=".subscribers._entity_modified"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+	<!-- Subscribers -->
 
 	<configure zcml:condition="have devmode">
 		<solr:registerSOLR url="http://localhost:8983/solr" />

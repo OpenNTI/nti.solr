@@ -16,6 +16,8 @@ from zope.intid.interfaces import IIntIdRemovedEvent
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+from nti.contentlibrary.interfaces import IContentUnit
+
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
@@ -23,6 +25,7 @@ from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
 from nti.solr import EVALUATIONS_QUEUE
+from nti.solr import CONTENT_UNITS_QUEUE
 
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
@@ -60,6 +63,21 @@ def _entity_modified(obj, event):
 @component.adapter(IEntity, IIntIdRemovedEvent)
 def _entity_removed(obj, event):
 	queue_remove(ENTITIES_QUEUE, 
+				 single_unindex_job,
+				 obj=obj)
+
+# Content units subscribers
+@component.adapter(IContentUnit, IIntIdAddedEvent)
+def _contentunit_added(obj, event):
+	queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
+
+@component.adapter(IContentUnit, IObjectModifiedEvent)
+def _contentunit_modified(obj, event):
+	queue_modified(CONTENT_UNITS_QUEUE, single_index_job, obj)
+
+@component.adapter(IContentUnit, IIntIdRemovedEvent)
+def _contentunit_removed(obj, event):
+	queue_remove(CONTENT_UNITS_QUEUE, 
 				 single_unindex_job,
 				 obj=obj)
 

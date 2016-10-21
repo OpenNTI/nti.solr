@@ -19,7 +19,12 @@ from nti.contentlibrary.interfaces import IContentPackage
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import CONTENT_UNITS_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContentPackageValue
@@ -106,3 +111,13 @@ class ContentUnitDocument(MetadataDocument):
 @interface.implementer(IContentUnitDocument)
 def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
 	return document_creator(obj, factory=factory)
+
+@component.adapter(IContentUnit)
+@interface.implementer(ICoreCatalog)
+def _contentunit_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
+
+class ContentUnitsCatalog(CoreCatalog):
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, CONTENT_UNITS_CATALOG, client)
