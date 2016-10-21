@@ -218,6 +218,10 @@
 				for="nti.contentlibrary.interfaces.IContentUnit
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
+	<subscriber handler=".subscribers._index_contentunit"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 .interfaces.IIndexObjectEvent"/>
+
 	<!-- Assets -->
 	<adapter factory=".assets._DefaultAssetTitleValue"
 			 provides=".interfaces.ITitleValue"

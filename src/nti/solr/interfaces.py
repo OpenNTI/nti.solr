@@ -458,7 +458,19 @@ class ICoreCatalog(IInjection, IIndexSearch):
 		@param value: The object/id to remove
 		"""
 
+class IIndexObjectEvent(IObjectEvent):
+	"""
+	Event to signal object must be indexed
+	"""
+
+@interface.implementer(IIndexObjectEvent)
+class IndexObjectEvent(ObjectEvent):
+	pass
+
 class IObjectIndexedEvent(IObjectEvent):
+	"""
+	Event to signal an object has been indexed
+	"""
 	doc_id = ValidTextLine(title='Document id')
 
 @interface.implementer(IObjectIndexedEvent)
@@ -469,6 +481,9 @@ class ObjectIndexedEvent(ObjectEvent):
 		self.doc_id = doc_id
 
 class IObjectUnindexedEvent(IObjectEvent):
+	"""
+	Event to signal an object has been unindexed
+	"""
 	doc_id = ValidTextLine(title='Document id')
 
 @interface.implementer(IObjectUnindexedEvent)

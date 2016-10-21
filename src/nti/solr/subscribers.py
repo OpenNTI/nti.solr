@@ -27,6 +27,8 @@ from nti.solr import USERDATA_QUEUE
 from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
+from nti.solr.interfaces import IIndexObjectEvent
+
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
@@ -68,7 +70,7 @@ def _entity_removed(obj, event):
 
 # Content units subscribers
 @component.adapter(IContentUnit, IIntIdAddedEvent)
-def _contentunit_added(obj, event):
+def _contentunit_added(obj, event=None):
 	queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 @component.adapter(IContentUnit, IObjectModifiedEvent)
@@ -81,6 +83,10 @@ def _contentunit_removed(obj, event):
 				 single_unindex_job,
 				 obj=obj)
 
+@component.adapter(IContentUnit, IIndexObjectEvent)
+def _index_contentunit(obj, event):
+	_contentunit_added(object, None)
+	
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
