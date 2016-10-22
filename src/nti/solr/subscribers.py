@@ -18,8 +18,10 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contentlibrary.interfaces import IContentUnit
 
+from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
+from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
@@ -133,18 +135,22 @@ def _index_course(obj, event):
 def _index_transcript(obj, event):
 	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
 
-@component.adapter(INTIDocketAsset, IIntIdAddedEvent)
+@component.adapter(IPresentationAsset, IIntIdAddedEvent)
 def _asset_added(obj, event=None):
-	queue_add(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_add(ASSETS_QUEUE, single_index_job, obj)
 
-@component.adapter(INTIDocketAsset, IObjectModifiedEvent)
+@component.adapter(IPresentationAsset, IObjectModifiedEvent)
 def _asset_modified(obj, event):
-	queue_modified(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_modified(ASSETS_QUEUE, single_index_job, obj)
 
-@component.adapter(INTIDocketAsset, IIntIdRemovedEvent)
+@component.adapter(IPresentationAsset, IIntIdRemovedEvent)
 def _asset_removed(obj, event):
-	queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
 
-@component.adapter(INTIDocketAsset, IIndexObjectEvent)
+@component.adapter(IPresentationAsset, IIndexObjectEvent)
 def _index_asset(obj, event):
-	queue_add(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_add(ASSETS_QUEUE, single_index_job, obj)

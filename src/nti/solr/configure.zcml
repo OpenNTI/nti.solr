@@ -262,19 +262,19 @@
 			 name="solr" />
 
 	<subscriber handler=".subscribers._asset_added"
-				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
 
 	<subscriber handler=".subscribers._asset_removed"
-				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.intid.interfaces.IIntIdRemovedEvent"/>
 
 	<subscriber handler=".subscribers._asset_modified"
-				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
 	<subscriber handler=".subscribers._index_asset"
-				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 .interfaces.IIndexObjectEvent"/>
 
 	<!-- Courses -->
