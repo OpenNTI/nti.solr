@@ -217,13 +217,18 @@
 	<field name="_version_" type="long" indexed="true" stored="true"/>
 	<field name="creator" type="string" indexed="true" stored="true"/>
 	<field name="mimeType" type="string" indexed="true" stored="true" />
-	<field name="containerId" type="string" indexed="true" stored="true"/>
+	<field name="taggedTo" type="strings" indexed="true" stored="true"/>
+	<field name="inReplyTo" type="string" indexed="true" stored="false"/>
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
 	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
+	<field name="containerId" type="string" indexed="true" stored="false"/>
+	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
+	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
+	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
 	<!--%%%-suggest-start-%%%-->
-	<field name="suggest" type="text_suggest" indexed="true" stored="false"/>
-	<field name="suggest_ngram" type="text_suggest_ngram" indexed="true" stored="false"/>
+	<field name="suggest" type="text_suggest" multiValued="true" indexed="true" stored="false"/>
+	<field name="suggest_ngram" type="text_suggest_ngram" multiValued="true" indexed="true" stored="false"/>
 	<!--%%%-suggest-end-%%%-->
 	<!-- fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
