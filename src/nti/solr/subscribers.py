@@ -19,11 +19,13 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from nti.contentlibrary.interfaces import IContentUnit
 
 from nti.contenttypes.presentation.interfaces import INTITranscript
+from nti.contenttypes.presentation.interfaces import INTIDocketAsset
 
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
+from nti.solr import ASSETS_QUEUE
 from nti.solr import COURSES_QUEUE
 from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
@@ -83,9 +85,7 @@ def _contentunit_modified(obj, event):
 
 @component.adapter(IContentUnit, IIntIdRemovedEvent)
 def _contentunit_removed(obj, event):
-	queue_remove(CONTENT_UNITS_QUEUE, 
-				 single_unindex_job,
-				 obj=obj)
+	queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
 def _index_contentunit(obj, event):
@@ -132,3 +132,19 @@ def _index_course(obj, event):
 @component.adapter(INTITranscript, IIndexObjectEvent)
 def _index_transcript(obj, event):
 	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
+
+@component.adapter(INTIDocketAsset, IIntIdAddedEvent)
+def _asset_added(obj, event=None):
+	queue_add(ASSETS_QUEUE, single_index_job, obj)
+
+@component.adapter(INTIDocketAsset, IObjectModifiedEvent)
+def _asset_modified(obj, event):
+	queue_modified(ASSETS_QUEUE, single_index_job, obj)
+
+@component.adapter(INTIDocketAsset, IIntIdRemovedEvent)
+def _asset_removed(obj, event):
+	queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
+
+@component.adapter(INTIDocketAsset, IIndexObjectEvent)
+def _index_asset(obj, event):
+	queue_add(ASSETS_QUEUE, single_index_job, obj)

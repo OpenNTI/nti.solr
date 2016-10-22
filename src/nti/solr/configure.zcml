@@ -248,10 +248,34 @@
 			 provides=".interfaces.IAssetDocument"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
+	<adapter factory=".assets._asset_to_catalog"
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+	
+	<utility factory=".assets.AssetsCatalog"
+			 provides=".interfaces.ICoreCatalog"
+			 name='assets' />
+				 
 	<adapter factory=".externalization._AssetDocumentSOLRExternalizer"
 			 for=".interfaces.IAssetDocument"
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
+
+	<subscriber handler=".subscribers._asset_added"
+				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".subscribers._asset_removed"
+				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".subscribers._asset_modified"
+				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler=".subscribers._index_asset"
+				for="nti.contenttypes.presentation.interfaces.INTIDocketAsset
+					 .interfaces.IIndexObjectEvent"/>
 
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">

@@ -15,6 +15,7 @@ from nti.solr.interfaces import ISOLRQueueFactory
 
 QUEUE_NAME = '++etc++solr++queue'
 
+ASSETS_QUEUE = QUEUE_NAME + '++assets'
 COURSES_QUEUE = QUEUE_NAME + '++courses'
 ENTITIES_QUEUE = QUEUE_NAME + '++entities'
 USERDATA_QUEUE = QUEUE_NAME + '++userdata'
@@ -23,9 +24,10 @@ TRANSCRIPTS_QUEUE = QUEUE_NAME + '++transcripts'
 CONTENT_UNITS_QUEUE = QUEUE_NAME + '++contentunits'
 
 QUEUE_NAMES = (CONTENT_UNITS_QUEUE, TRANSCRIPTS_QUEUE, 
-               USERDATA_QUEUE, ENTITIES_QUEUE, 
+               USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE, 
                EVALUATIONS_QUEUE, COURSES_QUEUE)
 
+ASSETS_CATALOG  = 'assets'
 COURSES_CATALOG  = 'courses'
 ENTITIES_CATALOG = 'entities'  
 USERDATA_CATALOG = 'userdata'

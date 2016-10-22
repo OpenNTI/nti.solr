@@ -18,7 +18,12 @@ from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import ASSETS_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
@@ -121,3 +126,15 @@ class AssetDocument(MetadataDocument):
 @interface.implementer(IAssetDocument)
 def _AssetDocumentCreator(obj, factory=AssetDocument):
 	return document_creator(obj, factory=factory, provided=IAssetDocument)
+
+@component.adapter(IContentUnit)
+@interface.implementer(ICoreCatalog)
+def _asset_to_catalog(obj):
+	return component.getUtility(ICoreCatalog, name=ASSETS_CATALOG)
+
+class AssetsCatalog(CoreCatalog):
+
+	document_interface = IAssetDocument
+
+	def __init__(self, client=None):
+		CoreCatalog.__init__(self, ASSETS_CATALOG, client)
