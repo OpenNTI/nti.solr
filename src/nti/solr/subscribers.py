@@ -154,3 +154,6 @@ def _asset_removed(obj, event):
 def _index_asset(obj, event):
 	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
 		queue_add(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj):
+		for transcript in getattr(obj, 'transcripts', None) or ():
+			_index_transcript(transcript, None)
