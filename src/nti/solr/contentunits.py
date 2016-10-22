@@ -121,5 +121,7 @@ def _contentunit_to_catalog(obj):
 
 class ContentUnitsCatalog(CoreCatalog):
 
+	document_interface = IContentUnitDocument
+
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, CONTENT_UNITS_CATALOG, client)

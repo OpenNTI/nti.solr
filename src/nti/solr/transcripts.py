@@ -147,5 +147,7 @@ def _transcript_to_catalog(obj):
 
 class TranscriptsCatalog(CoreCatalog):
 
+	document_interface = ITranscriptDocument
+
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, TRANSCRIPTS_CATALOG, client)

@@ -194,5 +194,7 @@ def _entity_to_catalog(obj):
 
 class EntitiesCatalog(CoreCatalog):
 
+	document_interface = IEntityDocument
+	
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, ENTITIES_CATALOG, client)

@@ -105,5 +105,7 @@ def _course_to_catalog(obj):
 
 class CoursesCatalog(CoreCatalog):
 
+	document_interface = ICourseCatalogDocument
+
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, COURSES_CATALOG, client)

@@ -103,5 +103,7 @@ def _userdata_to_catalog(obj):
 
 class UserDataCatalog(CoreCatalog):
 
+	document_interface = IUserDataDocument
+
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, USERDATA_CATALOG, client)

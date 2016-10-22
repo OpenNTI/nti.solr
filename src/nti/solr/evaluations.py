@@ -115,5 +115,7 @@ def _evaluation_to_catalog(obj):
 
 class EvaluationsCatalog(CoreCatalog):
 
+	document_interface = IEvaluationDocument
+	
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, EVALUATIONS_CATALOG, client)

@@ -40,6 +40,8 @@ class CoreCatalog(object):
 	__parent__ = None
 	__name__ = alias('name')
 
+	document_interface = ICoreDocument
+
 	def __init__(self, name, client=None):
 		self.name = name
 		if client is not None:
@@ -56,7 +58,7 @@ class CoreCatalog(object):
 		return self.index_doc(doc_id, value, commit=commit)
 
 	def index_doc(self, doc_id, value, commit=True):
-		document = ICoreDocument(value, value)
+		document = self.document_interface(value, value)
 		ext_obj = to_external_object(document, name='solr')
 		if doc_id != ext_obj.get('id'):
 			ext_obj['id'] = doc_id
