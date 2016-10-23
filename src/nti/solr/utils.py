@@ -46,25 +46,25 @@ def get_content_package_from_ntiids(ntiids):
 		from nti.contenttypes.courses.common import get_course_packages
 		from nti.contenttypes.courses.interfaces import ICourseInstance
 		from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-	except AttributeError:
-		return None
 
-	result = None
-	for ntiid in ntiids or ():
-		obj = find_object_with_ntiid(ntiid)
-		if ICourseCatalogEntry.providedBy(obj) or ICourseInstance.providedBy(obj):
-			packages = get_course_packages(obj)
-			result = packages[0] if packages else None
-			if result is not None:
+		result = None
+		for ntiid in ntiids or ():
+			obj = find_object_with_ntiid(ntiid)
+			if ICourseCatalogEntry.providedBy(obj) or ICourseInstance.providedBy(obj):
+				packages = get_course_packages(obj)
+				result = packages[0] if packages else None # pick first
+				if result is not None:
+					break
+			elif IContentPackage.providedBy(obj):
+				result = obj
 				break
-		elif IContentPackage.providedBy(obj):
-			result = obj
-			break
-		elif IContentUnit.providedBy(obj):
-			result = find_interface(obj, IContentPackage, strict=False)
-			if result is not None:
-				break
-	return result
+			elif IContentUnit.providedBy(obj):
+				result = find_interface(obj, IContentPackage, strict=False)
+				if result is not None:
+					break
+		return result
+	except ImportError:
+		return None
 
 def get_item_content_package(item):
 	catalog = get_library_catalog()
