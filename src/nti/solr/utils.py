@@ -119,8 +119,6 @@ def document_creator(obj, factory, provided=None):
 	return result
 
 def object_finder(doc_id, intids=None):
-	if doc_id is None:
-		return None
 	intids = component.getUtility(IIntIds) if intids is None else intids
 	try:
 		doc_id = int(doc_id)
