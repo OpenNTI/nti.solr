@@ -40,12 +40,15 @@ class CoreCatalog(object):
 	__parent__ = None
 	__name__ = alias('name')
 
+	auto_commit = True
 	document_interface = ICoreDocument
 
-	def __init__(self, name, client=None):
+	def __init__(self, name, client=None, auto_commit=None):
 		self.name = name
 		if client is not None:
 			self.client = client
+		if auto_commit is not None:
+			self.auto_commit = bool(auto_commit)
 
 	@readproperty
 	def client(self):
@@ -53,15 +56,16 @@ class CoreCatalog(object):
 		url = config.url + '/%s' % self.name
 		return pysolr.Solr(url, timeout=config.timeout)
 
-	def add(self, value, commit=True):
+	def add(self, value, commit=None):
 		adapted = IIDValue(value, None)
 		doc_id = adapted.value() if adapted is not None else None
 		if doc_id:
 			return self.index_doc(doc_id, value, commit=commit)
 		return False
 
-	def index_doc(self, doc_id, value, commit=True):
+	def index_doc(self, doc_id, value, commit=None):
 		document = self.document_interface(value, None)
+		commit = self.auto_commit if commit is None else commit
 		if document is not None:
 			ext_obj = to_external_object(document, name='solr')
 			ext_obj['id'] = doc_id
@@ -70,7 +74,7 @@ class CoreCatalog(object):
 			return True
 		return False
 
-	def remove(self, value, commit=True):
+	def remove(self, value, commit=None):
 		if isinstance(value, int):
 			value = str(int)
 		elif not isinstance(value, six.string_types):
@@ -81,10 +85,12 @@ class CoreCatalog(object):
 		return False
 
 	def unindex_doc(self, doc_id, commit=True):
+		commit = self.auto_commit if commit is None else commit
 		self.client.delete(id=doc_id, commit=commit)
 		obj = object_finder(doc_id)  # may be None
 		notify(ObjectUnindexedEvent(obj, doc_id))
 		return obj
 
-	def clear(self, commit=True):
+	def clear(self, commit=None):
+		commit = self.auto_commit if commit is None else commit
 		self.client.delete(q='*:*', commit=commit)
