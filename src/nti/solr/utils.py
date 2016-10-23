@@ -28,11 +28,6 @@ from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import extract_key_words
 
-from nti.contenttypes.courses.common import get_course_packages
-
-from nti.contenttypes.courses.interfaces import ICourseInstance
-from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-
 from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.schema.interfaces import find_most_derived_interface
@@ -47,6 +42,13 @@ from nti.traversal.traversal import find_interface
 # assets
 
 def get_content_package_from_ntiids(ntiids):
+	try:
+		from nti.contenttypes.courses.common import get_course_packages
+		from nti.contenttypes.courses.interfaces import ICourseInstance
+		from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
+	except AttributeError:
+		return None
+
 	result = None
 	for ntiid in ntiids or ():
 		obj = find_object_with_ntiid(ntiid)

@@ -56,6 +56,8 @@ class CoreCatalog(object):
 		url = config.url + '/%s' % self.name
 		return pysolr.Solr(url, timeout=config.timeout)
 
+	# index methods
+
 	def add(self, value, commit=None):
 		adapted = IIDValue(value, None)
 		doc_id = adapted.value() if adapted is not None else None
@@ -84,13 +86,27 @@ class CoreCatalog(object):
 			return self.unindex_doc(value, commit=commit)
 		return False
 
-	def unindex_doc(self, doc_id, commit=True):
+	def _do_unindex(self, doc_id, commit=None):
 		commit = self.auto_commit if commit is None else commit
 		self.client.delete(id=doc_id, commit=commit)
-		obj = object_finder(doc_id)  # may be None
-		notify(ObjectUnindexedEvent(obj, doc_id))
+
+	def unindex_doc(self, doc_id, commit=None):
+		self._do_unindex(doc_id, commit)
+		obj = object_finder(doc_id) # may be None
+		if obj is not None:
+			notify(ObjectUnindexedEvent(obj, doc_id))
 		return obj
 
 	def clear(self, commit=None):
 		commit = self.auto_commit if commit is None else commit
 		self.client.delete(q='*:*', commit=commit)
+
+	def get_object(self, doc_id):
+		result = object_finder(doc_id)
+		if result is None:
+			logger.debug('Could not find object with id %r' % doc_id)
+			try:
+				self._do_unindex(doc_id, False)
+			except Exception:
+				pass
+		return result
