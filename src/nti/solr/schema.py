@@ -73,4 +73,5 @@ class SolrDatetime(Orderable, Field):
 
 	@staticmethod
 	def toUnicode(value):
+		value = SolrDatetime.convert(value)
 		return value.astimezone(pytz.utc).strftime(DATE_FORMAT)
