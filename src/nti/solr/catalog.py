@@ -19,7 +19,11 @@ import pysolr
 from zope import component
 from zope import interface
 
+from zope.catalog.catalog import ResultSet
+
 from zope.event import notify
+
+from zope.intid.interfaces import IIntIds
 
 from zope.location.interfaces import IContained
 
@@ -158,7 +162,9 @@ class CoreCatalog(object):
 		# alway return id and core
 		params['fl'] = 'id,score'
 		# query-term, filter-query, params
-		return term, urllib.urlencode(fq), params
+		return term, fq, params
+
+	# zope catalog 
 
 	def _bulild_from_catalog_query(self, query):
 		fq = {}
@@ -202,3 +208,18 @@ class CoreCatalog(object):
 			except (ValueError, TypeError, KeyError):
 				pass
 		return result
+
+	def searchResults(self, **searchterms):
+		searchterms.pop('_sort_index', None)
+		limit = searchterms.pop('_limit', None)
+		reverse = searchterms.pop('_reverse', False)
+		results = self.apply(searchterms)
+		if reverse or limit:
+			results = list(results)
+			if reverse:
+				results.reverse()
+			if limit:
+				del results[limit:]
+		intids = component.getUtility(IIntIds)
+		results = ResultSet(results, intids)
+		return results
