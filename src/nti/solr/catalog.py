@@ -5,14 +5,12 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.externalization.interfaces import LocatedExternalDict
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
 import six
 import urllib
-from collections import OrderedDict
 
 import pysolr
 
@@ -27,7 +25,7 @@ from zope.schema.interfaces import IDatetime
 
 from nti.externalization.externalization import to_external_object
 
-from nti.property.property import alias
+from nti.property.property import alias, Lazy
 from nti.property.property import readproperty
 
 from nti.solr.interfaces import ISOLR
@@ -119,17 +117,23 @@ class CoreCatalog(object):
 				pass
 		return result
 	
+	@Lazy
+	def _text_fields(self):
+		result = []
+		for name, field in self.document_interface.namesAndDescriptions(all=True):
+			if ITextField.providedBy(field):
+				result.append(name)
+		return result
+
 	def _build(self, query):
-		text_fields = []
 		term = query.term
-		fq = OrderedDict()
-		params = OrderedDict()
+		fq = dict()
+		params = dict()
+		text_fields = self._text_fields
 		for name, value in query.items():
 			if name not in self.document_interface:
 				continue
-			field = self.document_interface(name)
-			if ITextField.providedBy(field):
-				text_fields.append(name)
+			field = self.document_interface[name]
 			if isinstance(value, tuple) and len(value) == 2: # range
 				if IDatetime.providedBy(field):
 					value = [SolrDatetime.toUnicode(x) for x in value]
@@ -143,23 +147,10 @@ class CoreCatalog(object):
 			params['hl.snippets'] = '2'
 			params['hl.fl'] = ','.join(text_fields)
 			params['hl.useFastVectorHighlighter'] = 'true'
+		# alway return id and core
 		params['fl'] = 'id,score'
 		# query-term, filter-query, params
 		return term, urllib.urlencode(fq), params
 
 	def apply(self, query):
 		pass
-	
-if __name__ == '__main__':
-	url = 'http://localhost:8983/solr/%s' % 'contentunits'
-	client = pysolr.Solr(url, timeout=1200)
-	catalog = CoreCatalog('contentunits', client=client)
-	query = LocatedExternalDict()
-	query.term = "Japanese"
-	query.applyHighlights = False
-	term, fq, params = catalog._build(query)
-	q = '%s&fq=%s' % (term, fq) if fq else term
-	print(q, params)
-	results = client.search(q, **params)
-	for result in results:
-		print(result)
