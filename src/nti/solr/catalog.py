@@ -33,6 +33,8 @@ import BTrees
 
 from nti.externalization.externalization import to_external_object
 
+from nti.externalization.interfaces import LocatedExternalDict
+
 from nti.property.property import alias, Lazy
 from nti.property.property import readproperty
 
@@ -129,41 +131,6 @@ class CoreCatalog(object):
 				pass
 		return result
 
-	@Lazy
-	def _text_fields(self):
-		result = []
-		for name, field in self.document_interface.namesAndDescriptions(all=True):
-			if ITextField.providedBy(field):
-				result.append(name)
-		return result
-
-	def _build_from_search_query(self, query):
-		fq = dict()
-		params = dict()
-		term = query.term
-		text_fields = self._text_fields
-		for name, value in query.items():
-			if name not in self.document_interface:
-				continue
-			field = self.document_interface[name]
-			if isinstance(value, tuple) and len(value) == 2:  # range
-				if IDatetime.providedBy(field):
-					value = [SolrDatetime.toUnicode(x) for x in value]
-				fq[name] = "[%s TO %s]" % (value[0], value[1])
-			elif isinstance(value, (list, tuple, set)) and value:  # OR list
-				fq[name] = "+(%s)" % ' '.join(value)
-			else:
-				fq[name] = str(value)
-		if text_fields and query.applyHighlights:
-			params['hl'] = 'true'
-			params['hl.snippets'] = '2'
-			params['hl.fl'] = ','.join(text_fields)
-			params['hl.useFastVectorHighlighter'] = 'true'
-		# alway return id and core
-		params['fl'] = 'id,score'
-		# query-term, filter-query, params
-		return term, fq, params
-
 	# zope catalog 
 
 	def _bulild_from_catalog_query(self, query):
@@ -192,6 +159,7 @@ class CoreCatalog(object):
 
 	def apply(self, query):
 		if isinstance(query, _primitive_types):
+			query = str(query) if isinstance(query, six.string_types) else query
 			term, fq, params = query, {}, {'fl':'id,score'}
 		else:
 			term, fq, params = self._bulild_from_catalog_query(query)
@@ -223,3 +191,55 @@ class CoreCatalog(object):
 		intids = component.getUtility(IIntIds)
 		results = ResultSet(results, intids)
 		return results
+
+	# content search / ISearcher
+	
+	@Lazy
+	def _text_fields(self):
+		result = []
+		for name, field in self.document_interface.namesAndDescriptions(all=True):
+			if ITextField.providedBy(field):
+				result.append(name)
+		return result
+
+	def _build_from_search_query(self, query):
+		fq = dict()
+		params = dict()
+		term = query.term
+		text_fields = self._text_fields
+		for name, value in query.items():
+			if name not in self.document_interface:
+				continue
+			field = self.document_interface[name]
+			if isinstance(value, tuple) and len(value) == 2:  # range
+				if IDatetime.providedBy(field):
+					value = [SolrDatetime.toUnicode(x) for x in value]
+				fq[name] = "[%s TO %s]" % (value[0], value[1])
+			elif isinstance(value, (list, tuple, set)) and value:  # OR list
+				fq[name] = "+(%s)" % ' '.join(value)
+			else:
+				fq[name] = str(value)
+
+		applyHighlights = getattr(query, 'applyHighlights', False)
+		if text_fields and applyHighlights:
+			params['hl'] = 'true'
+			params['hl.fl'] = ','.join(text_fields)
+			params['hl.useFastVectorHighlighter'] = 'true'
+			params['hl.snippets'] = getattr(query, 'snippets', None) or '2'
+		# alway return id and core
+		params['fl'] = 'id,score'
+		# query-term, filter-query, params
+		return (term, fq, params)
+
+	def searcher(self, query, *args, **kwargs):
+		if isinstance(query, _primitive_types):
+			d = LocatedExternalDict()
+			d.term = str(query) if isinstance(query, six.string_types) else query
+			query = d # replace
+		# prepare solr query
+		term, fq, params = self._bulild_from_catalog_query(query)
+		all_query = {'q': term}
+		all_query.update(fq)
+		q = urllib.urlencode(all_query)
+		self.client.search(q, **params)
+		# TODO: return hits
