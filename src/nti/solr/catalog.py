@@ -5,11 +5,14 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.externalization.interfaces import LocatedExternalDict
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
 import six
+import urllib
+from collections import OrderedDict
 
 import pysolr
 
@@ -20,6 +23,8 @@ from zope.event import notify
 
 from zope.location.interfaces import IContained
 
+from zope.schema.interfaces import IDatetime
+
 from nti.externalization.externalization import to_external_object
 
 from nti.property.property import alias
@@ -27,10 +32,13 @@ from nti.property.property import readproperty
 
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import ITextField
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
+
+from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import object_finder
 
@@ -110,3 +118,48 @@ class CoreCatalog(object):
 			except Exception:
 				pass
 		return result
+	
+	def _build(self, query):
+		text_fields = []
+		term = query.term
+		fq = OrderedDict()
+		params = OrderedDict()
+		for name, value in query.items():
+			if name not in self.document_interface:
+				continue
+			field = self.document_interface(name)
+			if ITextField.providedBy(field):
+				text_fields.append(name)
+			if isinstance(value, tuple) and len(value) == 2: # range
+				if IDatetime.providedBy(field):
+					value = [SolrDatetime.toUnicode(x) for x in value]
+				fq[name] = "[%s TO %s]" % (value[0], value[1])
+			elif isinstance(value, (list, tuple, set)) and value: # OR list
+				fq[name] = "+(%s)" % ' '.join(value)
+			else:
+				fq[name] = str(value)
+		if text_fields and query.applyHighlights:
+			params['hl'] = 'true'
+			params['hl.snippets'] = '2'
+			params['hl.fl'] = ','.join(text_fields)
+			params['hl.useFastVectorHighlighter'] = 'true'
+		params['fl'] = 'id,score'
+		# query-term, filter-query, params
+		return term, urllib.urlencode(fq), params
+
+	def apply(self, query):
+		pass
+	
+if __name__ == '__main__':
+	url = 'http://localhost:8983/solr/%s' % 'contentunits'
+	client = pysolr.Solr(url, timeout=1200)
+	catalog = CoreCatalog('contentunits', client=client)
+	query = LocatedExternalDict()
+	query.term = "Japanese"
+	query.applyHighlights = False
+	term, fq, params = catalog._build(query)
+	q = '%s&fq=%s' % (term, fq) if fq else term
+	print(q, params)
+	results = client.search(q, **params)
+	for result in results:
+		print(result)
