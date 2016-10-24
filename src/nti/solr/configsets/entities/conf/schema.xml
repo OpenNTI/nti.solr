@@ -243,4 +243,9 @@
 	<field name="education_description" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
 	<field name="education_degree" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
 	<field name="social_url" type="strings" indexed="true" required="false" stored="true"/>
+	<!-- catch all / copy fields -->
+	<copyField source="alias" dest="_text_"/>
+	<copyField source="realname" dest="_text_"/>
+	<copyField source="education_*" dest="_text_"/>
+	<copyField source="professional_*" dest="_text_"/>
 </schema>
