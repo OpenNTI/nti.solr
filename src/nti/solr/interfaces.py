@@ -24,6 +24,11 @@ from nti.schema.field import IndexedIterable
 from nti.schema.field import Text as ValidText
 from nti.schema.field import TextLine as ValidTextLine
 
+class ITextField(interface.Interface):
+	"""
+	Marker interface for text fields
+	"""
+
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -101,13 +106,16 @@ class IIsTopLevelContentValue(IAttributeValue):
 	Adapter interface to get the isTopLevelContent value from a given object
 	"""
 
-def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True, type_=None):
+def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
+			 type_=None, boost=None):
 	field.setTaggedValue('__solr_stored__', stored)
 	field.setTaggedValue('__solr_indexed__', indexed)
 	field.setTaggedValue('__solr_multiValued__', multiValued)
 	field.setTaggedValue('__solr_value_interface__', adapter)
 	if type_ is not None:
 		field.setTaggedValue('__solr_type__', type_)
+	if boost is not None:
+		field.setTaggedValue('__solr_boost__', boost)
 
 class ICoreDocument(interface.Interface):
 	id = ValidTextLine(title='The id', required=True)
@@ -154,12 +162,12 @@ tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
 
 # misc
 
-class IContentValue(IStringValue):
+class IContentValue(IStringValue, ITextField):
 	"""
 	Adapter interface to get the content value from a given object
 	"""
 
-class IKeywordsValue(IStringValue):
+class IKeywordsValue(IStringValue, ITextField):
 	"""
 	Adapter interface to get the keywords value from a given object
 	"""
@@ -186,7 +194,7 @@ class IAliasValue(IAttributeValue):
 	Adapter interface to get the alias value from a given object
 	"""
 
-class IRealnameValue(IAttributeValue):
+class IRealnameValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the realname value from a given object
 	"""
@@ -196,32 +204,32 @@ class IEmailValue(IAttributeValue):
 	Adapter interface to get the email value from a given object
 	"""
 
-class IProfessionalTitleValue(IAttributeValue):
+class IProfessionalTitleValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the professional titles from a given entity object
 	"""
 
-class IProfessionalCompanyValue(IAttributeValue):
+class IProfessionalCompanyValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the professional companies from a given entity object
 	"""
 
-class IProfessionalDescriptionValue(IAttributeValue):
+class IProfessionalDescriptionValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the professional descriptions from a given entity object
 	"""
 
-class IEducationSchoolValue(IAttributeValue):
+class IEducationSchoolValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the education schools from a given entity object
 	"""
 
-class IEducationDegreeValue(IAttributeValue):
+class IEducationDegreeValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the education degrees from a given entity object
 	"""
 
-class IEducationDescriptionValue(IAttributeValue):
+class IEducationDescriptionValue(IAttributeValue, ITextField):
 	"""
 	Adapter interface to get the education descriptions from a given entity object
 	"""
@@ -231,7 +239,7 @@ class ISocialURLValue(IAttributeValue):
 	Adapter interface to get the social URLs from a given entity object
 	"""
 
-class IAboutValue(IStringValue):
+class IAboutValue(IStringValue, ITextField):
 	"""
 	Adapter interface to get the about value from a given entity object
 	"""
@@ -326,8 +334,8 @@ tagField(ITranscriptDocument['content_en'], True, IContentValue)
 tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
 
 # content units
-
-class ITitleValue(IStringValue):
+	
+class ITitleValue(IStringValue, ITextField):
 	"""
 	Adapter interface to get the title value from a given object
 	"""
