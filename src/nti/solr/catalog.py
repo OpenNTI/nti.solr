@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 import six
 import urllib
+from numbers import Number
+from collections import Mapping
 
 import pysolr
 
@@ -22,6 +24,8 @@ from zope.event import notify
 from zope.location.interfaces import IContained
 
 from zope.schema.interfaces import IDatetime
+
+import BTrees
 
 from nti.externalization.externalization import to_external_object
 
@@ -40,6 +44,8 @@ from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import object_finder
 
+_primitive_types = six.string_types + (Number,)
+
 @interface.implementer(ICoreCatalog, IContained)
 class CoreCatalog(object):
 
@@ -48,6 +54,8 @@ class CoreCatalog(object):
 
 	auto_commit = True
 	document_interface = ICoreDocument
+
+	family = BTrees.family64
 
 	def __init__(self, name, client=None, auto_commit=None):
 		self.name = name
@@ -98,7 +106,7 @@ class CoreCatalog(object):
 
 	def unindex_doc(self, doc_id, commit=None):
 		self._do_unindex(doc_id, commit)
-		obj = object_finder(doc_id) # may be None
+		obj = object_finder(doc_id)  # may be None
 		if obj is not None:
 			notify(ObjectUnindexedEvent(obj, doc_id))
 		return obj
@@ -116,7 +124,7 @@ class CoreCatalog(object):
 			except Exception:
 				pass
 		return result
-	
+
 	@Lazy
 	def _text_fields(self):
 		result = []
@@ -125,20 +133,20 @@ class CoreCatalog(object):
 				result.append(name)
 		return result
 
-	def _build(self, query):
-		term = query.term
+	def _build_from_search_query(self, query):
 		fq = dict()
 		params = dict()
+		term = query.term
 		text_fields = self._text_fields
 		for name, value in query.items():
 			if name not in self.document_interface:
 				continue
 			field = self.document_interface[name]
-			if isinstance(value, tuple) and len(value) == 2: # range
+			if isinstance(value, tuple) and len(value) == 2:  # range
 				if IDatetime.providedBy(field):
 					value = [SolrDatetime.toUnicode(x) for x in value]
 				fq[name] = "[%s TO %s]" % (value[0], value[1])
-			elif isinstance(value, (list, tuple, set)) and value: # OR list
+			elif isinstance(value, (list, tuple, set)) and value:  # OR list
 				fq[name] = "+(%s)" % ' '.join(value)
 			else:
 				fq[name] = str(value)
@@ -152,5 +160,45 @@ class CoreCatalog(object):
 		# query-term, filter-query, params
 		return term, urllib.urlencode(fq), params
 
+	def _bulild_from_catalog_query(self, query):
+		fq = {}
+		for name, value in query.items():
+			if name not in self.document_interface:
+				continue
+			if isinstance(value, tuple) and len(value) == 2:
+				if value[0] == value[1]:
+					value = {'any_of': (value[0],)}
+				else:
+					value = {'between': value}
+			elif isinstance(value, _primitive_types):
+				value = {'any_of': (value,)}
+			__traceback_info__ = name, value
+			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
+			for k, v in value.items():
+				if k == 'any_of':
+					fq[k] = "+(%s)" % ' '.join(v)
+				elif k == 'all_of':
+					fq[k] = "(%s)" % 'AND'.join(v)
+				elif k == 'between':
+					fq[k] = "[%s TO %s]" % (v[0], v[1])
+		# query-term, filter-query, params
+		return ('*:*', fq, {'fl':'id,score'})
+
 	def apply(self, query):
-		pass
+		if isinstance(query, _primitive_types):
+			term, fq, params = query, {}, {'fl':'id,score'}
+		else:
+			term, fq, params = self._bulild_from_catalog_query(query)
+		# prepare solr query
+		all_query = {'q': term}
+		all_query.update(fq)
+		q = urllib.urlencode(all_query)
+		# search
+		result = self.family.IF.BTree()
+		for hit in self.client.search(q, **params):
+			try:
+				uid = int(hit['id'])
+				result[uid] = hit['score']
+			except (ValueError, TypeError, KeyError):
+				pass
+		return result
