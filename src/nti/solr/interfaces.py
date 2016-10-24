@@ -29,6 +29,11 @@ class ITextField(interface.Interface):
 	Marker interface for text fields
 	"""
 
+class IDateField(interface.Interface):
+	"""
+	Marker interface for date fields
+	"""
+	
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -107,7 +112,7 @@ class IIsTopLevelContentValue(IAttributeValue):
 	"""
 
 def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
-			 type_=None, boost=None):
+			 type_=None, boost=None, provided=None):
 	field.setTaggedValue('__solr_stored__', stored)
 	field.setTaggedValue('__solr_indexed__', indexed)
 	field.setTaggedValue('__solr_multiValued__', multiValued)
@@ -116,6 +121,8 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 		field.setTaggedValue('__solr_type__', type_)
 	if boost is not None:
 		field.setTaggedValue('__solr_boost__', boost)
+	if provided is not None:
+		interface.alsoProvides(field, provided)
 
 class ICoreDocument(interface.Interface):
 	id = ValidTextLine(title='The id', required=True)
@@ -154,20 +161,19 @@ tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
 tagField(IMetadataDocument['containerId'], False, IContainerIdValue)
 tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, True)
-tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue)
-tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue)
 tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, True)
 tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
 tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
-
+tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue, provided=IDateField)
+tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue, provided=IDateField)
 # misc
 
-class IContentValue(IStringValue, ITextField):
+class IContentValue(IStringValue):
 	"""
 	Adapter interface to get the content value from a given object
 	"""
 
-class IKeywordsValue(IStringValue, ITextField):
+class IKeywordsValue(IStringValue):
 	"""
 	Adapter interface to get the keywords value from a given object
 	"""
@@ -194,7 +200,7 @@ class IAliasValue(IAttributeValue):
 	Adapter interface to get the alias value from a given object
 	"""
 
-class IRealnameValue(IAttributeValue, ITextField):
+class IRealnameValue(IAttributeValue):
 	"""
 	Adapter interface to get the realname value from a given object
 	"""
@@ -204,32 +210,32 @@ class IEmailValue(IAttributeValue):
 	Adapter interface to get the email value from a given object
 	"""
 
-class IProfessionalTitleValue(IAttributeValue, ITextField):
+class IProfessionalTitleValue(IAttributeValue):
 	"""
 	Adapter interface to get the professional titles from a given entity object
 	"""
 
-class IProfessionalCompanyValue(IAttributeValue, ITextField):
+class IProfessionalCompanyValue(IAttributeValue):
 	"""
 	Adapter interface to get the professional companies from a given entity object
 	"""
 
-class IProfessionalDescriptionValue(IAttributeValue, ITextField):
+class IProfessionalDescriptionValue(IAttributeValue):
 	"""
 	Adapter interface to get the professional descriptions from a given entity object
 	"""
 
-class IEducationSchoolValue(IAttributeValue, ITextField):
+class IEducationSchoolValue(IAttributeValue):
 	"""
 	Adapter interface to get the education schools from a given entity object
 	"""
 
-class IEducationDegreeValue(IAttributeValue, ITextField):
+class IEducationDegreeValue(IAttributeValue):
 	"""
 	Adapter interface to get the education degrees from a given entity object
 	"""
 
-class IEducationDescriptionValue(IAttributeValue, ITextField):
+class IEducationDescriptionValue(IAttributeValue):
 	"""
 	Adapter interface to get the education descriptions from a given entity object
 	"""
@@ -239,7 +245,7 @@ class ISocialURLValue(IAttributeValue):
 	Adapter interface to get the social URLs from a given entity object
 	"""
 
-class IAboutValue(IStringValue, ITextField):
+class IAboutValue(IStringValue):
 	"""
 	Adapter interface to get the about value from a given entity object
 	"""
@@ -302,16 +308,16 @@ class IEntityDocument(IMetadataDocument):
 
 tagField(IEntityDocument['email'], True, IEmailValue)
 tagField(IEntityDocument['alias'], True, IAliasValue, type_='text_lower')
-tagField(IEntityDocument['about_en'], False, IAboutValue)
 tagField(IEntityDocument['realname'], True, IRealnameValue, type_='text_lower')
 tagField(IEntityDocument['username'], True, IUsernameValue, True)
 tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
-tagField(IEntityDocument['education_school'], True, IEducationSchoolValue, True, type_='text_lower')
-tagField(IEntityDocument['education_degree'], True, IEducationDegreeValue, True, type_='text_lower')
-tagField(IEntityDocument['education_description'], True, IEducationDescriptionValue, True, type_='text_lower')
-tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, True, type_='text_lower')
-tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True, type_='text_lower')
-tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True, type_='text_lower')
+tagField(IEntityDocument['about_en'], False, IAboutValue, provided=ITextField)
+tagField(IEntityDocument['education_school'], True, IEducationSchoolValue, True, type_='text_lower', provided=ITextField)
+tagField(IEntityDocument['education_degree'], True, IEducationDegreeValue, True, type_='text_lower', provided=ITextField)
+tagField(IEntityDocument['education_description'], True, IEducationDescriptionValue, True, type_='text_lower', provided=ITextField)
+tagField(IEntityDocument['professional_title'], True, IProfessionalTitleValue, True, type_='text_lower', provided=ITextField)
+tagField(IEntityDocument['professional_company'], True, IProfessionalCompanyValue, True, type_='text_lower', provided=ITextField)
+tagField(IEntityDocument['professional_description'], True, IProfessionalDescriptionValue, True, type_='text_lower', provided=ITextField)
 
 class IMediaNTIIDValue(IAttributeValue):
 	"""
@@ -330,12 +336,12 @@ class ITranscriptDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
-tagField(ITranscriptDocument['content_en'], True, IContentValue)
-tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 # content units
 	
-class ITitleValue(IStringValue, ITextField):
+class ITitleValue(IStringValue):
 	"""
 	Adapter interface to get the title value from a given object
 	"""
@@ -361,10 +367,10 @@ class IContentUnitDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
-tagField(IContentUnitDocument['title_en'], True, ITitleValue)
-tagField(IContentUnitDocument['content_en'], True, IContentValue)
 tagField(IContentUnitDocument['package'], True, IContentPackageValue)
-tagField(IContentUnitDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(IContentUnitDocument['title_en'], True, ITitleValue, provided=ITextField)
+tagField(IContentUnitDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IContentUnitDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 # user data
 
@@ -390,9 +396,9 @@ class IUserDataDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IUserDataDocument['tags'], True, ITagsValue)
-tagField(IUserDataDocument['title_en'], True, ITitleValue)
-tagField(IUserDataDocument['content_en'], True, IContentValue)
-tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
+tagField(IUserDataDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class IAssetDocument(IMetadataDocument):
 
@@ -408,9 +414,9 @@ class IAssetDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IAssetDocument['ntiid'], True, INTIIDValue)
-tagField(IAssetDocument['title_en'], True, ITitleValue)
-tagField(IAssetDocument['content_en'], True, IContentValue)
-tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(IAssetDocument['title_en'], True, ITitleValue, provided=ITextField)
+tagField(IAssetDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class ICourseCatalogDocument(IMetadataDocument):
 
@@ -426,9 +432,9 @@ class ICourseCatalogDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
-tagField(ICourseCatalogDocument['title_en'], True, ITitleValue)
-tagField(ICourseCatalogDocument['content_en'], True, IContentValue)
-tagField(ICourseCatalogDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(ICourseCatalogDocument['title_en'], True, ITitleValue, provided=ITextField)
+tagField(ICourseCatalogDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(ICourseCatalogDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class IEvaluationDocument(IMetadataDocument):
 
@@ -444,9 +450,9 @@ class IEvaluationDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IEvaluationDocument['ntiid'], True, INTIIDValue)
-tagField(IEvaluationDocument['title_en'], True, ITitleValue)
-tagField(IEvaluationDocument['content_en'], True, IContentValue)
-tagField(IEvaluationDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower')
+tagField(IEvaluationDocument['title_en'], True, ITitleValue, provided=ITextField)
+tagField(IEvaluationDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IEvaluationDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class ICoreCatalog(IInjection, IIndexSearch):
 
