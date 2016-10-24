@@ -24,8 +24,6 @@ from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
 
-from nti.property.property import Lazy
-
 from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
@@ -120,22 +118,22 @@ class UserDataCatalog(CoreCatalog):
 
 	# principal methods
 
-	@Lazy
-	def username(self):
+	@property
+	def current_username(self):
 		try:
 			return current_principal(False).id
 		except AttributeError:
 			return None
 
-	@Lazy
-	def entity(self):
+	@property
+	def current_entity(self):
 		try:
 			return User.get_entity(self.username)
 		except (LookupError, TypeError):
 			return None
 
-	@Lazy
-	def memberships(self):
+	@property
+	def current_memberships(self):
 		user = self.entity
 		if user is not None:
 			dynamic_memberships = getattr(user, 'usernames_of_dynamic_memberships', ())
@@ -143,6 +141,17 @@ class UserDataCatalog(CoreCatalog):
 			return {x.lower() for x in usernames}
 		return ()
 
-	@Lazy
-	def effective_principals(self):
-		return effective_principals(self.username, everyone=False, skip_cache=True)
+	@property
+	def current_effective_principals(self):
+		if self.username:
+			return effective_principals(self.username, everyone=False, skip_cache=True)
+
+	# search methods
+
+	def _build_from_search_query(self, query):
+		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		username = self.current_username
+		memberships = self.current_memberships
+		if 'sharedWith' not in fq and username and memberships:
+			fq['sharedWith'] = "+(%s)" % ' '.join(memberships)
+		return term, fq, params

@@ -231,7 +231,7 @@ class CoreCatalog(object):
 		# query-term, filter-query, params
 		return (term, fq, params)
 
-	def searcher(self, query, *args, **kwargs):
+	def search(self, query, *args, **kwargs):
 		if isinstance(query, _primitive_types):
 			d = LocatedExternalDict()
 			d.term = str(query) if isinstance(query, six.string_types) else query
