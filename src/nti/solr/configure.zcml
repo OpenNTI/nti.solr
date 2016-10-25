@@ -290,6 +290,10 @@
 		<adapter factory=".courses._DefaultCourseCatalogKeywordsValue"
 				 provides=".interfaces.IKeywordsValue"
 				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
+				 
+		<adapter factory=".courses._DefaultNTIIDValue"
+				 provides=".interfaces.INTIIDValue"
+				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
 
 		<adapter factory=".courses._CourseCatalogDocumentCreator"
 				 provides=".interfaces.ICourseCatalogDocument"

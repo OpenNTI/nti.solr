@@ -24,7 +24,8 @@ from nti.solr import COURSES_CATALOG
 
 from nti.solr.catalog import CoreCatalog
 
-from nti.solr.interfaces import ITitleValue
+from nti.solr.interfaces import INTIIDValue 
+from nti.solr.interfaces import ITitleValue 
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
@@ -41,6 +42,14 @@ class _BasicAttributeValue(object):
 
 	def entry(self, context):
 		return ICourseCatalogEntry(context, None)
+
+@component.adapter(ICourseInstance)
+@interface.implementer(INTIIDValue)
+class _DefaultNTIIDValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return to_unicode(getattr(self.entry(context), 'ntiid', None))
 
 @interface.implementer(ITitleValue)
 @component.adapter(ICourseInstance)
