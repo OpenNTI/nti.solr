@@ -9,6 +9,7 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import re
 import six
 
 from zope import component
@@ -128,3 +129,10 @@ def object_finder(doc_id, intids=None):
 	if isinstance(doc_id, six.string_types):
 		return find_object_with_ntiid(doc_id)
 	return None
+
+_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
+def normalize_field(name):
+	m = _pattern.match(name)
+	if m is not None:
+		return m.groups()[0]
+	return name
