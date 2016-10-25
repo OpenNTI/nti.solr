@@ -59,6 +59,7 @@ class CoreCatalog(object):
 	__name__ = alias('name')
 
 	auto_commit = True
+	return_fields = ('id', 'score')
 	document_interface = ICoreDocument
 
 	family = BTrees.family64
@@ -155,12 +156,12 @@ class CoreCatalog(object):
 				elif k == 'between':
 					fq[k] = "[%s TO %s]" % (v[0], v[1])
 		# query-term, filter-query, params
-		return ('*:*', fq, {'fl':'id,score'})
+		return ('*:*', fq, {'fl':','.join(self.return_fields)})
 
 	def apply(self, query):
 		if isinstance(query, _primitive_types):
 			query = str(query) if isinstance(query, six.string_types) else query
-			term, fq, params = query, {}, {'fl':'id,score'}
+			term, fq, params = query, {}, {'fl':','.join(self.return_fields)}
 		else:
 			term, fq, params = self._bulild_from_catalog_query(query)
 		# prepare solr query
@@ -227,8 +228,8 @@ class CoreCatalog(object):
 			params['hl.fl'] = ','.join(text_fields)
 			params['hl.useFastVectorHighlighter'] = 'true'
 			params['hl.snippets'] = getattr(query, 'snippets', None) or '2'
-		# alway return id and core
-		params['fl'] = 'id,score'
+		# return fields
+		params['fl'] = ','.join(self.return_fields)
 		# batching
 		batchSize = getattr(query, 'batchSize', None)
 		batchStart = getattr(query, 'batchStart', None)
