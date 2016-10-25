@@ -121,8 +121,8 @@ class CoreCatalog(object):
 		commit = self.auto_commit if commit is None else commit
 		self.client.delete(q='*:*', commit=commit)
 
-	def get_object(self, doc_id):
-		result = object_finder(doc_id)
+	def get_object(self, doc_id, intids=None):
+		result = object_finder(doc_id, intids)
 		if result is None:
 			logger.debug('Could not find object with id %r' % doc_id)
 			try:
@@ -251,8 +251,7 @@ class CoreCatalog(object):
 		q = urllib.urlencode(all_query)
 		for result in self.client.search(q, **params):
 			doc_id = result['id']
-			obj = object_finder(doc_id, intids)
+			obj = self.get_object(doc_id, intids)
 			if obj is None:
-				self.unindex_doc(doc_id, False)
 				continue
 		# TODO: return hits
