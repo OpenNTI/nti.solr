@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.contentsearch.interfaces import ISearchQuery
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -131,7 +132,7 @@ class CoreCatalog(object):
 				pass
 		return result
 
-	# zope catalog 
+	# zope catalog
 
 	def _bulild_from_catalog_query(self, query):
 		fq = {}
@@ -193,7 +194,7 @@ class CoreCatalog(object):
 		return results
 
 	# content search / ISearcher
-	
+
 	@Lazy
 	def _text_fields(self):
 		result = []
@@ -207,6 +208,8 @@ class CoreCatalog(object):
 		params = dict()
 		term = query.term
 		text_fields = self._text_fields
+		ISearchQuery
+		# filter query
 		for name, value in query.items():
 			if name not in self.document_interface:
 				continue
@@ -219,7 +222,7 @@ class CoreCatalog(object):
 				fq[name] = "+(%s)" % ' '.join(value)
 			else:
 				fq[name] = str(value)
-
+		# highlights
 		applyHighlights = getattr(query, 'applyHighlights', False)
 		if text_fields and applyHighlights:
 			params['hl'] = 'true'
@@ -228,18 +231,30 @@ class CoreCatalog(object):
 			params['hl.snippets'] = getattr(query, 'snippets', None) or '2'
 		# alway return id and core
 		params['fl'] = 'id,score'
+		# batching
+		batchSize = getattr(query, 'batchSize', None)
+		batchStart = getattr(query, 'batchStart', None)
+		if batchStart is not None and batchSize:
+			params['start'] = str(batchStart)
+			params['rows'] = str(batchSize)
 		# query-term, filter-query, params
 		return (term, fq, params)
 
 	def search(self, query, *args, **kwargs):
+		intids = component.getUtility(IIntIds)
 		if isinstance(query, _primitive_types):
 			d = LocatedExternalDict()
 			d.term = str(query) if isinstance(query, six.string_types) else query
-			query = d # replace
+			query = d  # replace
 		# prepare solr query
 		term, fq, params = self._bulild_from_catalog_query(query)
 		all_query = {'q': term}
 		all_query.update(fq)
 		q = urllib.urlencode(all_query)
-		self.client.search(q, **params)
+		for result in self.client.search(q, **params):
+			doc_id = result['id']
+			obj = object_finder(doc_id, intids)
+			if obj is None:
+				self.unindex_doc(doc_id, False)
+				continue
 		# TODO: return hits
