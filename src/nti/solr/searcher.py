@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.solr.interfaces import ICoreCatalog
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -32,6 +31,8 @@ from nti.solr import USERDATA_CATALOG
 from nti.solr import EVALUATIONS_CATALOG
 from nti.solr import TRANSCRIPTS_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
+
+from nti.solr.interfaces import ICoreCatalog
 
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
