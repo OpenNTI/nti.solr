@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from prompt_toolkit.shortcuts import clear
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -121,6 +122,7 @@ class CoreCatalog(object):
 	def clear(self, commit=None):
 		commit = self.auto_commit if commit is None else commit
 		self.client.delete(q='*:*', commit=commit)
+	reset = clear
 
 	def get_object(self, doc_id, intids=None):
 		result = object_finder(doc_id, intids)
