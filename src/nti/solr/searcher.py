@@ -9,13 +9,18 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import copy
 from itertools import chain
 
 from zope import component
 from zope import interface
 
+from zope.intid.interfaces import IIntIds
+
 from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQuery
+
+from nti.contentsearch.search_hits import SearchHit
 
 from nti.contenttypes.presentation import AUDIO_MIMETYES
 from nti.contenttypes.presentation import VIDEO_MIMETYES
@@ -23,6 +28,8 @@ from nti.contenttypes.presentation import TIMELINE_MIMETYES
 from nti.contenttypes.presentation import RELATED_WORK_REF_MIMETYES
 
 from nti.dataserver.interfaces import IUser
+
+from nti.property.property import Lazy
 
 from nti.solr import ASSETS_CATALOG
 from nti.solr import COURSES_CATALOG
@@ -32,7 +39,8 @@ from nti.solr import EVALUATIONS_CATALOG
 from nti.solr import TRANSCRIPTS_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
 
-from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import ICoreCatalog, INTIIDValue, IContainerIdValue,\
+	ICreatorValue, ILastModifiedValue, IMimeTypeValue
 
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
@@ -85,6 +93,10 @@ class _SOLRSearcher(object):
 	def registered_catalogs(self):
 		return {k:v for k, v in component.getUtilitiesFor(ICoreCatalog)}
 
+	@Lazy
+	def intids(self):
+		return component.getUtility(IIntIds)
+
 	@classmethod
 	def query_search_catalogs(query):
 		if query.searchOn:
@@ -102,7 +114,35 @@ class _SOLRSearcher(object):
 			catalogs = tuple(catalogs.values())
 		return catalogs
 			
+	def _get_search_hit(self, catalog, result):
+		try:
+			uid = result['id']
+			obj = catalog.get_object(uid, self.intids)
+			if obj is None:
+				return None
+			hit = SearchHit()
+			hit.Target = obj
+			hit.ID = result['id']
+			hit.Score = result['score']
+			# add common field hit
+			for value_interface, name in ((INTIIDValue, 'NTIID'),
+										  (ICreatorValue, 'Creator'),
+										  (IMimeTypeValue, 'TargetMimeType')
+										  (IContainerIdValue, 'ContainerId'),
+										  (ILastModifiedValue, 'lastModified'), ):
+				adapted = value_interface(obj, None)
+				if adapted is not None:
+					value = adapted.value()
+					setattr(hit, name, value)
+		except (ValueError, TypeError, KeyError):
+			pass
+		return None
+
 	def search(self, query, *args, **kwargs):
 		query = ISearchQuery(query)
-		self.query_search_catalogs(query)
-		
+		for catalog in self.query_search_catalogs(query):
+			q = copy.deepcopy(query)
+			solr_results = catalog.search(q, *args, **kwargs)
+			for r in solr_results:
+				self._get_search_hit(catalog, r)
+	
