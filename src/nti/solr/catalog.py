@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.contentsearch.interfaces import ISearchQuery
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -208,7 +207,6 @@ class CoreCatalog(object):
 		params = dict()
 		term = query.term
 		text_fields = self._text_fields
-		ISearchQuery
 		# filter query
 		for name, value in query.items():
 			if name not in self.document_interface:
