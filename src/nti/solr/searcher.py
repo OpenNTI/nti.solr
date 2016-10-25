@@ -21,6 +21,7 @@ from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.contentsearch.search_hits import SearchHit
+from nti.contentsearch.search_results import _SearchResults as SearchResults
 
 from nti.contenttypes.presentation import AUDIO_MIMETYES
 from nti.contenttypes.presentation import VIDEO_MIMETYES
@@ -141,10 +142,15 @@ class _SOLRSearcher(object):
 		return None
 
 	def search(self, query, *args, **kwargs):
+		result = []
 		query = ISearchQuery(query)
 		for catalog in self.query_search_catalogs(query):
 			q = copy.deepcopy(query)
 			solr_results = catalog.search(q, *args, **kwargs)
+			search_results = SearchResults()
 			for r in solr_results:
-				self._get_search_hit(catalog, r)
-	
+				hit = self._get_search_hit(catalog, r)
+				if hit is not None:
+					search_results.add(hit)
+			result.append(search_results)
+		return result
