@@ -40,7 +40,7 @@ from nti.solr import TRANSCRIPTS_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
 
 from nti.solr.interfaces import ICoreCatalog, INTIIDValue, IContainerIdValue,\
-	ICreatorValue, ILastModifiedValue, IMimeTypeValue
+	ICreatorValue, ILastModifiedValue, IMimeTypeValue, IIDValue
 
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
@@ -121,9 +121,9 @@ class _SOLRSearcher(object):
 			if obj is None:
 				return None
 			hit = SearchHit()
-			hit.Target = obj
-			hit.ID = result['id']
+			obj = hit.Target = obj # TODO: transformer if required
 			hit.Score = result['score']
+			hit.ID = IIDValue(obj).value()
 			# add common field hit
 			for value_interface, name in ((INTIIDValue, 'NTIID'),
 										  (ICreatorValue, 'Creator'),
@@ -134,6 +134,8 @@ class _SOLRSearcher(object):
 				if adapted is not None:
 					value = adapted.value()
 					setattr(hit, name, value)
+			# hit is ready
+			return hit
 		except (ValueError, TypeError, KeyError):
 			pass
 		return None
