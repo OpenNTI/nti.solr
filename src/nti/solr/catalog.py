@@ -239,7 +239,6 @@ class CoreCatalog(object):
 		return (term, fq, params)
 
 	def search(self, query, *args, **kwargs):
-		intids = component.getUtility(IIntIds)
 		if isinstance(query, _primitive_types):
 			d = LocatedExternalDict()
 			d.term = str(query) if isinstance(query, six.string_types) else query
@@ -249,9 +248,4 @@ class CoreCatalog(object):
 		all_query = {'q': term}
 		all_query.update(fq)
 		q = urllib.urlencode(all_query)
-		for result in self.client.search(q, **params):
-			doc_id = result['id']
-			obj = self.get_object(doc_id, intids)
-			if obj is None:
-				continue
-		# TODO: return hits
+		return self.client.search(q, **params)
