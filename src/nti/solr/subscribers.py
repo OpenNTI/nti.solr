@@ -17,6 +17,7 @@ from zope.intid.interfaces import IIntIdRemovedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contentlibrary.interfaces import IContentUnit
+from nti.contentlibrary.interfaces import IContentPackage
 
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
@@ -91,8 +92,21 @@ def _contentunit_removed(obj, event):
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
 def _index_contentunit(obj, event):
-	_contentunit_added(obj, None)
+	if not IContentPackage.providedBy(obj):
+		_contentunit_added(obj, None)
 	
+@component.adapter(IContentPackage, IIndexObjectEvent)
+def _index_contentpackage(obj, event):
+	def recur(unit, remove=False):
+		if remove:
+			queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=unit)
+		else:
+			queue_add(CONTENT_UNITS_QUEUE, single_index_job, unit)
+		for child in unit.children or ():
+			recur(child)
+	recur(obj, remove=True)
+	recur(obj, remove=False)
+
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
