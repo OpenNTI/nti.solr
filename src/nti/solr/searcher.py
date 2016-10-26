@@ -124,7 +124,7 @@ class _SOLRSearcher(object):
 			hit = SearchHit()
 			obj = hit.Target = obj # TODO: transformer if required
 			hit.Score = result['score']
-			hit.ID = IIDValue(obj).value()
+			hit.ID = IIDValue(obj).value() or uid
 			# add common field hit
 			for value_interface, name in ((INTIIDValue, 'NTIID'),
 										  (ICreatorValue, 'Creator'),
