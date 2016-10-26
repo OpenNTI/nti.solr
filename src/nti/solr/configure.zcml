@@ -223,6 +223,10 @@
 				for="nti.contentlibrary.interfaces.IContentUnit
 					 .interfaces.IIndexObjectEvent"/>
 
+	<subscriber handler=".subscribers._unindex_contentunit"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 .interfaces.IUnindexObjectEvent"/>
+
 	<!-- Assets -->
 	<adapter factory=".assets._DefaultAssetTitleValue"
 			 provides=".interfaces.ITitleValue"

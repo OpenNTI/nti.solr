@@ -481,6 +481,15 @@ class IIndexObjectEvent(IObjectEvent):
 class IndexObjectEvent(ObjectEvent):
 	pass
 
+class IUnindexObjectEvent(IObjectEvent):
+	"""
+	Event to signal object must be unindexed
+	"""
+
+@interface.implementer(IUnindexObjectEvent)
+class UnindexObjectEvent(ObjectEvent):
+	pass
+
 class IObjectIndexedEvent(IObjectEvent):
 	"""
 	Event to signal an object has been indexed

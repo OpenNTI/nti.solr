@@ -37,6 +37,7 @@ from nti.solr import TRANSCRIPTS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
+from nti.solr.interfaces import IUnindexObjectEvent
 
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
@@ -95,6 +96,11 @@ def _index_contentunit(obj, event):
 	if not IContentPackage.providedBy(obj):
 		_contentunit_added(obj, None)
 	
+@component.adapter(IContentUnit, IUnindexObjectEvent)
+def _unindex_contentunit(obj, event):
+	if not IContentPackage.providedBy(obj):
+		_contentunit_removed(obj, None)
+
 @component.adapter(IContentPackage, IIndexObjectEvent)
 def _index_contentpackage(obj, event):
 	def recur(unit, remove=False):
