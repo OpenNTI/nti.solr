@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
 from zope import component
 from zope import interface
 
@@ -137,3 +139,11 @@ class ContentUnitsCatalog(CoreCatalog):
 
 	def __init__(self, client=None):
 		CoreCatalog.__init__(self, CONTENT_UNITS_CATALOG, client)
+
+	def _build_from_search_query(self, query):
+		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
+		if 'package' not in fq and packs:
+			packs = packs.split() if isinstance(packs, six.string_types) else packs
+			fq['package'] = "+(%s)" % ' '.join(packs)
+		return term, fq, params
