@@ -18,6 +18,7 @@ from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+from nti.contentlibrary.interfaces import IGlobalContentPackage
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -33,6 +34,7 @@ from nti.solr.interfaces import IContentPackageValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.metadata import MetadataDocument
+from nti.solr.metadata import DefaultObjectIDValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -43,6 +45,16 @@ class _BasicAttributeValue(object):
 
 	def __init__(self, context=None):
 		self.context = context
+
+@component.adapter(IContentUnit)
+class _DefaultContentUnitIDValue(DefaultObjectIDValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		package = find_interface(context, IContentPackage, strict=False)
+		if IGlobalContentPackage.providedBy(package):
+			return context.ntiid
+		return super(_DefaultContentUnitIDValue, self).value(context)
 
 @component.adapter(IContentUnit)
 @interface.implementer(IContentPackageValue)

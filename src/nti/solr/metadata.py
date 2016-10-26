@@ -85,6 +85,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 		except (LookupError, KeyError):
 			pass
 		return None
+DefaultObjectIDValue = _DefaultIDValue # Export
 
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
