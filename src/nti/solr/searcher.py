@@ -40,8 +40,13 @@ from nti.solr import EVALUATIONS_CATALOG
 from nti.solr import TRANSCRIPTS_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
 
-from nti.solr.interfaces import ICoreCatalog, INTIIDValue, IContainerIdValue,\
-	ICreatorValue, ILastModifiedValue, IMimeTypeValue, IIDValue
+from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import INTIIDValue
+from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import ICreatorValue
+from nti.solr.interfaces import IMimeTypeValue
+from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import ILastModifiedValue
 
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
@@ -105,16 +110,16 @@ class _SOLRSearcher(object):
 			for m in query.searchOn:
 				# look for a mimeType catalog utility
 				catalog = component.queryUtility(ICoreCatalog, name=m)
-				if catalog is None: # use mapper
+				if catalog is None:  # use mapper
 					catalog = MIME_TYPE_CATALOG_MAP.get(m)
-				if catalog is None: # defaults to userdata
+				if catalog is None:  # defaults to userdata
 					catalog = component.queryUtility(ICoreCatalog, name=USERDATA_CATALOG)
 				catalogs.add(catalog)
 			catalogs.discard(None)
 		else:
 			catalogs = tuple(catalogs.values())
 		return catalogs
-			
+
 	def _get_search_hit(self, catalog, result):
 		try:
 			uid = result['id']
@@ -122,7 +127,7 @@ class _SOLRSearcher(object):
 			if obj is None:
 				return None
 			hit = SearchHit()
-			obj = hit.Target = obj # TODO: transformer if required
+			obj = hit.Target = obj  # TODO: transformer if required
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
 			# add common field hit
@@ -130,7 +135,7 @@ class _SOLRSearcher(object):
 										  (ICreatorValue, 'Creator'),
 										  (IMimeTypeValue, 'TargetMimeType')
 										  (IContainerIdValue, 'ContainerId'),
-										  (ILastModifiedValue, 'lastModified'), ):
+										  (ILastModifiedValue, 'lastModified'),):
 				adapted = value_interface(obj, None)
 				if adapted is not None:
 					value = adapted.value()
