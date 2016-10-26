@@ -20,6 +20,8 @@ from zope.component.hooks import site as current_site
 
 from nti.async import create_job
 
+from nti.contentlibrary.interfaces import IContentPackage
+
 from nti.dataserver.interfaces import IDataserver
 
 from nti.site.site import get_site_for_site_names
@@ -96,3 +98,19 @@ def single_unindex_job(doc_id, core, site=None, **kwargs):
 		catalog = component.queryUtility(ICoreCatalog, name=core)
 		if catalog is not None:
 			catalog.unindex_doc(doc_id)
+
+def index_content_package(source, site=None, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = object_finder(source) if not IContentPackage.providedBy(source) else source
+		if obj is None:
+			return
+		logger.info("Indexing %s started", obj)
+		def recur(unit):
+			commit = IContentPackage.providedBy(unit)
+			for child in unit.children or ():
+				recur(child)
+			catalog = ICoreCatalog(unit)
+			catalog.add(unit, commit=commit)
+		recur(obj)
+		logger.info("Indexing %s completed", obj)

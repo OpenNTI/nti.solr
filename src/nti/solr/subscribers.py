@@ -36,7 +36,6 @@ from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import TRANSCRIPTS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
-from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IIndexObjectEvent 
 from nti.solr.interfaces import IUnindexObjectEvent
 
@@ -46,8 +45,7 @@ from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
-
-from nti.solr.utils import object_finder
+from nti.solr.common import index_content_package
 
 # UGD subscribers
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
@@ -104,20 +102,6 @@ def _index_contentunit(obj, event):
 def _unindex_contentunit(obj, event):
 	if not IContentPackage.providedBy(obj):
 		_contentunit_removed(obj, None)
-
-def index_content_package(doc_id, *args, **kwargs):
-	
-	obj = object_finder(doc_id)
-
-	def recur(unit):
-		commit = IContentPackage.providedBy(unit)
-		for child in unit.children or ():
-			recur(child)
-		catalog = ICoreCatalog(unit)
-		catalog.add(unit, commit=commit)
-		
-	if IContentPackage.providedBy(obj):
-		recur(obj)
 
 @component.adapter(IContentPackage, IIndexObjectEvent)
 def _index_contentpackage(obj, event):
