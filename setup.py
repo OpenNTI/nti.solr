@@ -50,7 +50,6 @@ setup(
     install_requires=[
         'setuptools',
         'pysolr',
-        'solrcloudpy',
         'nti.async',
         'nti.contentindexing',
         'nti.contentprocessing',
