@@ -59,7 +59,7 @@ def add_2_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	if doc_id and core:
 		queue = get_job_queue(name)
 		job = create_job(func, doc_id, site=site, core=core, **kwargs)
-		job.id = '%s_%s_%s' % (datetime_isoformat(), doc_id, jid)
+		job.id = '%s_%s' % (doc_id, jid)
 		queue.put(job)
 		return job
 	return None
