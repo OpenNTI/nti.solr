@@ -11,7 +11,6 @@ logger = __import__('logging').getLogger(__name__)
 
 import six
 import urllib
-from numbers import Number
 from collections import Mapping
 
 import pysolr
@@ -38,6 +37,8 @@ from nti.externalization.interfaces import LocatedExternalDict
 from nti.property.property import alias, Lazy
 from nti.property.property import readproperty
 
+from nti.solr import primitive_types
+
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ITextField
@@ -49,8 +50,6 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import object_finder
-
-_primitive_types = six.string_types + (Number,)
 
 @interface.implementer(ICoreCatalog, IContained)
 class CoreCatalog(object):
@@ -145,7 +144,7 @@ class CoreCatalog(object):
 					value = {'any_of': (value[0],)}
 				else:
 					value = {'between': value}
-			elif isinstance(value, _primitive_types):
+			elif isinstance(value, primitive_types):
 				value = {'any_of': (value,)}
 			__traceback_info__ = name, value
 			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
@@ -160,7 +159,7 @@ class CoreCatalog(object):
 		return ('*:*', fq, {'fl':','.join(self.return_fields)})
 
 	def apply(self, query):
-		if isinstance(query, _primitive_types):
+		if isinstance(query, primitive_types):
 			query = str(query) if isinstance(query, six.string_types) else query
 			term, fq, params = query, {}, {'fl':','.join(self.return_fields)}
 		else:
@@ -241,7 +240,7 @@ class CoreCatalog(object):
 		return (term, fq, params)
 
 	def search(self, query, *args, **kwargs):
-		if isinstance(query, _primitive_types):
+		if isinstance(query, primitive_types):
 			d = LocatedExternalDict()
 			d.term = str(query) if isinstance(query, six.string_types) else query
 			query = d  # replace

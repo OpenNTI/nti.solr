@@ -9,6 +9,9 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+from numbers import Number
+
 from zope import component
 
 from nti.solr.interfaces import ISOLRQueueFactory
@@ -35,6 +38,8 @@ USERDATA_CATALOG = 'userdata'
 EVALUATIONS_CATALOG = 'evaluations'
 TRANSCRIPTS_CATALOG = 'transcripts'
 CONTENT_UNITS_CATALOG = 'contentunits'
+
+primitive_types = six.string_types + (Number,)
 
 ### from IPython.core.debugger import Tracer; Tracer()()
 

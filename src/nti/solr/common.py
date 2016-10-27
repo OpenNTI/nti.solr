@@ -22,6 +22,10 @@ from nti.async import create_job
 
 from nti.contentlibrary.interfaces import IContentPackage
 
+from nti.contenttypes.presentation.interfaces import INTIMedia
+from nti.contenttypes.presentation.interfaces import INTIDocketAsset
+from nti.contenttypes.presentation.interfaces import IPresentationAssetContainer
+	
 from nti.dataserver.interfaces import IDataserver
 
 from nti.site.site import get_site_for_site_names
@@ -29,6 +33,7 @@ from nti.site.site import get_site_for_site_names
 from nti.site.transient import TrivialSite
 
 from nti.solr import get_factory
+from nti.solr import primitive_types
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
@@ -99,11 +104,33 @@ def single_unindex_job(doc_id, core, site=None, **kwargs):
 		if catalog is not None:
 			catalog.unindex_doc(doc_id)
 
-def index_content_package(source, site=None, **kwargs):
+# assets
+
+def finder(source):
+	return object_finder(source) if isinstance(source, primitive_types) else source
+	
+def _index_asset(obj, commit=False):
+	catalog = ICoreCatalog(obj)
+	catalog.add(obj, commit=commit)
+	if INTIMedia.providedBy(obj):
+		for transcript in getattr(obj, 'transcripts', None) or ():
+			catalog = ICoreCatalog(transcript)
+			catalog.add(transcript, commit=commit)
+
+def index_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = object_finder(source) if not IContentPackage.providedBy(source) else source
-		if obj is None:
+		obj = finder(source)
+		if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
+			_index_asset(obj, commit=commit)
+
+# content untis/packages
+
+def index_content_package(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if not IContentPackage.providedBy(obj):
 			return
 		logger.info("Indexing %s started", obj)
 		def recur(unit):
@@ -118,8 +145,8 @@ def index_content_package(source, site=None, **kwargs):
 def unindex_content_package(source, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = object_finder(source) if not IContentPackage.providedBy(source) else source
-		if obj is None:
+		obj = finder(source)
+		if not IContentPackage.providedBy(obj):
 			return
 		def recur(unit):
 			commit = IContentPackage.providedBy(unit)
@@ -128,3 +155,20 @@ def unindex_content_package(source, site=None, **kwargs):
 			catalog = ICoreCatalog(unit)
 			catalog.remove(unit, commit=commit)
 		recur(obj)
+
+def index_content_package_assets(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if not IContentPackage.providedBy(obj):
+			return
+		collector = set()
+		def recur(unit):
+			container = IPresentationAssetContainer(unit, None)
+			if container:
+				collector.update(container.values())
+			for child in unit.children or ():
+				recur(child)
+		size = len(collector) - 1
+		for x, a in enumerate(collector):
+			_index_asset(a, size==x)
