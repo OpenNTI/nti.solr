@@ -46,6 +46,7 @@ from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 from nti.solr.common import index_content_package
+from nti.solr.common import unindex_content_package
 
 # UGD subscribers
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
@@ -107,6 +108,10 @@ def _unindex_contentunit(obj, event):
 def _index_contentpackage(obj, event):
 	add_2_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
 
+@component.adapter(IContentPackage, IUnindexObjectEvent)
+def _unindex_contentpackage(obj, event):
+	add_2_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
+
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available
 def _evaluation_added(obj, event):
@@ -129,6 +134,9 @@ def _evaluation_removed(obj, event):
 def _index_evaluation(obj, event):
 	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
 
+def _unindex_evaluation(obj, event):
+	_evaluation_removed(obj, None)
+	
 # Course subscribers
 # XXX. Don't include course imports in case the course pkg is not available
 def _course_added(obj, event):
@@ -142,6 +150,9 @@ def _course_removed(obj, event):
 
 def _index_course(obj, event):
 	_course_added(obj, None)
+
+def _unindex_course(obj, event):
+	queue_remove(obj, None)
 
 # Assets subscribers
 
@@ -176,3 +187,7 @@ def _asset_removed(obj, event):
 @component.adapter(IPresentationAsset, IIndexObjectEvent)
 def _index_asset(obj, event):
 	_asset_added(obj, None)
+
+@component.adapter(IPresentationAsset, IUnindexObjectEvent)
+def _unindex_asset(obj, event):
+	_asset_removed(obj, None)

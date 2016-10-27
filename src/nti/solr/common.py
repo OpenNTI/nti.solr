@@ -114,3 +114,17 @@ def index_content_package(source, site=None, **kwargs):
 			catalog.add(unit, commit=commit)
 		recur(obj)
 		logger.info("Indexing %s completed", obj)
+
+def unindex_content_package(source, site=None, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = object_finder(source) if not IContentPackage.providedBy(source) else source
+		if obj is None:
+			return
+		def recur(unit):
+			commit = IContentPackage.providedBy(unit)
+			for child in unit.children or ():
+				recur(child)
+			catalog = ICoreCatalog(unit)
+			catalog.remove(unit, commit=commit)
+		recur(obj)

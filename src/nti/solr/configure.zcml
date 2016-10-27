@@ -234,6 +234,10 @@
 	<subscriber handler=".subscribers._index_contentpackage"
 				for="nti.contentlibrary.interfaces.IContentPackage
 					 .interfaces.IIndexObjectEvent"/>
+					 
+	<subscriber handler=".subscribers._unindex_contentpackage"
+				for="nti.contentlibrary.interfaces.IContentPackage
+					 .interfaces.IUnindexObjectEvent"/>
 
 	<!-- Assets -->
 	<adapter factory=".assets._DefaultAssetTitleValue"
@@ -288,6 +292,10 @@
 	<subscriber handler=".subscribers._index_asset"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 .interfaces.IIndexObjectEvent"/>
+	
+	<subscriber handler=".subscribers._unindex_asset"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 .interfaces.IUnindexObjectEvent"/>
 
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
@@ -339,6 +347,10 @@
 		<subscriber handler=".subscribers._index_course"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
 					 	 .interfaces.IIndexObjectEvent"/>
+
+		<subscriber handler=".subscribers._unindex_course"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	.interfaces.IUnindexObjectEvent"/>
 	</configure>
 
 	<!-- Assessments / Evaluations -->
