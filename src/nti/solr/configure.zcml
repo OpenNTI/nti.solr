@@ -178,10 +178,6 @@
 			 provides=".interfaces.IIDValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
- 	<adapter factory=".contentunits._DefaultMimeTypeValue"
-			 provides=".interfaces.IMimeTypeValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
 	<adapter factory=".contentunits._DefaultContentPackageValue"
 			 provides=".interfaces.IContentPackageValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />

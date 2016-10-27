@@ -32,13 +32,11 @@ from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IMimeTypeValue 
 from nti.solr.interfaces import IContentPackageValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
-from nti.solr.metadata import DefaultObjectMimeTypeValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -71,16 +69,6 @@ class _DefaultContentPackageValue(_BasicAttributeValue):
 			return package.ntiid
 		except AttributeError:
 			return None
-
-@component.adapter(IContentUnit)
-@interface.implementer(IMimeTypeValue)
-class _DefaultMimeTypeValue(DefaultObjectMimeTypeValue):
-
-	def value(self, context=None):
-		context = self.context if context is None else context
-		if IContentPackage.providedBy(context):
-			return super(_DefaultMimeTypeValue, self).value(context)
-		return u"application/vnd.nextthought.contentunit"
 	
 @component.adapter(IContentUnit)
 @interface.implementer(ITitleValue)
