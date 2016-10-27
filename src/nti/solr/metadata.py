@@ -23,7 +23,9 @@ from zope.mimetype.interfaces import IContentTypeAware
 
 from nti.common.string import to_unicode
 
-from nti.coremetadata.interfaces import ICreatedTime, SYSTEM_USER_NAME
+from nti.coremetadata.interfaces import SYSTEM_USER_NAME
+
+from nti.coremetadata.interfaces import ICreatedTime
 from nti.coremetadata.interfaces import ILastModified
 
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
@@ -114,6 +116,7 @@ class _DefaultMimeTypeValue(_BasicAttributeValue):
 		context = IContentTypeAware(context, context)
 		result = getattr(context, 'mimeType', None) or getattr(context, 'mime_type', None)
 		return to_unicode(result) if result else None
+DefaultObjectMimeTypeValue = _DefaultMimeTypeValue  # export
 
 @interface.implementer(ICreatedTimeValue)
 class _DefaultCreatedTimeValue(_BasicAttributeValue):
