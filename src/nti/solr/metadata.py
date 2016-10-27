@@ -20,7 +20,7 @@ from zope.mimetype.interfaces import IContentTypeAware
 
 from nti.common.string import to_unicode
 
-from nti.coremetadata.interfaces import ICreatedTime
+from nti.coremetadata.interfaces import ICreatedTime, SYSTEM_USER_NAME
 from nti.coremetadata.interfaces import ILastModified
 
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
@@ -73,20 +73,6 @@ class _BasicAttributeValue(object):
 	def __init__(self, context=None):
 		self.context = context
 
-@interface.implementer(IIDValue)
-class _DefaultIDValue(_BasicAttributeValue):
-
-	def value(self, context=None):
-		context = self.context if context is None else context
-		try:
-			initds = component.getUtility(IIntIds)
-			result = initds.queryId(context)
-			return to_unicode(result) if result is not None else None
-		except (LookupError, KeyError):
-			pass
-		return None
-DefaultObjectIDValue = _DefaultIDValue # Export
-
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
 
@@ -94,6 +80,7 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 		try:
 			creator = getattr(context, name, None)
 			creator = getattr(creator, 'username', creator)
+			creator = creator or SYSTEM_USER_NAME
 			if isinstance(creator, six.string_types):
 				return to_unicode(creator.lower())
 		except (TypeError):
@@ -142,6 +129,20 @@ class _DefaultCreatedTimeValue(_BasicAttributeValue):
 class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
 	attribute = 'lastModified'
 	interface = ILastModified
+
+@interface.implementer(IIDValue)
+class _DefaultIDValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		try:
+			initds = component.getUtility(IIntIds)
+			result = initds.queryId(context)
+			return to_unicode(result) if result is not None else None
+		except (LookupError, KeyError):
+			pass
+		return None
+DefaultObjectIDValue = _DefaultIDValue # Export
 
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
