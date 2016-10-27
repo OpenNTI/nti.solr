@@ -41,7 +41,7 @@ CONTENT_UNITS_CATALOG = NTI_CATALOG
 
 primitive_types = six.string_types + (Number,)
 
-# ## from IPython.core.debugger import Tracer; Tracer()()
+### from IPython.core.debugger import Tracer; Tracer()()
 
 def get_factory():
 	return component.getUtility(ISOLRQueueFactory)
