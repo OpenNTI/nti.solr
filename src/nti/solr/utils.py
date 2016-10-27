@@ -119,20 +119,26 @@ def document_creator(obj, factory, provided=None):
 			setattr(result, k, value)
 	return result
 
+_k_pattern = re.compile('(.*)!=(.*)', re.UNICODE | re.IGNORECASE)
+def normalized_key(doc_id):
+	m = _k_pattern.match(doc_id)
+	if m is not None:
+		return m.groups()[1]
+	return doc_id
+
 def object_finder(doc_id, intids=None):
+	doc_id = normalized_key(doc_id)
 	intids = component.getUtility(IIntIds) if intids is None else intids
 	try:
 		doc_id = int(doc_id)
 		return intids.queryObject(doc_id)
 	except (ValueError, TypeError):
 		pass
-	if isinstance(doc_id, six.string_types):
-		return find_object_with_ntiid(doc_id)
-	return None
+	return find_object_with_ntiid(doc_id)
 
-_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
+_f_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
 def normalize_field(name):
-	m = _pattern.match(name)
+	m = _f_pattern.match(name)
 	if m is not None:
 		return m.groups()[0]
 	return name

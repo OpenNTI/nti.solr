@@ -55,7 +55,7 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 		context = self.context if context is None else context
 		package = find_interface(context, IContentPackage, strict=False)
 		if IGlobalContentPackage.providedBy(package):
-			return context.ntiid
+			return self.prefix(context) + context.ntiid
 		return super(_DefaultContentUnitIDValue, self).value(context)
 
 @component.adapter(IContentUnit)

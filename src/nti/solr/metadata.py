@@ -85,7 +85,6 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 		try:
 			creator = getattr(context, name, None)
 			creator = getattr(creator, 'username', creator)
-			creator = creator or SYSTEM_USER_NAME
 			if isinstance(creator, six.string_types):
 				return to_unicode(creator.lower())
 		except (TypeError):
@@ -95,7 +94,8 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = 	self._get_creator(context, 'creator') \
-				 or self._get_creator(context, 'Creator')
+				 or self._get_creator(context, 'Creator') \
+				 or SYSTEM_USER_NAME
 		return result
 
 @interface.implementer(INTIIDValue)
@@ -154,23 +154,24 @@ class _DefaultIDValue(_BasicAttributeValue):
 	@classmethod
 	def prefix(cls, context):
 		result = []
-		for provided, default, func in ((IMimeTypeValue, 'unknown', cls._type),
-				  						(ICreatorValue, SYSTEM_USER_NAME, cls._norm),
-				  						(ICreatedTimeValue, ZERO_DATETIME, cls._semt)):
+		for provided, default, func in ((ICreatedTimeValue, ZERO_DATETIME, cls._semt),
+										(ICreatorValue, SYSTEM_USER_NAME, cls._norm),
+										(IMimeTypeValue, 'unknown', cls._type),):
 			value = None
 			adapted = provided(context, None)
 			if adapted is not None:
 				value = adapted.value()
 			value = func(default if not value else value)
 			result.append(value)
-		return '%s!-' % '-'.join(result)
+		return '%s!=' % '-'.join(result)
 			
 	def value(self, context=None):
 		context = self.context if context is None else context
 		try:
 			initds = component.getUtility(IIntIds)
-			result = initds.queryId(context)
-			return to_unicode(result) if result is not None else None
+			uid = initds.queryId(context)
+			uid = "%s%s" % (self.prefix(context), uid) if uid is not None else None
+			return to_unicode(uid) if uid is not None else None
 		except (LookupError, KeyError):
 			pass
 		return None
