@@ -26,22 +26,22 @@ EVALUATIONS_QUEUE = QUEUE_NAME + '++evaluations'
 TRANSCRIPTS_QUEUE = QUEUE_NAME + '++transcripts'
 CONTENT_UNITS_QUEUE = QUEUE_NAME + '++contentunits'
 
-QUEUE_NAMES = (CONTENT_UNITS_QUEUE, TRANSCRIPTS_QUEUE, 
-               USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE, 
-               EVALUATIONS_QUEUE, COURSES_QUEUE)
+QUEUE_NAMES = (CONTENT_UNITS_QUEUE, TRANSCRIPTS_QUEUE,
+			   USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE,
+			   EVALUATIONS_QUEUE, COURSES_QUEUE)
 
 NTI_CATALOG = 'nti'
-ASSETS_CATALOG  = 'assets'
-COURSES_CATALOG  = 'courses'
-ENTITIES_CATALOG = 'entities'  
-USERDATA_CATALOG = 'userdata'
-EVALUATIONS_CATALOG = 'evaluations'
-TRANSCRIPTS_CATALOG = 'transcripts'
-CONTENT_UNITS_CATALOG = 'contentunits'
+ASSETS_CATALOG = NTI_CATALOG
+COURSES_CATALOG = NTI_CATALOG
+ENTITIES_CATALOG = NTI_CATALOG
+USERDATA_CATALOG = NTI_CATALOG
+EVALUATIONS_CATALOG = NTI_CATALOG
+TRANSCRIPTS_CATALOG = NTI_CATALOG
+CONTENT_UNITS_CATALOG = NTI_CATALOG
 
 primitive_types = six.string_types + (Number,)
 
-### from IPython.core.debugger import Tracer; Tracer()()
+# ## from IPython.core.debugger import Tracer; Tracer()()
 
 def get_factory():
-    return component.getUtility(ISOLRQueueFactory)
+	return component.getUtility(ISOLRQueueFactory)
