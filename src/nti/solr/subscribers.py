@@ -68,6 +68,10 @@ def _userdata_removed(obj, event):
 def _index_userdata(obj, event):
 	queue_add(obj, None)
 
+@component.adapter(IUserGeneratedData, IUnindexObjectEvent)
+def _unindex_userdata(obj, event):
+	queue_remove(obj, None)
+
 # Entity subscribers
 @component.adapter(IEntity, IIntIdAddedEvent)
 def _entity_added(obj, event):

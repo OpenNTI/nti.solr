@@ -496,7 +496,11 @@
 	<subscriber handler=".subscribers._index_userdata"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 .interfaces.IIndexObjectEvent"/>
-				 	 
+			
+	<subscriber handler=".subscribers._unindex_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 .interfaces.IUnindexObjectEvent"/>
+	 	 
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
