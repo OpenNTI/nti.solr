@@ -110,15 +110,19 @@ def finder(source):
 	return object_finder(source) if isinstance(source, primitive_types) else source
 	
 def process_asset(obj, index=True, commit=False):
+	result = 0
 	if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
+		result += 1
 		catalog = ICoreCatalog(obj)
 		operation = catalog.add if index else catalog.remove
 		operation(obj, commit=commit)
 		if INTIMedia.providedBy(obj):
 			for transcript in getattr(obj, 'transcripts', None) or ():
+				result += 1
 				catalog = ICoreCatalog(transcript)
 				operation = catalog.add if index else catalog.remove
 				operation(transcript, commit=commit)
+	return result
 
 def index_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
