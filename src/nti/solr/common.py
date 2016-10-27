@@ -109,33 +109,30 @@ def single_unindex_job(doc_id, core, site=None, **kwargs):
 def finder(source):
 	return object_finder(source) if isinstance(source, primitive_types) else source
 	
-def _process_asset(obj, index=True, commit=False):
-	catalog = ICoreCatalog(obj)
-	operation = catalog.add if index else catalog.remove
-	operation(obj, commit=commit)
-	if INTIMedia.providedBy(obj):
-		for transcript in getattr(obj, 'transcripts', None) or ():
-			catalog = ICoreCatalog(transcript)
-			operation = catalog.add if index else catalog.remove
-			operation(transcript, commit=commit)
+def process_asset(obj, index=True, commit=False):
+	if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
+		catalog = ICoreCatalog(obj)
+		operation = catalog.add if index else catalog.remove
+		operation(obj, commit=commit)
+		if INTIMedia.providedBy(obj):
+			for transcript in getattr(obj, 'transcripts', None) or ():
+				catalog = ICoreCatalog(transcript)
+				operation = catalog.add if index else catalog.remove
+				operation(transcript, commit=commit)
 
 def index_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
-		if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
-			_process_asset(obj, index=True, commit=commit)
+		process_asset(finder(source), index=True, commit=commit)
 
 def unindex_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
-		if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
-			_process_asset(obj, index=False, commit=commit)
+		process_asset(finder(source), index=False, commit=commit)
 
 # content untis/packages
 
-def _process_content_package(obj, index=True):
+def process_content_package(obj, index=True):
 	def recur(unit):
 		commit = IContentPackage.providedBy(unit)
 		for child in unit.children or ():
@@ -151,7 +148,7 @@ def index_content_package(source, site=None, *args, **kwargs):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			logger.info("Indexing %s started", obj)
-			_process_content_package(obj, index=True)
+			process_content_package(obj, index=True)
 			logger.info("Indexing %s completed", obj)
 
 def unindex_content_package(source, site=None, **kwargs):
@@ -159,9 +156,9 @@ def unindex_content_package(source, site=None, **kwargs):
 	with current_site(job_site):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
-			_process_content_package(obj, index=False)
+			process_content_package(obj, index=False)
 
-def _process_content_package_assets(obj, index=True):
+def process_content_package_assets(obj, index=True):
 	def recur(unit):
 		collector = set()
 		def recur(unit):
@@ -172,7 +169,7 @@ def _process_content_package_assets(obj, index=True):
 				recur(child)
 		size = len(collector) - 1
 		for x, a in enumerate(collector):
-			_process_asset(a, index=index, commit=size==x)
+			process_asset(a, index=index, commit=size==x)
 	recur(obj)
 
 def index_content_package_assets(source, site=None, *args, **kwargs):
@@ -180,11 +177,11 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
 	with current_site(job_site):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
-			_process_content_package_assets(obj, index=True)
+			process_content_package_assets(obj, index=True)
 
 def unindex_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
-			_process_content_package_assets(obj, index=False)
+			process_content_package_assets(obj, index=False)
