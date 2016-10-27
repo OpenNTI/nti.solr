@@ -9,7 +9,10 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import re
 import six
+from math import ceil
+from datetime import datetime
 
 from zope import component
 from zope import interface
@@ -67,6 +70,8 @@ from nti.solr.interfaces import IIsTopLevelContentValue
 from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import document_creator
+
+ZERO_DATETIME = datetime.utcfromtimestamp(0)
 
 class _BasicAttributeValue(object):
 
@@ -132,7 +137,34 @@ class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
 
 @interface.implementer(IIDValue)
 class _DefaultIDValue(_BasicAttributeValue):
+	
+	@classmethod
+	def _norm(cls, x):
+		return re.sub('!', '', x)
+	
+	@classmethod
+	def _type(cls, x):
+		return x.split('.')[-1]
 
+	@classmethod
+	def _semt(cls, x):
+		dt = SolrDatetime.convert(x)
+		return "%s%sS" % (dt.year, int(ceil(dt.month/6.0)))
+
+	@classmethod
+	def prefix(cls, context):
+		result = []
+		for provided, default, func in ((IMimeTypeValue, 'unknown', cls._type),
+				  						(ICreatorValue, SYSTEM_USER_NAME, cls._norm),
+				  						(ICreatedTimeValue, ZERO_DATETIME, cls._semt)):
+			value = None
+			adapted = provided(context, None)
+			if adapted is not None:
+				value = adapted.value()
+			value = func(default if not value else value)
+			result.append(value)
+		return '%s!-' % '-'.join(result)
+			
 	def value(self, context=None):
 		context = self.context if context is None else context
 		try:
