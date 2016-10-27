@@ -143,7 +143,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 	
 	@classmethod
 	def _norm(cls, x):
-		return re.sub(' ', '_', re.sub('!', '', x))
+		return re.sub('[^\x00-\x7F]', '_', re.sub(' ', '_', re.sub('!', '', x)))
 	
 	@classmethod
 	def _type(cls, x):
