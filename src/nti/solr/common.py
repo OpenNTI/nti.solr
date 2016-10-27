@@ -109,59 +109,60 @@ def single_unindex_job(doc_id, core, site=None, **kwargs):
 def finder(source):
 	return object_finder(source) if isinstance(source, primitive_types) else source
 	
-def _index_asset(obj, commit=False):
+def _process_asset(obj, index=True, commit=False):
 	catalog = ICoreCatalog(obj)
-	catalog.add(obj, commit=commit)
+	operation = catalog.add if index else catalog.remove
+	operation(obj, commit=commit)
 	if INTIMedia.providedBy(obj):
 		for transcript in getattr(obj, 'transcripts', None) or ():
 			catalog = ICoreCatalog(transcript)
-			catalog.add(transcript, commit=commit)
+			operation = catalog.add if index else catalog.remove
+			operation(transcript, commit=commit)
 
 def index_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
 		obj = finder(source)
 		if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
-			_index_asset(obj, commit=commit)
+			_process_asset(obj, index=True, commit=commit)
+
+def unindex_asset(source, site=None, commit=True, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
+			_process_asset(obj, index=False, commit=commit)
 
 # content untis/packages
+
+def _process_content_package(obj, index=True):
+	def recur(unit):
+		commit = IContentPackage.providedBy(unit)
+		for child in unit.children or ():
+			recur(child)
+		catalog = ICoreCatalog(unit)
+		operation = catalog.add if index else catalog.remove
+		operation(unit, commit=commit)
+	recur(obj)
 
 def index_content_package(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
 		obj = finder(source)
-		if not IContentPackage.providedBy(obj):
-			return
-		logger.info("Indexing %s started", obj)
-		def recur(unit):
-			commit = IContentPackage.providedBy(unit)
-			for child in unit.children or ():
-				recur(child)
-			catalog = ICoreCatalog(unit)
-			catalog.add(unit, commit=commit)
-		recur(obj)
-		logger.info("Indexing %s completed", obj)
+		if IContentPackage.providedBy(obj):
+			logger.info("Indexing %s started", obj)
+			_process_content_package(obj, index=True)
+			logger.info("Indexing %s completed", obj)
 
 def unindex_content_package(source, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
 		obj = finder(source)
-		if not IContentPackage.providedBy(obj):
-			return
-		def recur(unit):
-			commit = IContentPackage.providedBy(unit)
-			for child in unit.children or ():
-				recur(child)
-			catalog = ICoreCatalog(unit)
-			catalog.remove(unit, commit=commit)
-		recur(obj)
+		if IContentPackage.providedBy(obj):
+			_process_content_package(obj, index=False)
 
-def index_content_package_assets(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if not IContentPackage.providedBy(obj):
-			return
+def _process_content_package_assets(obj, index=True):
+	def recur(unit):
 		collector = set()
 		def recur(unit):
 			container = IPresentationAssetContainer(unit, None)
@@ -171,4 +172,19 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
 				recur(child)
 		size = len(collector) - 1
 		for x, a in enumerate(collector):
-			_index_asset(a, size==x)
+			_process_asset(a, index=index, commit=size==x)
+	recur(obj)
+
+def index_content_package_assets(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			_process_content_package_assets(obj, index=True)
+
+def unindex_content_package_assets(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			_process_content_package_assets(obj, index=False)
