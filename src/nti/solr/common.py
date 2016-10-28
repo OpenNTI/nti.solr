@@ -52,6 +52,13 @@ def get_job_queue(name):
 	factory = get_factory()
 	return factory.get_queue(name)
 
+def put_job(name, func, jid, *args, **kwargs):
+	queue = get_job_queue(name)
+	job = create_job(func, *args, **kwargs)
+	job.id = jid
+	queue.put(job)
+	return job
+
 def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	adpated = IIDValue(obj, None)
 	catalog = ICoreCatalog(obj, None)
@@ -59,11 +66,9 @@ def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	core = catalog.name if not core and catalog else core
 	doc_id = adpated.value() if adpated is not None else None
 	if doc_id and core:
-		queue = get_job_queue(name)
-		job = create_job(func, doc_id, site=site, core=core, **kwargs)
-		job.id = '%s_%s' % (doc_id, jid)
-		queue.put(job)
-		return job
+		jid = '%s_%s' % (doc_id, jid)
+		return put_job(name, func, jid=jid, 
+					   doc_id, site=site, core=core, **kwargs)
 	return None
 add_2_queue = add_to_queue # BWC
 
