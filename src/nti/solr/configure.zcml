@@ -154,7 +154,7 @@
 
 	<utility factory=".entities.EntitiesCatalog"
 			 provides=".interfaces.ICoreCatalog"
-			 name='nti' />
+			 name='entities' />
 
 	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
 			 for=".interfaces.IEntityDocument"
@@ -204,7 +204,7 @@
 	
 	<utility factory=".contentunits.ContentUnitsCatalog"
 			 provides=".interfaces.ICoreCatalog"
-			 name='nti' />
+			 name='contentunits' />
 				 
 	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
 			 for=".interfaces.IContentUnitDocument"
@@ -270,7 +270,7 @@
 	
 	<utility factory=".assets.AssetsCatalog"
 			 provides=".interfaces.ICoreCatalog"
-			 name='nti' />
+			 name='assets' />
 				 
 	<adapter factory=".externalization._AssetDocumentSOLRExternalizer"
 			 for=".interfaces.IAssetDocument"
@@ -325,7 +325,7 @@
 	
 		<utility factory=".courses.CoursesCatalog"
 			 	 provides=".interfaces.ICoreCatalog"
-			 	 name='nti' />
+			 	 name='courses' />
 				 
 		<adapter factory=".externalization._CourseCatalogDocumentSOLRExternalizer"
 				 for=".interfaces.ICourseCatalogDocument"
@@ -381,7 +381,7 @@
 	
 		<utility factory=".evaluations.EvaluationsCatalog"
 				 provides=".interfaces.ICoreCatalog"
-				 name='nti' />
+				 name='evaluations' />
 
 		<adapter factory=".externalization._EvaluationDocumentSOLRExternalizer"
 				 for=".interfaces.IEvaluationDocument"
@@ -440,7 +440,7 @@
 	
 	<utility factory=".transcripts.TranscriptsCatalog"
 			 	 provides=".interfaces.ICoreCatalog"
-			 	 name='nti' />
+			 	 name='transcripts' />
 
 	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"
 			 for=".interfaces.ITranscriptDocument"
@@ -474,7 +474,7 @@
 
 	<utility factory=".userdata.UserDataCatalog"
 			 provides=".interfaces.ICoreCatalog"
-			 name='nti' />
+			 name='userdata' />
 
 	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
 			 for=".interfaces.IUserDataDocument"
