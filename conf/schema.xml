@@ -221,10 +221,10 @@
 	<field name="inReplyTo" type="string" indexed="true" stored="false"/>
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
 	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
-	<field name="containerId" type="string" indexed="true" stored="false"/>
 	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
+	<field name="containerId" multiValued="true" type="string" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
 
 	<!-- General fields -->
@@ -232,9 +232,6 @@
 	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<field name="ntiid" type="string" indexed="true" required="false" stored="true"/>
-
-	<!-- Content units -->
-	<field name="package" type="string" indexed="true" required="false" stored="true"/> <!-- content pacakge ntiid -->
 
 	<!-- Entity fields -->
 	<!-- Each prof/educational entry may have multiple values for these fields -->

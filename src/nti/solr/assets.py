@@ -79,10 +79,12 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 		if container is None:
 			try:
 				from nti.contenttypes.courses.interfaces import ICourseInstance
+				from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 				container = find_interface(context, ICourseInstance, strict=False)
+				container = ICourseCatalogEntry(container, None)
 			except ImportError:
 				pass
-		return container.ntiid if container is not None else None
+		return (container.ntiid,) if container is not None else None
 
 @interface.implementer(IContentValue)
 @component.adapter(IPresentationAsset)

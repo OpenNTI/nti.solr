@@ -1,1 +1,0 @@
-../../../../../conf/lang/stemdict_nl.txt

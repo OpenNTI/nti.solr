@@ -208,7 +208,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 				and not ICommentPost.providedBy(context):
 				return None
 			else:
-				return to_unicode(cid)
+				return (to_unicode(cid),)
 		return None
 
 @interface.implementer(IInReplyToValue)

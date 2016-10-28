@@ -178,8 +178,8 @@
 			 provides=".interfaces.IIDValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
-	<adapter factory=".contentunits._DefaultContentPackageValue"
-			 provides=".interfaces.IContentPackageValue"
+	<adapter factory=".contentunits._DefaultContainerIdValue"
+			 provides=".interfaces.IContainerIdValue"
 			 for="nti.contentlibrary.interfaces.IContentUnit" />
 
 	<adapter factory=".contentunits._DefaultTitleValue"

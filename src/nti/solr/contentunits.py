@@ -34,7 +34,7 @@ from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IContentPackageValue
+from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.metadata import ZERO_DATETIME
@@ -44,7 +44,7 @@ from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 
-from nti.traversal.traversal import find_interface
+from nti.traversal.location import lineage
 
 class _BasicAttributeValue(object):
 
@@ -67,16 +67,18 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 		return self.prefix(context) + context.ntiid
 
 @component.adapter(IContentUnit)
-@interface.implementer(IContentPackageValue)
-class _DefaultContentPackageValue(_BasicAttributeValue):
+@interface.implementer(IContainerIdValue)
+class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):
+		result = []
 		context = self.context if context is None else context
-		package = find_interface(context, IContentPackage, strict=False)
-		try:
-			return package.ntiid
-		except AttributeError:
-			return None
+		for item in lineage(context):
+			if IContentUnit.providedBy(item) and item.ntiid:
+				result.append(item.ntiid)
+			if IContentPackage.providedBy(item):
+				break
+		return result
 	
 @component.adapter(IContentUnit)
 @interface.implementer(ITitleValue)

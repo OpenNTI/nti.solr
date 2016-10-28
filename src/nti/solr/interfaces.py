@@ -83,7 +83,7 @@ class IInReplyToValue(IAttributeValue):
 
 class IContainerIdValue(IAttributeValue):
 	"""
-	Adapter interface to get the containerId value from a given object
+	Adapter interface to get the containerId values from a given object
 	"""
 
 class ISharedWithValue(IAttributeValue):
@@ -141,7 +141,10 @@ class IMetadataDocument(ICoreDocument):
 
 	inReplyTo = ValidTextLine(title='The replied to NTIID', required=False)
 
-	containerId = ValidTextLine(title='The container NTIID', required=False)
+	containerId = IndexedIterable(title='The container identifiers',
+							   	  required=False,
+							      value_type=ValidTextLine(title="The container identifier"),
+							      min_length=0)
 
 	sharedWith = IndexedIterable(title='The entities shared with',
 								required=False,
@@ -159,11 +162,11 @@ class IMetadataDocument(ICoreDocument):
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
-tagField(IMetadataDocument['containerId'], False, IContainerIdValue)
-tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, True)
-tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, True)
 tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
 tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
+tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, multiValued=True)
+tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, multiValued=True)
+tagField(IMetadataDocument['containerId'], False, IContainerIdValue, multiValued=True)
 tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue, provided=IDateField)
 tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue, provided=IDateField)
 # misc
@@ -346,16 +349,9 @@ class ITitleValue(IStringValue):
 	Adapter interface to get the title value from a given object
 	"""
 
-class IContentPackageValue(IAttributeValue):
-	"""
-	Adapter interface to get the content pacakge ntiid value from a given object
-	"""
-
 class IContentUnitDocument(IMetadataDocument):
 
 	ntiid = ValidTextLine(title='Content unit ntiid', required=False)
-
-	package = ValidTextLine(title='Content package ntiid', required=False)
 
 	title_en = ValidTextLine(title='Title to index', required=False)
 
@@ -367,7 +363,6 @@ class IContentUnitDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
-tagField(IContentUnitDocument['package'], True, IContentPackageValue)
 tagField(IContentUnitDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IContentUnitDocument['content_en'], True, IContentValue, provided=ITextField)
 tagField(IContentUnitDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)

@@ -1,1 +1,0 @@
-../../../../../conf/lang/hyphenations_ga.txt

@@ -1,1 +1,0 @@
-../../../../../conf/lang/stoptags_ja.txt

@@ -1,1 +1,0 @@
-../../../basic/conf/lang/contractions_ca.txt
