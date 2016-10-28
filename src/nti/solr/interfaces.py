@@ -476,6 +476,15 @@ class ICoreCatalog(IInjection, IIndexSearch):
 		@param commit: Commit operation
 		"""
 
+	def delete(uid=None, q=None, commit=True):
+		"""
+		Delete by the specified query or id
+		
+		@param uid: The object/id to remove
+		@param q: The query to execute for deletion
+		@param commit: Commit operation
+		"""
+
 class IIndexObjectEvent(IObjectEvent):
 	"""
 	Event to signal object must be indexed

@@ -251,3 +251,6 @@ class CoreCatalog(object):
 		all_query.update(fq)
 		q = urllib.urlencode(all_query)
 		return self.client.search(q, **params)
+
+	def delete(self, uid=None, q=None, commit=True):
+		return self.client.delete(id=uid, q=q, commit=commit)
