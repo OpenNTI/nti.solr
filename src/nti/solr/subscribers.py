@@ -48,6 +48,8 @@ from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 from nti.solr.common import index_content_package
 from nti.solr.common import unindex_content_package
+from nti.solr.common import index_content_package_assets
+from nti.solr.common import unindex_content_package_assets
 
 # UGD subscribers
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
@@ -114,10 +116,50 @@ def _unindex_contentunit(obj, event):
 @component.adapter(IContentPackage, IIndexObjectEvent)
 def _index_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
-
+	add_to_queue(ASSETS_QUEUE, index_content_package_assets, obj, jid='assets_added')
+	
 @component.adapter(IContentPackage, IUnindexObjectEvent)
 def _unindex_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
+	add_to_queue(ASSETS_QUEUE, unindex_content_package_assets, obj, jid='assets_removed')
+
+# Assets subscribers
+
+@component.adapter(INTITranscript, IIndexObjectEvent)
+def _index_transcript(obj, event):
+	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
+
+@component.adapter(IPresentationAsset, IIntIdAddedEvent)
+def _asset_added(obj, event=None):
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_add(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj):
+		for transcript in getattr(obj, 'transcripts', None) or ():
+			_index_transcript(transcript, None)
+
+@component.adapter(IPresentationAsset, IObjectModifiedEvent)
+def _asset_modified(obj, event):
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_modified(ASSETS_QUEUE, single_index_job, obj)
+	if INTIMedia.providedBy(obj):
+		for transcript in getattr(obj, 'transcripts', None) or ():
+			_index_transcript(transcript, None)
+
+@component.adapter(IPresentationAsset, IIntIdRemovedEvent)
+def _asset_removed(obj, event):
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
+	if INTIMedia.providedBy(obj):
+		for transcript in getattr(obj, 'transcripts', None) or ():
+			queue_remove(TRANSCRIPTS_QUEUE, single_unindex_job, obj=transcript)
+
+@component.adapter(IPresentationAsset, IIndexObjectEvent)
+def _index_asset(obj, event):
+	_asset_added(obj, None)
+
+@component.adapter(IPresentationAsset, IUnindexObjectEvent)
+def _unindex_asset(obj, event):
+	_asset_removed(obj, None)
 
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available
@@ -160,41 +202,3 @@ def _index_course(obj, event):
 
 def _unindex_course(obj, event):
 	queue_remove(obj, None)
-
-# Assets subscribers
-
-@component.adapter(INTITranscript, IIndexObjectEvent)
-def _index_transcript(obj, event):
-	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
-
-@component.adapter(IPresentationAsset, IIntIdAddedEvent)
-def _asset_added(obj, event=None):
-	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
-		queue_add(ASSETS_QUEUE, single_index_job, obj)
-	if INTIMedia.providedBy(obj):
-		for transcript in getattr(obj, 'transcripts', None) or ():
-			_index_transcript(transcript, None)
-
-@component.adapter(IPresentationAsset, IObjectModifiedEvent)
-def _asset_modified(obj, event):
-	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
-		queue_modified(ASSETS_QUEUE, single_index_job, obj)
-	if INTIMedia.providedBy(obj):
-		for transcript in getattr(obj, 'transcripts', None) or ():
-			_index_transcript(transcript, None)
-
-@component.adapter(IPresentationAsset, IIntIdRemovedEvent)
-def _asset_removed(obj, event):
-	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
-		queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
-	if INTIMedia.providedBy(obj):
-		for transcript in getattr(obj, 'transcripts', None) or ():
-			queue_remove(TRANSCRIPTS_QUEUE, single_unindex_job, obj=transcript)
-
-@component.adapter(IPresentationAsset, IIndexObjectEvent)
-def _index_asset(obj, event):
-	_asset_added(obj, None)
-
-@component.adapter(IPresentationAsset, IUnindexObjectEvent)
-def _unindex_asset(obj, event):
-	_asset_removed(obj, None)
