@@ -5,6 +5,9 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.traversal.traversal import find_interface
+from nti.site.interfaces import IHostPolicyFolder
+from zope.component.hooks import getSite
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -56,6 +59,7 @@ from nti.schema.field import SchemaConfigured
 from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
@@ -79,6 +83,14 @@ class _BasicAttributeValue(object):
 
 	def __init__(self, context=None):
 		self.context = context
+
+@interface.implementer(ISiteValue)
+class _DefaultSiteValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		folder = find_interface(context, IHostPolicyFolder, strict=False)
+		return folder.__name__ if folder is None else getSite().__name__
 
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):

@@ -61,6 +61,11 @@ class IStringValue(IAttributeValue):
 
 # metadata
 
+class ISiteValue(IAttributeValue):
+	"""
+	Adapter interface to get the site value from a given object
+	"""
+
 class ICreatorValue(IAttributeValue):
 	"""
 	Adapter interface to get the creator value from a given object
@@ -129,6 +134,7 @@ class ICoreDocument(interface.Interface):
 tagField(ICoreDocument['id'], True, IIDValue)
 
 class IMetadataDocument(ICoreDocument):
+	site = ValidTextLine(title='The site', required=False)
 
 	creator = ValidTextLine(title='The creator', required=False)
 
@@ -159,6 +165,7 @@ class IMetadataDocument(ICoreDocument):
 
 	isTopLevelContent = Bool(title='Is top level object flag', required=False)
 
+tagField(IMetadataDocument['site'], False, ISiteValue)
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)

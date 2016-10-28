@@ -38,6 +38,10 @@
 			 for="basestring" />
 
 	<!-- Metadata -->
+	<adapter factory=".metadata._DefaultSiteValue"
+			 provides=".interfaces.ISiteValue"
+			 for="*" />
+			 
 	<adapter factory=".metadata._DefaultCreatorValue"
 			 provides=".interfaces.ICreatorValue"
 			 for="*" />

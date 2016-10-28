@@ -224,6 +224,7 @@
 	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
+	<field name="site" type="string" indexed="true" required="false" stored="false"/>
 	<field name="containerId" multiValued="true" type="string" indexed="true" stored="true"/>
 	<!--%%%-metadata-end-%%%-->
 
@@ -231,7 +232,6 @@
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
-	<field name="site" type="string" indexed="true" required="false" stored="false"/>
 	<field name="ntiid" type="string" indexed="true" required="false" stored="true"/>
 
 	<!-- Entity fields -->
