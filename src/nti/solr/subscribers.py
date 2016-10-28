@@ -40,7 +40,7 @@ from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
 from nti.solr.common import queue_add
-from nti.solr.common import add_2_queue
+from nti.solr.common import add_to_queue
 from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
@@ -110,11 +110,11 @@ def _unindex_contentunit(obj, event):
 
 @component.adapter(IContentPackage, IIndexObjectEvent)
 def _index_contentpackage(obj, event):
-	add_2_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
+	add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
 
 @component.adapter(IContentPackage, IUnindexObjectEvent)
 def _unindex_contentpackage(obj, event):
-	add_2_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
+	add_to_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
 
 # Evaluation subscribers
 # XXX. Don't include assessment imports in case the assessment pkg is not available

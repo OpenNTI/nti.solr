@@ -50,7 +50,7 @@ def get_job_queue(name):
 	factory = get_factory()
 	return factory.get_queue(name)
 
-def add_2_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
+def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	adpated = IIDValue(obj, None)
 	catalog = ICoreCatalog(obj, None)
 	site = getSite().__name__ if site is None else site
@@ -63,15 +63,16 @@ def add_2_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 		queue.put(job)
 		return job
 	return None
+add_2_queue = add_to_queue # BWC
 
 def queue_add(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site=site, jid='added', **kwargs)
+	return add_to_queue(name, func, obj, site=site, jid='added', **kwargs)
 
 def queue_modified(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site=site, jid='modified', **kwargs)
+	return add_to_queue(name, func, obj, site=site, jid='modified', **kwargs)
 
 def queue_remove(name, func, obj, site=None, **kwargs):
-	return add_2_queue(name, func, obj, site=site, jid='removed', **kwargs)
+	return add_to_queue(name, func, obj, site=site, jid='removed', **kwargs)
 
 # job funcs
 
