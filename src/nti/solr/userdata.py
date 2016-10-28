@@ -26,6 +26,7 @@ from nti.dataserver.users import User
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import USERDATA_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -113,8 +114,8 @@ class UserDataCatalog(CoreCatalog):
 
 	document_interface = IUserDataDocument
 
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, USERDATA_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)
 
 	# principal methods
 

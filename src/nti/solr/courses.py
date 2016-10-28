@@ -20,6 +20,7 @@ from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import COURSES_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -116,5 +117,5 @@ class CoursesCatalog(CoreCatalog):
 
 	document_interface = ICourseCatalogDocument
 
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, COURSES_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)

@@ -37,7 +37,8 @@ from nti.externalization.interfaces import LocatedExternalDict
 from nti.property.property import alias, Lazy
 from nti.property.property import readproperty
 
-from nti.solr import primitive_types
+from nti.solr import NTI_CATALOG
+from nti.solr import primitive_types 
 
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
@@ -63,7 +64,7 @@ class CoreCatalog(object):
 
 	family = BTrees.family64
 
-	def __init__(self, name, client=None, auto_commit=None):
+	def __init__(self, name=NTI_CATALOG, client=None, auto_commit=None):
 		self.name = name
 		if client is not None:
 			self.client = client

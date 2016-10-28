@@ -27,6 +27,7 @@ from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import ENTITIES_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -196,5 +197,5 @@ class EntitiesCatalog(CoreCatalog):
 
 	document_interface = IEntityDocument
 	
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, ENTITIES_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)

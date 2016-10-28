@@ -18,6 +18,7 @@ from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import ASSETS_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -136,5 +137,5 @@ class AssetsCatalog(CoreCatalog):
 
 	document_interface = IAssetDocument
 
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, ASSETS_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)

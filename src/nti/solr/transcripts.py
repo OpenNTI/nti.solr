@@ -26,6 +26,7 @@ from nti.contenttypes.presentation.interfaces import INTITranscript
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import TRANSCRIPTS_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -149,5 +150,5 @@ class TranscriptsCatalog(CoreCatalog):
 
 	document_interface = ITranscriptDocument
 
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, TRANSCRIPTS_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)

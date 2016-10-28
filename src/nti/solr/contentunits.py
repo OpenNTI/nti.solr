@@ -25,6 +25,7 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -144,8 +145,8 @@ class ContentUnitsCatalog(CoreCatalog):
 
 	document_interface = IContentUnitDocument
 
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, CONTENT_UNITS_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)

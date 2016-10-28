@@ -20,6 +20,7 @@ from nti.assessment.interfaces import IQEvaluation
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.solr import NTI_CATALOG
 from nti.solr import EVALUATIONS_CATALOG
 
 from nti.solr.catalog import CoreCatalog
@@ -117,5 +118,5 @@ class EvaluationsCatalog(CoreCatalog):
 
 	document_interface = IEvaluationDocument
 	
-	def __init__(self, client=None):
-		CoreCatalog.__init__(self, EVALUATIONS_CATALOG, client)
+	def __init__(self, name=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, name=name, client=client)
