@@ -67,8 +67,7 @@ def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	doc_id = adpated.value() if adpated is not None else None
 	if doc_id and core:
 		jid = '%s_%s' % (doc_id, jid)
-		return put_job(name, func, jid=jid, 
-					   doc_id, site=site, core=core, **kwargs)
+		return put_job(name, func, jid=jid, doc_id, site=site, core=core, **kwargs)
 	return None
 add_2_queue = add_to_queue # BWC
 
