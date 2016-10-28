@@ -155,16 +155,30 @@ class _DefaultIDValue(_BasicAttributeValue):
 		return "%s%sS" % (dt.year, int(ceil(dt.month/6.0)))
 
 	@classmethod
+	def createdTime(self, context):
+		adapted = ICreatedTimeValue(context, None)
+		value = adapted.value() if adapted is not None else None
+		return value or ZERO_DATETIME
+
+	@classmethod
+	def creator(self, context):
+		adapted = ICreatorValue(context, None)
+		value = adapted.value() if adapted is not None else None
+		return value or SYSTEM_USER_NAME
+
+	@classmethod
+	def mimeType(self, context):
+		adapted = IMimeTypeValue(context, None)
+		value = adapted.value() if adapted is not None else None
+		return value or 'unknown'
+
+	@classmethod
 	def prefix(cls, context):
 		result = []
-		for provided, default, func in ((ICreatedTimeValue, ZERO_DATETIME, cls._semt),
-										(ICreatorValue, SYSTEM_USER_NAME, cls._norm),
-										(IMimeTypeValue, 'unknown', cls._type),):
-			value = None
-			adapted = provided(context, None)
-			if adapted is not None:
-				value = adapted.value()
-			value = func(default if not value else value)
+		for source, convert in ((cls.createdTime, cls._semt),
+								(cls.creator, cls._norm),
+								(cls.mimeType, cls._type)):
+			value = convert(source(context))
 			result.append(value)
 		return '%s!=' % '-'.join(result)
 			

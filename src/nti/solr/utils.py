@@ -29,7 +29,7 @@ from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import extract_key_words
 
-from nti.ntiids.ntiids import find_object_with_ntiid
+from nti.ntiids.ntiids import find_object_with_ntiid, is_valid_ntiid_string
 
 from nti.schema.interfaces import find_most_derived_interface
 
@@ -128,13 +128,11 @@ def normalized_key(doc_id):
 
 def object_finder(doc_id, intids=None):
 	doc_id = normalized_key(doc_id)
-	intids = component.getUtility(IIntIds) if intids is None else intids
-	try:
-		doc_id = int(doc_id)
-		return intids.queryObject(doc_id)
-	except (ValueError, TypeError):
-		pass
-	return find_object_with_ntiid(doc_id)
+	if is_valid_ntiid_string(doc_id):
+		return find_object_with_ntiid(doc_id)
+	else:
+		intids = component.getUtility(IIntIds) if intids is None else intids
+		return intids.queryObject(int(doc_id))
 
 _f_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
 def normalize_field(name):
