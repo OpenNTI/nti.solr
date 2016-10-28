@@ -12,7 +12,7 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
-from nti.contentlibrary.interfaces import IContentUnit
+from nti.contentlibrary.interfaces import IContentUnit, IContentPackage
 
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
@@ -36,7 +36,7 @@ from nti.solr.metadata import MetadataDocument
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 
-from nti.traversal.traversal import find_interface
+from nti.traversal.location import lineage
 
 class _BasicAttributeValue(object):
 
@@ -73,18 +73,32 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
+	def _containers(self, context, break_interface):
+		result = set()
+		for item in lineage(context):
+			try:
+				ntiid = item.ntiid
+				if ntiid:
+					result.add(ntiid)
+			except AttributeError:
+				pass
+			if break_interface.providedBy(item):
+				return result,item
+		return result, None
+
 	def value(self, context=None):
 		context = self.context if context is None else context
-		container = find_interface(context, IContentUnit, strict=False)
-		if container is None:
+		containers, _ = self._containers(context, IContentPackage)
+		if not containers:
 			try:
 				from nti.contenttypes.courses.interfaces import ICourseInstance
 				from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-				container = find_interface(context, ICourseInstance, strict=False)
-				container = ICourseCatalogEntry(container, None)
+				containers, item = self._containers(context, ICourseInstance)
+				containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
+				containers.discard(None)
 			except ImportError:
 				pass
-		return (container.ntiid,) if container is not None else None
+		return tuple(containers)
 
 @interface.implementer(IContentValue)
 @component.adapter(IPresentationAsset)
