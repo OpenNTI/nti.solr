@@ -155,5 +155,5 @@ class ContentUnitsCatalog(CoreCatalog):
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
 		if 'package' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
-			fq['package'] = "+(%s)" % ' '.join(packs)
+			fq['containerId'] = "+(%s)" % ' '.join(packs)
 		return term, fq, params
