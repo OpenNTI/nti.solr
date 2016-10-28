@@ -32,6 +32,8 @@ from nti.site.site import get_site_for_site_names
 
 from nti.site.transient import TrivialSite
 
+from nti.solr import USERDATA_CATALOG
+
 from nti.solr import get_factory
 from nti.solr import primitive_types
 
@@ -190,3 +192,9 @@ def unindex_content_package_assets(source, site=None, *args, **kwargs):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=False)
+
+# entities
+
+def delete_user_data(username, *args, **kwargs):
+	catalog = component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
+	catalog.delete(q="creator:%s" % username.lower(), commit=False)
