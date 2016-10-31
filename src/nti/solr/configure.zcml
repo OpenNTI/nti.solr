@@ -37,10 +37,6 @@
 			 provides=".interfaces.IStringValue"
 			 for="basestring" />
 
-	<adapter factory=".adapters.transcript_to_media"
-			 provides="nti.contentsearch.interfaces.IResultTransformer"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultSiteValue"
 			 provides=".interfaces.ISiteValue"
