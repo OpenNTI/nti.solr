@@ -25,8 +25,8 @@ from nti.solr import COURSES_CATALOG
 
 from nti.solr.catalog import CoreCatalog
 
-from nti.solr.interfaces import INTIIDValue 
-from nti.solr.interfaces import ITitleValue 
+from nti.solr.interfaces import INTIIDValue
+from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue

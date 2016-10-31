@@ -36,7 +36,7 @@ from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import TRANSCRIPTS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
-from nti.solr.interfaces import IIndexObjectEvent 
+from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
 from nti.solr.common import queue_add
@@ -87,7 +87,7 @@ def _entity_modified(obj, event):
 @component.adapter(IEntity, IIntIdRemovedEvent)
 def _entity_removed(obj, event):
 	queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)
-	add_to_queue(USERDATA_QUEUE, delete_user_data, obj=obj, 
+	add_to_queue(USERDATA_QUEUE, delete_user_data, obj=obj,
 				 jid='userdata_removal', username=obj.username)
 
 @component.adapter(IEntity, IIndexObjectEvent)
@@ -111,7 +111,7 @@ def _contentunit_removed(obj, event):
 def _index_contentunit(obj, event):
 	if not IContentPackage.providedBy(obj):
 		_contentunit_added(obj, None)
-	
+
 @component.adapter(IContentUnit, IUnindexObjectEvent)
 def _unindex_contentunit(obj, event):
 	if not IContentPackage.providedBy(obj):
@@ -121,7 +121,7 @@ def _unindex_contentunit(obj, event):
 def _index_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
 	add_to_queue(ASSETS_QUEUE, index_content_package_assets, obj, jid='assets_added')
-	
+
 @component.adapter(IContentPackage, IUnindexObjectEvent)
 def _unindex_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
@@ -177,10 +177,10 @@ def _evaluation_modified(obj, event):
 
 def _evaluation_published(obj, event):
 	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
-	
+
 def _evaluation_unpublished(obj, event):
 	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
-	
+
 def _evaluation_removed(obj, event):
 	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
 
@@ -189,7 +189,7 @@ def _index_evaluation(obj, event):
 
 def _unindex_evaluation(obj, event):
 	_evaluation_removed(obj, None)
-	
+
 # Course subscribers
 # XXX. Don't include course imports in case the course pkg is not available
 def _course_added(obj, event):

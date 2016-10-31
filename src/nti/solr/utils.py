@@ -53,7 +53,7 @@ def get_content_package_from_ntiids(ntiids):
 			obj = find_object_with_ntiid(ntiid)
 			if ICourseCatalogEntry.providedBy(obj) or ICourseInstance.providedBy(obj):
 				packages = get_course_packages(obj)
-				result = packages[0] if packages else None # pick first
+				result = packages[0] if packages else None  # pick first
 				if result is not None:
 					break
 			elif IContentPackage.providedBy(obj):

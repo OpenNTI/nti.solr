@@ -143,6 +143,6 @@ def _evaluation_to_catalog(obj):
 class EvaluationsCatalog(CoreCatalog):
 
 	document_interface = IEvaluationDocument
-	
+
 	def __init__(self, name=NTI_CATALOG, client=None):
 		CoreCatalog.__init__(self, name=name, client=client)

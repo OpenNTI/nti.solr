@@ -5,9 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.traversal.traversal import find_interface
-from nti.site.interfaces import IHostPolicyFolder
-from zope.component.hooks import getSite
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -19,6 +16,8 @@ from datetime import datetime
 
 from zope import component
 from zope import interface
+
+from zope.component.hooks import getSite
 
 from zope.intid.interfaces import IIntIds
 
@@ -58,6 +57,8 @@ from nti.ntiids.ntiids import find_object_with_ntiid
 from nti.schema.field import SchemaConfigured
 from nti.schema.fieldproperty import createDirectFieldProperties
 
+from nti.site.interfaces import IHostPolicyFolder
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import INTIIDValue
@@ -76,6 +77,8 @@ from nti.solr.interfaces import IIsTopLevelContentValue
 from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import document_creator
+
+from nti.traversal.traversal import find_interface
 
 ZERO_DATETIME = datetime.utcfromtimestamp(0)
 
@@ -152,11 +155,11 @@ class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
 
 @interface.implementer(IIDValue)
 class _DefaultIDValue(_BasicAttributeValue):
-	
+
 	@classmethod
 	def _norm(cls, x):
 		return re.sub('[^\x00-\x7F]', '_', re.sub(' ', '_', re.sub('!', '', x)))
-	
+
 	@classmethod
 	def _type(cls, x):
 		return x.split('.')[-1]
@@ -164,7 +167,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 	@classmethod
 	def _semt(cls, x):
 		dt = SolrDatetime.convert(x)
-		return "%s%sS" % (dt.year, int(ceil(dt.month/6.0)))
+		return "%s%sS" % (dt.year, int(ceil(dt.month / 6.0)))
 
 	@classmethod
 	def createdTime(self, context):
@@ -193,7 +196,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 			value = convert(source(context))
 			result.append(value)
 		return '%s!=' % '-'.join(result)
-			
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		try:
@@ -204,7 +207,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 		except (LookupError, KeyError):
 			pass
 		return None
-DefaultObjectIDValue = _DefaultIDValue # Export
+DefaultObjectIDValue = _DefaultIDValue  # Export
 
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
@@ -225,7 +228,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 
 @interface.implementer(IInReplyToValue)
 class _DefaultInReplyToValue(_BasicAttributeValue):
-	
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = getattr(context, "inReplyTo", None)

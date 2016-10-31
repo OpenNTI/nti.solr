@@ -18,8 +18,8 @@ from nti.common.string import to_unicode
 
 from nti.dataserver.interfaces import IEntity
 
-from nti.dataserver.users.interfaces import IUserProfile 
-from nti.dataserver.users.interfaces import IAboutProfile 
+from nti.dataserver.users.interfaces import IUserProfile
+from nti.dataserver.users.interfaces import IAboutProfile
 from nti.dataserver.users.interfaces import IFriendlyNamed
 from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
@@ -38,7 +38,7 @@ from nti.solr.interfaces import IEmailValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IRealnameValue
 from nti.solr.interfaces import IUsernameValue
-from nti.solr.interfaces import IEntityDocument 
+from nti.solr.interfaces import IEntityDocument
 from nti.solr.interfaces import ISocialURLValue
 from nti.solr.interfaces import IEducationDegreeValue
 from nti.solr.interfaces import IEducationSchoolValue
@@ -92,7 +92,7 @@ class _DefaultEmailValue(_BasicAttributeValue):
 class _DefaultAliasValue(_BasicAttributeValue):
 	field = 'alias'
 	interface = IFriendlyNamed
-	
+
 @component.adapter(IEntity)
 @interface.implementer(IRealnameValue)
 class _DefaultRealnameValue(_BasicAttributeValue):
@@ -113,7 +113,7 @@ class _DefaultProfessionalTitleValue(_BasicAttributeValue):
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalCompanyValue)
 class _DefaultProfessionalCompanyValue(_DefaultProfessionalTitleValue):
-	
+
 	def value(self, context=None):
 		source = _BasicAttributeValue.value(self, context) or ()
 		return tuple(to_unicode(x.companyName) for x in source if x.companyName) if source else ()
@@ -140,7 +140,7 @@ class _DefaultEducationDegreeValue(_BasicAttributeValue):
 @component.adapter(IEntity)
 @interface.implementer(IEducationSchoolValue)
 class _DefaultEducationSchoolValue(_DefaultEducationDegreeValue):
-	
+
 	def value(self, context=None):
 		source = _BasicAttributeValue.value(self, context) or ()
 		return tuple(to_unicode(x.school) for x in source if x.school) if source else ()
@@ -161,7 +161,7 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
 		context = self.context if context is None else context
 		profile = ISocialMediaProfile(context, None)
 		if profile is not None:
-			result = {profile.twitter, profile.facebook, 
+			result = {profile.twitter, profile.facebook,
 					  profile.googlePlus, profile.linkedIn}
 			return tuple(to_unicode(x.lower()) for x in result if x)
 		return ()
@@ -182,7 +182,7 @@ class EntityDocument(MetadataDocument):
 	createDirectFieldProperties(IEntityDocument)
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.entitydocument'
-		
+
 @component.adapter(IEntity)
 @interface.implementer(IEntityDocument)
 def _EntityDocumentCreator(obj, factory=EntityDocument):
@@ -196,6 +196,6 @@ def _entity_to_catalog(obj):
 class EntitiesCatalog(CoreCatalog):
 
 	document_interface = IEntityDocument
-	
+
 	def __init__(self, name=NTI_CATALOG, client=None):
 		CoreCatalog.__init__(self, name=name, client=client)

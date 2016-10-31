@@ -38,7 +38,7 @@ from nti.property.property import alias, Lazy
 from nti.property.property import readproperty
 
 from nti.solr import NTI_CATALOG
-from nti.solr import primitive_types 
+from nti.solr import primitive_types
 
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue

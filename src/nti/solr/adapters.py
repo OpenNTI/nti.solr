@@ -35,5 +35,5 @@ class _StringValue(object):
 
 @component.adapter(INTITranscript)
 @interface.implementer(ISolrResultTransformer)
-def transcript_to_media(object):
-	return object.__parent__
+def transcript_to_media(obj):
+	return obj.__parent__

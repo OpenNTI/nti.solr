@@ -25,7 +25,7 @@ from nti.contentlibrary.interfaces import IContentPackage
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAssetContainer
-	
+
 from nti.dataserver.interfaces import IDataserver
 
 from nti.site.site import get_site_for_site_names
@@ -69,7 +69,7 @@ def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 		jid = '%s_%s' % (doc_id, jid)
 		return put_job(name, func, jid=jid, source=doc_id, site=site, core=core, **kwargs)
 	return None
-add_2_queue = add_to_queue # BWC
+add_2_queue = add_to_queue  # BWC
 
 def queue_add(name, func, obj, site=None, **kwargs):
 	return add_to_queue(name, func, obj, site=site, jid='added', **kwargs)
@@ -115,7 +115,7 @@ def single_unindex_job(source, core, site=None, **kwargs):
 
 def finder(source):
 	return object_finder(source) if isinstance(source, primitive_types) else source
-	
+
 def process_asset(obj, index=True, commit=False):
 	result = 0
 	if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
@@ -179,7 +179,7 @@ def process_content_package_assets(obj, index=True):
 			recur(child)
 	recur(obj)
 	for a in collector:
-		process_asset(a, index=index, commit=False) # wait for server to commit
+		process_asset(a, index=index, commit=False)  # wait for server to commit
 
 def index_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)

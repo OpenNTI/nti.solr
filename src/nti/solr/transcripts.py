@@ -122,7 +122,7 @@ class _TranscriptKeywordsValue(_BasicAttributeValue):
 	def lang(self, context=None):
 		context = self.context if context is None else context
 		return context.lang
-	
+
 	def value(self, context=None):
 		context = self.context if context is None else context
 		adapted = IContentValue(context, None)
@@ -135,7 +135,7 @@ class TranscriptDocument(MetadataDocument):
 	createDirectFieldProperties(ITranscriptDocument)
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.transcriptdocument'
-		
+
 @component.adapter(INTITranscript)
 @interface.implementer(ITranscriptDocument)
 def _TranscriptDocumentCreator(obj, factory=TranscriptDocument):

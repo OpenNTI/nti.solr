@@ -12,7 +12,8 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
-from nti.contentlibrary.interfaces import IContentUnit, IContentPackage
+from nti.contentlibrary.interfaces import IContentUnit
+from nti.contentlibrary.interfaces import IContentPackage
 
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
@@ -110,7 +111,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 			except AttributeError:
 				pass
 			if break_interface.providedBy(item):
-				return result,item
+				return result, item
 		return result, None
 
 	def value(self, context=None):

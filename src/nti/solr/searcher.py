@@ -131,7 +131,7 @@ class _SOLRSearcher(object):
 			if obj is None:
 				return None
 			hit = SearchHit()
-			obj = hit.Target = IResultTransformer( obj, obj )
+			obj = hit.Target = IResultTransformer(obj, obj)
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
 			# Fragments / Snippets

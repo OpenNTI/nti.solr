@@ -78,9 +78,9 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 				result.add(item.ntiid)
 			if IContentPackage.providedBy(item):
 				break
-		result.discard(context.ntiid) # remove self
+		result.discard(context.ntiid)  # remove self
 		return tuple(result)
-	
+
 @component.adapter(IContentUnit)
 @interface.implementer(ITitleValue)
 class _DefaultTitleValue(_BasicAttributeValue):
