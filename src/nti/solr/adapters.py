@@ -14,10 +14,6 @@ from zope import interface
 
 from nti.common.string import to_unicode
 
-from nti.contenttypes.presentation.interfaces import INTITranscript
-
-from nti.contentsearch.interfaces import IResultTransformer
-
 from nti.solr.interfaces import IStringValue
 
 @component.adapter(basestring)
@@ -33,8 +29,3 @@ class _StringValue(object):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return to_unicode(context) if context else None
-
-@component.adapter(INTITranscript)
-@interface.implementer(IResultTransformer)
-def transcript_to_media(obj):
-	return obj.__parent__
