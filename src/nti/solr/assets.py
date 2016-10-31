@@ -14,7 +14,10 @@ from zope import interface
 
 from nti.contentlibrary.interfaces import IContentUnit, IContentPackage
 
-from nti.contenttypes.presentation.interfaces import IPresentationAsset
+from nti.contenttypes.presentation.interfaces import IPresentationAsset,\
+	IUserCreatedAsset
+
+from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -31,7 +34,9 @@ from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IAssetDocument
 from nti.solr.interfaces import IContainerIdValue
 
+from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataDocument
+from nti.solr.metadata import DefaultObjectIDValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -42,6 +47,28 @@ class _BasicAttributeValue(object):
 
 	def __init__(self, context=None):
 		self.context = context
+
+@component.adapter(IContentUnit)
+@component.adapter(IPresentationAsset)
+class _DefaultAssetIDValue(DefaultObjectIDValue):
+
+	@classmethod
+	def createdTime(cls, context):
+		if IUserCreatedAsset.providedBy(context):
+			return super(_DefaultAssetIDValue, cls).createdTime(context)
+		return ZERO_DATETIME
+
+	@classmethod
+	def creator(cls, context):
+		if IUserCreatedAsset.providedBy(context):
+			return super(_DefaultAssetIDValue, cls).creator(context)
+		return SYSTEM_USER_NAME
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if IUserCreatedAsset.providedBy(context):
+			return super(_DefaultAssetIDValue, self).creator(context)
+		return self.prefix(context) + context.ntiid
 
 @interface.implementer(ITitleValue)
 @component.adapter(IPresentationAsset)

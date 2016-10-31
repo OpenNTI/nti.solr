@@ -244,6 +244,10 @@
 					 .interfaces.IUnindexObjectEvent"/>
 
 	<!-- Assets -->
+	<adapter factory=".contentunits._DefaultAssetIDValue"
+			 provides=".interfaces.IIDValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
 	<adapter factory=".assets._DefaultAssetTitleValue"
 			 provides=".interfaces.ITitleValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />

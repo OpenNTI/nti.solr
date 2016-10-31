@@ -55,11 +55,11 @@ class _BasicAttributeValue(object):
 class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 
 	@classmethod
-	def createdTime(self, context):
+	def createdTime(cls, context):
 		return ZERO_DATETIME
 
 	@classmethod
-	def creator(self, context):
+	def creator(cls, context):
 		return SYSTEM_USER_NAME
 
 	def value(self, context=None):
