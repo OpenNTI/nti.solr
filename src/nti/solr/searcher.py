@@ -128,10 +128,11 @@ class _SOLRSearcher(object):
 		try:
 			uid = result['id']
 			obj = catalog.get_object(uid, self.intids)
+			obj = IResultTransformer(obj, obj)
 			if obj is None:
 				return None
 			hit = SearchHit()
-			obj = hit.Target = IResultTransformer(obj, obj)
+			hit.Target = obj # trxed
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
 			# Fragments / Snippets
