@@ -177,6 +177,10 @@
 				for="nti.dataserver.interfaces.IEntity
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
+	<subscriber handler=".subscribers._index_entity"
+					for="nti.dataserver.interfaces.IEntity
+					 	 .interfaces.IIndexObjectEvent"/>
+					 	 
 	<!-- Content Units -->
 	<adapter factory=".contentunits._DefaultContentUnitIDValue"
 			 provides=".interfaces.IIDValue"
