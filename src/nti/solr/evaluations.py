@@ -12,11 +12,14 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
-from nti.contentfragments.interfaces import IPlainTextContentFragment
-
 from nti.assessment.common import get_containerId
 
 from nti.assessment.interfaces import IQEvaluation
+from nti.assessment.interfaces import IQEditableEvaluation
+
+from nti.contentfragments.interfaces import IPlainTextContentFragment
+
+from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -32,7 +35,9 @@ from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import IEvaluationDocument
 
+from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataDocument
+from nti.solr.metadata import DefaultObjectIDValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -42,8 +47,29 @@ class _BasicAttributeValue(object):
 	def __init__(self, context=None):
 		self.context = context
 
-@interface.implementer(ITitleValue)
 @component.adapter(IQEvaluation)
+class _DefaultEvaluationIDValue(DefaultObjectIDValue):
+
+	@classmethod
+	def createdTime(cls, context):
+		if IQEditableEvaluation.providedBy(context):
+			return super(_DefaultEvaluationIDValue, cls).createdTime(context)
+		return ZERO_DATETIME
+
+	@classmethod
+	def creator(cls, context):
+		if IQEditableEvaluation.providedBy(context):
+			return super(_DefaultEvaluationIDValue, cls).creator(context)
+		return SYSTEM_USER_NAME
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if IQEditableEvaluation.providedBy(context):
+			return super(_DefaultEvaluationIDValue, self).creator(context)
+		return self.prefix(context) + context.ntiid
+
+@component.adapter(IQEvaluation)
+@interface.implementer(ITitleValue)
 class _DefaultEvaluationTitleValue(_BasicAttributeValue):
 
 	def lang(self, context):
@@ -62,8 +88,8 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 		result = get_containerId(context)
 		return result
 
-@interface.implementer(IContentValue)
 @component.adapter(IQEvaluation)
+@interface.implementer(IContentValue)
 class _DefaultEvaluationContentValue(_BasicAttributeValue):
 
 	language = 'en'

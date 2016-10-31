@@ -14,8 +14,8 @@ from zope import interface
 
 from nti.contentlibrary.interfaces import IContentUnit, IContentPackage
 
-from nti.contenttypes.presentation.interfaces import IPresentationAsset,\
-	IUserCreatedAsset
+from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
+from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 

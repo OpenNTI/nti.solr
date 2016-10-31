@@ -363,6 +363,11 @@
 
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
+	
+		<adapter factory=".contentunits._DefaultEvaluationIDValue"
+			 	 provides=".interfaces.IIDValue"
+				 for="nti.assessment.interfaces.IQEvaluation" />
+			 
 		<adapter factory=".evaluations._DefaultEvaluationTitleValue"
 				 provides=".interfaces.ITitleValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />
