@@ -244,7 +244,7 @@
 					 .interfaces.IUnindexObjectEvent"/>
 
 	<!-- Assets -->
-	<adapter factory=".contentunits._DefaultAssetIDValue"
+	<adapter factory=".assets._DefaultAssetIDValue"
 			 provides=".interfaces.IIDValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
@@ -364,7 +364,7 @@
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
 	
-		<adapter factory=".contentunits._DefaultEvaluationIDValue"
+		<adapter factory=".evaluations._DefaultEvaluationIDValue"
 			 	 provides=".interfaces.IIDValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />
 			 
