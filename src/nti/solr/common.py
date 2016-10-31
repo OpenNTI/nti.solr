@@ -158,9 +158,9 @@ def index_content_package(source, site=None, *args, **kwargs):
 	with current_site(job_site):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
-			logger.info("Indexing %s started", obj.ntiid)
+			logger.info("Content package indexing %s started", obj.ntiid)
 			process_content_package(obj, index=True)
-			logger.info("Indexing %s completed", obj.ntiid)
+			logger.info("Content package indexing %s completed", obj.ntiid)
 
 def unindex_content_package(source, site=None, **kwargs):
 	job_site = get_job_site(site)
@@ -186,9 +186,9 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
 	with current_site(job_site):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
-			logger.info("Content package assets indexing %s started", obj.ntiid)
+			logger.info("Content package %s assets indexing started", obj.ntiid)
 			process_content_package_assets(obj, index=True)
-			logger.info("Content package assets indexing %s completed", obj.ntiid)
+			logger.info("Content package %s assets indexing completed", obj.ntiid)
 
 def unindex_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
