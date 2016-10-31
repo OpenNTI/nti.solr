@@ -33,7 +33,7 @@ class IDateField(interface.Interface):
 	"""
 	Marker interface for date fields
 	"""
-	
+
 class IAttributeValue(interface.Interface):
 	"""
 	Adapter interface to get the [field] value from a given object
@@ -350,7 +350,7 @@ tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=ITextF
 tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 # content units
-	
+
 class ITitleValue(IStringValue):
 	"""
 	Adapter interface to get the title value from a given object
@@ -479,7 +479,7 @@ class ICoreCatalog(IInjection, IIndexSearch):
 	def delete(uid=None, q=None, commit=True):
 		"""
 		Delete by the specified query or id
-		
+
 		@param uid: The object/id to remove
 		@param q: The query to execute for deletion
 		@param commit: Commit operation
@@ -539,3 +539,9 @@ class ISOLRQueueFactory(interface.Interface):
 class ISOLR(interface.Interface):
 	URL = ValidTextLine(title="LDAP URL", required=True)
 	Timeout = ValidTextLine(title="Timeout", required=False)
+
+class ISolrResultTransformer(interface.Interface):
+	"""
+	An adapter interface to transform an object into
+	an appropriate object to return on hits.
+	"""

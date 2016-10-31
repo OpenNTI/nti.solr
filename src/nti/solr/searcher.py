@@ -48,6 +48,7 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ILastModifiedValue
+from nti.solr.interfaces import ISolrResultTransformer
 
 from nti.solr.utils import normalize_field
 
@@ -130,7 +131,7 @@ class _SOLRSearcher(object):
 			if obj is None:
 				return None
 			hit = SearchHit()
-			obj = hit.Target = obj  # TODO: transformer if required
+			obj = hit.Target = ISolrResultTransformer( obj, obj )
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
 			# Fragments / Snippets
