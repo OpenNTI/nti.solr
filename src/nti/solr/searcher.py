@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.solr.utils import normalize_field
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -49,6 +48,8 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ILastModifiedValue
+
+from nti.solr.utils import normalize_field
 
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
