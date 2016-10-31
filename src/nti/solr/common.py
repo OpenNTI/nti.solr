@@ -131,15 +131,15 @@ def process_asset(obj, index=True, commit=False):
 				operation(transcript, commit=commit)
 	return result
 
-def index_asset(source, site=None, commit=True, *args, **kwargs):
+def index_asset(doc_id, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		process_asset(finder(source), index=True, commit=commit)
+		process_asset(finder(doc_id), index=True, commit=commit)
 
-def unindex_asset(source, site=None, commit=True, *args, **kwargs):
+def unindex_asset(doc_id, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		process_asset(finder(source), index=False, commit=commit)
+		process_asset(finder(doc_id), index=False, commit=commit)
 
 # content untis/packages
 
@@ -153,19 +153,20 @@ def process_content_package(obj, index=True):
 		operation(unit, commit=commit)
 	recur(obj)
 
-def index_content_package(source, site=None, *args, **kwargs):
+def index_content_package(doc_id, site=None, *args, **kwargs):
+	from IPython.core.debugger import Tracer; Tracer()()
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
+		obj = finder(doc_id)
 		if IContentPackage.providedBy(obj):
 			logger.info("Indexing %s started", obj)
 			process_content_package(obj, index=True)
 			logger.info("Indexing %s completed", obj)
 
-def unindex_content_package(source, site=None, **kwargs):
+def unindex_content_package(doc_id, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
+		obj = finder(doc_id)
 		if IContentPackage.providedBy(obj):
 			process_content_package(obj, index=False)
 
@@ -183,17 +184,17 @@ def process_content_package_assets(obj, index=True):
 			process_asset(a, index=index, commit=size==x)
 	recur(obj)
 
-def index_content_package_assets(source, site=None, *args, **kwargs):
+def index_content_package_assets(doc_id, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
+		obj = finder(doc_id)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=True)
 
-def unindex_content_package_assets(source, site=None, *args, **kwargs):
+def unindex_content_package_assets(doc_id, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(source)
+		obj = finder(doc_id)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=False)
 
