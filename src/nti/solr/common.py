@@ -67,7 +67,7 @@ def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
 	doc_id = adpated.value() if adpated is not None else None
 	if doc_id and core:
 		jid = '%s_%s' % (doc_id, jid)
-		return put_job(name, func, jid=jid, doc_id=doc_id, site=site, core=core, **kwargs)
+		return put_job(name, func, jid=jid, source=doc_id, site=site, core=core, **kwargs)
 	return None
 add_2_queue = add_to_queue # BWC
 
@@ -96,20 +96,20 @@ def get_job_site(job_site_name=None):
 			raise ValueError('No site found for (%s)' % job_site_name)
 	return job_site
 
-def single_index_job(doc_id, site=None, **kwargs):
+def single_index_job(source, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = object_finder(doc_id)
+		obj = object_finder(source)
 		catalog = ICoreCatalog(obj, None)
 		if catalog is not None:
-			return catalog.index_doc(doc_id, obj)
+			return catalog.index_doc(source, obj)
 
-def single_unindex_job(doc_id, core, site=None, **kwargs):
+def single_unindex_job(source, core, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
 		catalog = component.queryUtility(ICoreCatalog, name=core)
 		if catalog is not None:
-			catalog.unindex_doc(doc_id)
+			catalog.unindex_doc(source)
 
 # assets
 
@@ -131,15 +131,15 @@ def process_asset(obj, index=True, commit=False):
 				operation(transcript, commit=commit)
 	return result
 
-def index_asset(doc_id, site=None, commit=True, *args, **kwargs):
+def index_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		process_asset(finder(doc_id), index=True, commit=commit)
+		process_asset(finder(source), index=True, commit=commit)
 
-def unindex_asset(doc_id, site=None, commit=True, *args, **kwargs):
+def unindex_asset(source, site=None, commit=True, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		process_asset(finder(doc_id), index=False, commit=commit)
+		process_asset(finder(source), index=False, commit=commit)
 
 # content untis/packages
 
@@ -153,20 +153,19 @@ def process_content_package(obj, index=True):
 		operation(unit, commit=commit)
 	recur(obj)
 
-def index_content_package(doc_id, site=None, *args, **kwargs):
-	from IPython.core.debugger import Tracer; Tracer()()
+def index_content_package(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(doc_id)
+		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			logger.info("Indexing %s started", obj)
 			process_content_package(obj, index=True)
 			logger.info("Indexing %s completed", obj)
 
-def unindex_content_package(doc_id, site=None, **kwargs):
+def unindex_content_package(source, site=None, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(doc_id)
+		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			process_content_package(obj, index=False)
 
@@ -184,17 +183,17 @@ def process_content_package_assets(obj, index=True):
 			process_asset(a, index=index, commit=size==x)
 	recur(obj)
 
-def index_content_package_assets(doc_id, site=None, *args, **kwargs):
+def index_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(doc_id)
+		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=True)
 
-def unindex_content_package_assets(doc_id, site=None, *args, **kwargs):
+def unindex_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
-		obj = finder(doc_id)
+		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=False)
 
