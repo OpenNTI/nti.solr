@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.solr.utils import normalize_field
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -21,6 +22,7 @@ from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.contentsearch.search_hits import SearchHit
+from nti.contentsearch.search_fragments import SearchFragment
 from nti.contentsearch.search_results import _SearchResults as SearchResults
 
 from nti.contenttypes.presentation import AUDIO_MIMETYES
@@ -120,7 +122,7 @@ class _SOLRSearcher(object):
 			catalogs = tuple(catalogs.values())
 		return catalogs
 
-	def _get_search_hit(self, catalog, result):
+	def _get_search_hit(self, catalog, result, highlighting=None):
 		try:
 			uid = result['id']
 			obj = catalog.get_object(uid, self.intids)
@@ -130,7 +132,18 @@ class _SOLRSearcher(object):
 			obj = hit.Target = obj  # TODO: transformer if required
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
-			# add common field hit
+			# Fragments / Snippets
+			fragments = list()
+			snippets = highlighting.get(uid) if highlighting else None
+			if snippets:
+				for name, value in snippets.values():
+					fragment = SearchFragment()
+					fragment.field = normalize_field(name)
+					fragment.matches = list(value)
+					fragments.append(fragment)
+			if fragments:
+				hit.Fragments = fragments
+			# Add common field hit
 			for value_interface, name in ((INTIIDValue, 'NTIID'),
 										  (ICreatorValue, 'Creator'),
 										  (IMimeTypeValue, 'TargetMimeType')
@@ -154,7 +167,7 @@ class _SOLRSearcher(object):
 			solr_results = catalog.search(q, *args, **kwargs)
 			search_results = SearchResults()
 			for r in solr_results:
-				hit = self._get_search_hit(catalog, r)
+				hit = self._get_search_hit(catalog, r. solr_results.highlighting)
 				if hit is not None:
 					search_results.add(hit)
 			result.append(search_results)
