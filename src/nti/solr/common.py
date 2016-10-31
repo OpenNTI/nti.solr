@@ -178,9 +178,8 @@ def process_content_package_assets(obj, index=True):
 		for child in unit.children or ():
 			recur(child)
 	recur(obj)
-	size = len(collector) - 1
-	for x, a in enumerate(collector):
-		process_asset(a, index=index, commit=size==x)
+	for a in collector:
+		process_asset(a, index=index, commit=False) # wait for server to commit
 
 def index_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
