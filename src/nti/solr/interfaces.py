@@ -540,8 +540,3 @@ class ISOLR(interface.Interface):
 	URL = ValidTextLine(title="LDAP URL", required=True)
 	Timeout = ValidTextLine(title="Timeout", required=False)
 
-class ISolrResultTransformer(interface.Interface):
-	"""
-	An adapter interface to transform an object into
-	an appropriate object to return on hits.
-	"""

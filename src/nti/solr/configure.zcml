@@ -518,11 +518,6 @@
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 .interfaces.IUnindexObjectEvent"/>
 
-	<!-- Transformers -->
-	<adapter factory=".adapters.transcript_to_media"
-			 provides=".interfaces.ISolrResultTransformer"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
 	<!-- Utilities -->
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 

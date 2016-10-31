@@ -19,6 +19,7 @@ from zope.intid.interfaces import IIntIds
 
 from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQuery
+from nti.contentsearch.interfaces import IResultTransformer
 
 from nti.contentsearch.search_hits import SearchHit
 from nti.contentsearch.search_fragments import SearchFragment
@@ -48,7 +49,6 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ILastModifiedValue
-from nti.solr.interfaces import ISolrResultTransformer
 
 from nti.solr.utils import normalize_field
 
@@ -131,7 +131,7 @@ class _SOLRSearcher(object):
 			if obj is None:
 				return None
 			hit = SearchHit()
-			obj = hit.Target = ISolrResultTransformer( obj, obj )
+			obj = hit.Target = IResultTransformer( obj, obj )
 			hit.Score = result['score']
 			hit.ID = IIDValue(obj).value() or uid
 			# Fragments / Snippets
