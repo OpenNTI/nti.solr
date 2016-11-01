@@ -524,6 +524,12 @@
 	<!-- Subscribers -->
 
 	<configure zcml:condition="have devmode">
+		<adapter factory=".searcher._SOLRSearcher"
+				 for="nti.dataserver.interfaces.IUser"
+			 	 provides="nti.contentsearch.interfaces.ISearcherr" />
+	</configure>
+
+	<configure zcml:condition="have devmode">
 		<solr:registerSOLR url="http://localhost:8983/solr" />
 	</configure>
 
