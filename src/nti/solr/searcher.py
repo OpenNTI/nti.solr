@@ -160,19 +160,19 @@ class _SOLRSearcher(object):
 			# hit is ready
 			return hit
 		except (ValueError, TypeError, KeyError):
-			pass
+			logger.debug('Could not create hit for %s', result)
 		return None
 
 	def search(self, query, *args, **kwargs):
 		result = []
 		query = ISearchQuery(query)
 		for catalog in self.query_search_catalogs(query):
-			q = copy.deepcopy(query)
-			solr_results = catalog.search(q, *args, **kwargs)
-			search_results = SearchResults()
-			for r in solr_results:
-				hit = self._get_search_hit(catalog, r. solr_results.highlighting)
+			q = copy.deepcopy(query) # clone it
+			container = SearchResults(q)
+			events = catalog.search(q, *args, **kwargs)
+			for event in events or ():
+				hit = self._get_search_hit(catalog, event, events.highlighting)
 				if hit is not None:
-					search_results.add(hit)
-			result.append(search_results)
+					container.add(hit)
+			result.append(container)
 		return result
