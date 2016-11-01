@@ -246,7 +246,7 @@ class CoreCatalog(object):
 			d.term = str(query) if isinstance(query, six.string_types) else query
 			query = d  # replace
 		# prepare solr query
-		term, fq, params = self._bulild_from_catalog_query(query)
+		term, fq, params = self._build_from_search_query(query)
 		all_query = {'q': term}
 		all_query.update(fq)
 		q = urllib.urlencode(all_query)
