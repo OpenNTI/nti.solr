@@ -16,10 +16,6 @@ from zope import interface
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.coremetadata.utils import current_principal
-
-from nti.dataserver.authentication import effective_principals
-
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
@@ -119,40 +115,26 @@ class UserDataCatalog(CoreCatalog):
 
 	# principal methods
 
-	@property
-	def current_username(self):
+	def get_entity(self, username):
 		try:
-			return current_principal(False).id
-		except AttributeError:
-			return None
-
-	@property
-	def current_entity(self):
-		try:
-			return User.get_entity(self.username)
+			return User.get_entity(username)
 		except (LookupError, TypeError):
 			return None
 
-	@property
-	def current_memberships(self):
-		user = self.entity
+	def memberships(self, username):
+		user = self.get_entity(username)
 		if user is not None:
 			dynamic_memberships = getattr(user, 'usernames_of_dynamic_memberships', ())
 			usernames = itertools.chain((user.username,), dynamic_memberships)
 			return {x.lower() for x in usernames}
 		return ()
 
-	@property
-	def current_effective_principals(self):
-		if self.username:
-			return effective_principals(self.username, everyone=False, skip_cache=True)
-
 	# search methods
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)
-		username = self.current_username
-		memberships = self.current_memberships
-		if 'sharedWith' not in fq and username and memberships:
+		username = getattr(query, 'username', None)
+		memberships = self.memberships(username)
+		if username and 'sharedWith' not in fq and username and memberships:
 			fq['sharedWith'] = "+(%s)" % ' '.join(memberships)
 		return term, fq, params
