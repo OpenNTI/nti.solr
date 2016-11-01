@@ -145,12 +145,11 @@ def unindex_asset(source, site=None, commit=True, *args, **kwargs):
 
 def process_content_package(obj, index=True):
 	def recur(unit):
-		commit = IContentPackage.providedBy(unit)
 		for child in unit.children or ():
 			recur(child)
 		catalog = ICoreCatalog(unit)
 		operation = catalog.add if index else catalog.remove
-		operation(unit, commit=commit)
+		operation(unit, commit=False) # wait for server to commit
 	recur(obj)
 
 def index_content_package(source, site=None, *args, **kwargs):
