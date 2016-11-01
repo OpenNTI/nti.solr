@@ -154,7 +154,7 @@ class ContentUnitsCatalog(CoreCatalog):
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
-		if 'package' not in fq and packs:
+		if 'containerId' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
 			fq['containerId'] = "+(%s)" % ' '.join(packs)
 		return term, fq, params
