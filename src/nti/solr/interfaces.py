@@ -17,6 +17,8 @@ from zope.index.interfaces import IIndexSearch
 from zope.interface.interfaces import ObjectEvent
 from zope.interface.interfaces import IObjectEvent
 
+from nti.contentsearch.interfaces import ISearcher
+
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
@@ -540,3 +542,7 @@ class ISOLR(interface.Interface):
 	URL = ValidTextLine(title="LDAP URL", required=True)
 	Timeout = ValidTextLine(title="Timeout", required=False)
 
+# searcher
+
+class ISOLRSearcher(ISearcher):
+	pass

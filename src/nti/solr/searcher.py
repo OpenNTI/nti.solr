@@ -17,7 +17,6 @@ from zope import interface
 
 from zope.intid.interfaces import IIntIds
 
-from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQuery
 from nti.contentsearch.interfaces import IResultTransformer
 
@@ -46,6 +45,7 @@ from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICreatorValue
+from nti.solr.interfaces import ISOLRSearcher
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ILastModifiedValue
@@ -94,7 +94,7 @@ except ImportError:
 	pass
 
 @component.adapter(IUser)
-@interface.implementer(ISearcher)
+@interface.implementer(ISOLRSearcher)
 class _SOLRSearcher(object):
 
 	def __init__(self, entity=None):

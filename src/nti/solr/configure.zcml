@@ -526,7 +526,7 @@
 	<configure zcml:condition="have devmode">
 		<adapter factory=".searcher._SOLRSearcher"
 				 for="nti.dataserver.interfaces.IUser"
-			 	 provides="nti.contentsearch.interfaces.ISearcherr" />
+			 	 provides=".interfaces.ISOLRSearcher" />
 	</configure>
 
 	<configure zcml:condition="have devmode">
