@@ -97,18 +97,23 @@ except ImportError:
 @interface.implementer(ISOLRSearcher)
 class _SOLRSearcher(object):
 
+	HIT_FIELDS = ((INTIIDValue, 'NTIID'),
+				  (ICreatorValue, 'Creator'),
+				  (IMimeTypeValue, 'TargetMimeType'),
+				  (IContainerIdValue, 'ContainerId'),
+				  (ILastModifiedValue, 'lastModified'))
+
 	def __init__(self, entity=None):
 		self.entity = entity
-
-	def registered_catalogs(self):
-		return {k:v for k, v in component.getUtilitiesFor(ICoreCatalog)}
 
 	@Lazy
 	def intids(self):
 		return component.getUtility(IIntIds)
 
-	@classmethod
-	def query_search_catalogs(query):
+	def registered_catalogs(self):
+		return {k:v for k, v in component.getUtilitiesFor(ICoreCatalog)}
+
+	def query_search_catalogs(self, query):
 		if query.searchOn:
 			catalogs = set()
 			for m in query.searchOn:
@@ -121,7 +126,7 @@ class _SOLRSearcher(object):
 				catalogs.add(catalog)
 			catalogs.discard(None)
 		else:
-			catalogs = tuple(catalogs.values())
+			catalogs = tuple(self.registered_catalogs().values())
 		return catalogs
 
 	def _get_search_hit(self, catalog, result, highlighting=None):
@@ -147,11 +152,7 @@ class _SOLRSearcher(object):
 			if fragments:
 				hit.Fragments = fragments
 			# Add common field hit
-			for value_interface, name in ((INTIIDValue, 'NTIID'),
-										  (ICreatorValue, 'Creator'),
-										  (IMimeTypeValue, 'TargetMimeType')
-										  (IContainerIdValue, 'ContainerId'),
-										  (ILastModifiedValue, 'lastModified'),):
+			for value_interface, name in self.HIT_FIELDS:
 				adapted = value_interface(obj, None)
 				if adapted is not None:
 					value = adapted.value()
