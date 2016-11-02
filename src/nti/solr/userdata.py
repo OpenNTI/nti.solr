@@ -16,7 +16,7 @@ from zope import interface
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IUserGeneratedData
+from nti.dataserver.interfaces import IUserGeneratedData 
 
 from nti.dataserver.users import User
 
@@ -126,7 +126,7 @@ class UserDataCatalog(CoreCatalog):
 		if user is not None:
 			dynamic_memberships = getattr(user, 'usernames_of_dynamic_memberships', ())
 			usernames = itertools.chain((user.username,), dynamic_memberships)
-			return {x.lower() for x in usernames}
+			return {x.lower() for x in usernames} - {'everyone'}
 		return ()
 
 	# search methods
