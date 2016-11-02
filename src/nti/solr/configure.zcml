@@ -538,16 +538,6 @@
 	</configure>
 
 	<!-- Queues -->
-	<configure zcml:condition="have devmode">
-		<configure zcml:condition="not-have testmode">
-			<solr:registerProcessingQueue />
-		</configure>
-		<configure zcml:condition="have testmode">
-			<solr:registerImmediateProcessingQueue />
-		</configure>
-	</configure>
-	<configure zcml:condition="not-have devmode">
-		<solr:registerRedisProcessingQueue />
-	</configure>
+	<solr:registerRedisProcessingQueue />
 
 </configure>
