@@ -252,6 +252,9 @@
 	<copyField source="education_*" dest="_text_"/>
 	<copyField source="professional_*" dest="_text_"/>
 
+	<!-- UGD -->
+	<field name="isUserGeneratedData" type="boolean" required="false" indexed="true" stored="false"/>
+
 	<!-- Evaluations/UGD -->
 	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<copyField source="tags" dest="_text_"/>
