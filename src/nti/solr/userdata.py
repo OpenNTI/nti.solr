@@ -35,6 +35,8 @@ from nti.solr.interfaces import IUserDataDocument
 
 from nti.solr.metadata import MetadataDocument
 
+from nti.solr.utils import CATALOG_MIME_TYPE_MAP
+
 from nti.solr.utils import get_keywords
 from nti.solr.utils import lucene_escape
 from nti.solr.utils import document_creator
@@ -138,4 +140,7 @@ class UserDataCatalog(CoreCatalog):
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
 			fq['sharedWith'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in memberships)
+		if 'mimeType' not in fq:
+			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG)
+			fq['-mimeType'] = "(%s)" % 'OR'.join(types) # negative query
 		return term, fq, params

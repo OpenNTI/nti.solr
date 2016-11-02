@@ -217,4 +217,4 @@ CATALOG_MIME_TYPE_MAP = defaultdict(set)
 for name, value in MIME_TYPE_CATALOG_MAP.items():
 	_neg_ugd.add(name)
 	CATALOG_MIME_TYPE_MAP[value].add(name)
-CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = _neg_ugd
+CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = _neg_ugd # Negative query
