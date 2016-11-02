@@ -95,7 +95,7 @@ class _DefaultSiteValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		folder = find_interface(context, IHostPolicyFolder, strict=False)
-		return folder.__name__ if folder is None else getSite().__name__
+		return folder.__name__ if folder is not None else getSite().__name__
 
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
