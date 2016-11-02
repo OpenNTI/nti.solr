@@ -168,10 +168,11 @@ def _transcript_to_catalog(obj):
 
 class TranscriptsCatalog(CoreCatalog):
 
+	name = TRANSCRIPTS_CATALOG
 	document_interface = ITranscriptDocument
 
-	def __init__(self, name=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, name=name, client=client)
+	def __init__(self, core=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, core=core, client=client)
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)

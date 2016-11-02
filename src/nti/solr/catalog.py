@@ -24,8 +24,6 @@ from zope.event import notify
 
 from zope.intid.interfaces import IIntIds
 
-from zope.location.interfaces import IContained
-
 from zope.schema.interfaces import IDatetime
 
 import BTrees
@@ -52,15 +50,17 @@ from nti.solr.schema import SolrDatetime
 from nti.solr.utils import lucene_escape
 from nti.solr.utils import object_finder
 
-@interface.implementer(ICoreCatalog, IContained)
+@interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
 
 	__parent__ = None
 	__name__ = alias('name')
-
+	
 	max_rows = 500
 	auto_commit = True
 	return_fields = ('id', 'score')
+
+	name = u'Objects'
 	document_interface = ICoreDocument
 
 	family = BTrees.family64
@@ -68,8 +68,10 @@ class CoreCatalog(object):
 	_OR_ = u' OR '
 	_AND_ = u' AND '
 	
-	def __init__(self, name=NTI_CATALOG, client=None, auto_commit=None):
-		self.name = name
+	def __init__(self, core=NTI_CATALOG, name=None, client=None, auto_commit=None):
+		self.core = core
+		if name is not None:
+			self.name = name
 		if client is not None:
 			self.client = client
 		if auto_commit is not None:
@@ -78,7 +80,7 @@ class CoreCatalog(object):
 	@readproperty
 	def client(self):
 		config = component.getUtility(ISOLR)
-		url = config.url + '/%s' % self.name
+		url = config.url + '/%s' % self.core
 		return pysolr.Solr(url, timeout=config.timeout)
 
 	# index methods

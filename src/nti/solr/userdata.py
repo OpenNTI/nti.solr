@@ -111,10 +111,11 @@ def _userdata_to_catalog(obj):
 
 class UserDataCatalog(CoreCatalog):
 
+	name = USERDATA_CATALOG
 	document_interface = IUserDataDocument
 
-	def __init__(self, name=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, name=name, client=client)
+	def __init__(self, core=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, core=core, client=client)
 
 	# principal methods
 

@@ -118,10 +118,11 @@ def _course_to_catalog(obj):
 
 class CoursesCatalog(CoreCatalog):
 
+	name = COURSES_CATALOG
 	document_interface = ICourseCatalogDocument
 
-	def __init__(self, name=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, name=name, client=client)
+	def __init__(self, core=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, core=core, client=client)
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)

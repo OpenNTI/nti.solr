@@ -198,10 +198,11 @@ def _entity_to_catalog(obj):
 
 class EntitiesCatalog(CoreCatalog):
 
+	name = ENTITIES_CATALOG
 	document_interface = IEntityDocument
 
-	def __init__(self, name=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, name=name, client=client)
+	def __init__(self, core=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, core=core, client=client)
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)

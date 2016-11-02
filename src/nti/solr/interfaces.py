@@ -17,6 +17,8 @@ from zope.index.interfaces import IIndexSearch
 from zope.interface.interfaces import ObjectEvent
 from zope.interface.interfaces import IObjectEvent
 
+from zope.location.interfaces import IContained
+
 from nti.contentsearch.interfaces import ISearcher
 
 from nti.solr.schema import SolrDatetime
@@ -466,9 +468,10 @@ tagField(IEvaluationDocument['title_en'], True, ITitleValue, provided=ITextField
 tagField(IEvaluationDocument['content_en'], True, IContentValue, provided=ITextField)
 tagField(IEvaluationDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
-class ICoreCatalog(IInjection, IIndexSearch):
+class ICoreCatalog(IInjection, IIndexSearch, IContained):
 
-	name = ValidTextLine(title="Core name", required=True)
+	name = ValidTextLine(title="Catalog name", required=True)
+	core = ValidTextLine(title="Core/Collection name", required=True)
 
 	def add(value, commit=True):
 		"""
