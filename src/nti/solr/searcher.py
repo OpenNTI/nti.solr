@@ -120,10 +120,13 @@ class _SOLRSearcher(object):
 		query = ISearchQuery(query)
 		for catalog in self.query_search_catalogs(query):
 			container = SearchResults(copy.deepcopy(query))
-			events = catalog.search(query, *args, **kwargs)
-			for event in events or ():
-				hit = self._get_search_hit(catalog, event, events.highlighting)
-				if hit is not None:
-					container.add(hit)
-			result.append(container)
+			try:
+				events = catalog.search(query, *args, **kwargs)
+				for event in events or ():
+					hit = self._get_search_hit(catalog, event, events.highlighting)
+					if hit is not None:
+						container.add(hit)
+				result.append(container)
+			except Exception:
+				logger.exception("Error while executing query %s on %s", query, catalog)
 		return result
