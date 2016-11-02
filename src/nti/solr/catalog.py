@@ -258,12 +258,10 @@ class CoreCatalog(object):
 
 	def search(self, query, *args, **kwargs):
 		term, fq, params = self._build_from_search_query(query)
-		all_query = [('q', term)]
-		for name, value in fq.items():
-			s = '%s:%s' % (name, value)
-			all_query.append(('fq', s))
-		q = urllib.urlencode(all_query)
-		return self.client.search(q, **params)
+		fq_query = ['%s:%s' % (name, value) for name, value in fq.items()]
+		if fq_query:
+			params['fq'] = self._AND_.join(fq_query)
+		return self.client.search(term, **params)
 
 	def delete(self, uid=None, q=None, commit=True):
 		return self.client.delete(id=uid, q=q, commit=commit)
