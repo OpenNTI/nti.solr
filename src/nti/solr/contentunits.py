@@ -44,6 +44,7 @@ from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 
 from nti.solr.utils import get_keywords
+from nti.solr.utils import lucene_escape
 from nti.solr.utils import document_creator
 
 from nti.traversal.location import lineage
@@ -158,8 +159,8 @@ class ContentUnitsCatalog(CoreCatalog):
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
 		if 'containerId' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
-			fq['containerId'] = "(%s)" % 'OR'.join(packs)
+			fq['containerId'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in packs)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(CONTENT_UNITS_CATALOG)
-			fq['mimeType'] = "(%s)" % 'OR'.join(types)
+			fq['mimeType'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in types)
 		return term, fq, params

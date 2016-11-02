@@ -9,7 +9,6 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-import re
 import six
 import urllib
 from collections import Mapping
@@ -50,6 +49,7 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 
 from nti.solr.schema import SolrDatetime
 
+from nti.solr.utils import lucene_escape
 from nti.solr.utils import object_finder
 
 @interface.implementer(ICoreCatalog, IContained)
@@ -133,12 +133,6 @@ class CoreCatalog(object):
 				pass
 		return result
 
-	@staticmethod
-	def escape(s):
-		if isinstance(s, six.string_types):
-			return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
-		return s
-
 	# zope catalog
 
 	def _fq_from_catalog_query(self, query):
@@ -157,11 +151,11 @@ class CoreCatalog(object):
 			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
 			for k, v in value.items():
 				if k == 'any_of':
-					fq[k] = "(%s)" % 'OR'.join(self.escape(x) for x in v)
+					fq[k] = "(%s)" % 'OR'.join(lucene_escape(x) for x in v)
 				elif k == 'all_of':
-					fq[k] = "(%s)" % 'AND'.join(self.escape(x) for x in v)
+					fq[k] = "(%s)" % 'AND'.join(lucene_escape(x) for x in v)
 				elif k == 'between':
-					fq[k] = "[%s TO %s]" % (self.escape(v[0]), self.escape(v[1]))
+					fq[k] = "[%s TO %s]" % (lucene_escape(v[0]), lucene_escape(v[1]))
 		return fq
 
 	def _bulild_from_catalog_query(self, query):
@@ -224,11 +218,11 @@ class CoreCatalog(object):
 			if isinstance(value, tuple) and len(value) == 2:  # range
 				if IDatetime.providedBy(field):
 					value = [SolrDatetime.toUnicode(x) for x in value]
-				fq[name] = "[%s TO %s]" % (self.escape(value[0]), self.escape(value[1]))
+				fq[name] = "[%s TO %s]" % (lucene_escape(value[0]), lucene_escape(value[1]))
 			elif isinstance(value, (list, tuple, set)) and value:  # OR list
-				fq[name] = "(%s)" % 'OR'.join(self.escape(x) for x in value)
+				fq[name] = "(%s)" % 'OR'.join(lucene_escape(x) for x in value)
 			else:
-				fq[name] = self.escape(str(value))
+				fq[name] = lucene_escape(str(value))
 		return fq
 
 	def _params_from_search_query(self, query):

@@ -43,6 +43,7 @@ from nti.solr.metadata import MetadataDocument
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 
 from nti.solr.utils import get_keywords
+from nti.solr.utils import lucene_escape
 from nti.solr.utils import document_creator
 from nti.solr.utils import get_item_content_package
 
@@ -159,5 +160,5 @@ class TranscriptsCatalog(CoreCatalog):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(TRANSCRIPTS_CATALOG)
-			fq['mimeType'] = "(%s)" % 'OR'.join(types)
+			fq['mimeType'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in types)
 		return term, fq, params
