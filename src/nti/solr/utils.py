@@ -161,6 +161,9 @@ def lucene_escape(s):
 		return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
 	return s
 
+# Known mimeTypes used to map to their corresponding
+# search catalogs
+
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
 CONTENT_UNIT_MIME_TYPE = u'application/vnd.nextthought.contentunit'
