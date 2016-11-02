@@ -166,6 +166,7 @@ BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
 CONTENT_UNIT_MIME_TYPE = u'application/vnd.nextthought.contentunit'
 CONTENT_PACKAGE_MIME_TYPE = u'application/vnd.nextthought.contentpackage'
 
+NTI_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.ntitranscript'
 AUDIO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.audiotranscript'
 VIDEO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.videotranscript'
 
@@ -184,6 +185,7 @@ MIME_TYPE_CATALOG_MAP = {
 	CONTENT_UNIT_MIME_TYPE: CONTENT_UNITS_CATALOG,
 	CONTENT_PACKAGE_MIME_TYPE: CONTENT_UNITS_CATALOG,
 	# transcripts
+	NTI_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
 	AUDIO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
 	VIDEO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
 	# courses
