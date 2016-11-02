@@ -159,8 +159,8 @@ class ContentUnitsCatalog(CoreCatalog):
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
 		if 'containerId' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
-			fq['containerId'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in packs)
+			fq['containerId'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in packs)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(CONTENT_UNITS_CATALOG)
-			fq['mimeType'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in types)
+			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params

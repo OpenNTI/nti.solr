@@ -154,5 +154,5 @@ class EvaluationsCatalog(CoreCatalog):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(EVALUATIONS_CATALOG)
-			fq['mimeType'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in types)
+			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params

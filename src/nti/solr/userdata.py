@@ -139,8 +139,8 @@ class UserDataCatalog(CoreCatalog):
 		username = getattr(query, 'username', None)
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
-			fq['sharedWith'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in memberships)
+			fq['sharedWith'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in memberships)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG)
-			fq['-mimeType'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in types) # negative query
+			fq['-mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types) # negative query
 		return term, fq, params

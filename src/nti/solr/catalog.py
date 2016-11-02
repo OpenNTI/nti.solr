@@ -64,6 +64,9 @@ class CoreCatalog(object):
 
 	family = BTrees.family64
 
+	_OR_ = u' OR '
+	_AND_ = u' AND '
+	
 	def __init__(self, name=NTI_CATALOG, client=None, auto_commit=None):
 		self.name = name
 		if client is not None:
@@ -151,9 +154,9 @@ class CoreCatalog(object):
 			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
 			for k, v in value.items():
 				if k == 'any_of':
-					fq[k] = "(%s)" % 'OR'.join(lucene_escape(x) for x in v)
+					fq[k] = "(%s)" % self._OR_.join(lucene_escape(x) for x in v)
 				elif k == 'all_of':
-					fq[k] = "(%s)" % 'AND'.join(lucene_escape(x) for x in v)
+					fq[k] = "(%s)" % self._AND_.join(lucene_escape(x) for x in v)
 				elif k == 'between':
 					fq[k] = "[%s TO %s]" % (lucene_escape(v[0]), lucene_escape(v[1]))
 		return fq
@@ -220,7 +223,7 @@ class CoreCatalog(object):
 					value = [SolrDatetime.toUnicode(x) for x in value]
 				fq[name] = "[%s TO %s]" % (lucene_escape(value[0]), lucene_escape(value[1]))
 			elif isinstance(value, (list, tuple, set)) and value:  # OR list
-				fq[name] = "(%s)" % 'OR'.join(lucene_escape(x) for x in value)
+				fq[name] = "(%s)" % self._OR_.join(lucene_escape(x) for x in value)
 			else:
 				fq[name] = lucene_escape(str(value))
 		return fq
