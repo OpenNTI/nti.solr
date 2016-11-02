@@ -184,7 +184,7 @@
 	<subscriber handler=".subscribers._index_entity"
 					for="nti.dataserver.interfaces.IEntity
 					 	 .interfaces.IIndexObjectEvent"/>
-					 	 
+
 	<!-- Content Units -->
 	<adapter factory=".contentunits._DefaultContentUnitIDValue"
 			 provides=".interfaces.IIDValue"
@@ -538,6 +538,6 @@
 	</configure>
 
 	<!-- Queues -->
-	<solr:registerRedisProcessingQueue />
+	<solr:registerProcessingQueue />
 
 </configure>
