@@ -116,9 +116,8 @@ class _SOLRSearcher(object):
 		result = []
 		query = ISearchQuery(query)
 		for catalog in self.query_search_catalogs(query):
-			q = copy.deepcopy(query) # clone it
-			container = SearchResults(q)
-			events = catalog.search(q, *args, **kwargs)
+			container = SearchResults(copy.deepcopy(query))
+			events = catalog.search(query, *args, **kwargs)
 			for event in events or ():
 				hit = self._get_search_hit(catalog, event, events.highlighting)
 				if hit is not None:
