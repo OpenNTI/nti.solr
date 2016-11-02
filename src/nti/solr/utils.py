@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 import re
 import six
+from itertools import chain
+from _collections import defaultdict
 
 from zope import component
 
@@ -29,9 +31,22 @@ from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import extract_key_words
 
+from nti.contenttypes.presentation import AUDIO_MIMETYES
+from nti.contenttypes.presentation import VIDEO_MIMETYES
+from nti.contenttypes.presentation import TIMELINE_MIMETYES
+from nti.contenttypes.presentation import RELATED_WORK_REF_MIMETYES
+
 from nti.ntiids.ntiids import find_object_with_ntiid, is_valid_ntiid_string
 
 from nti.schema.interfaces import find_most_derived_interface
+
+from nti.solr import ASSETS_CATALOG
+from nti.solr import COURSES_CATALOG
+from nti.solr import ENTITIES_CATALOG
+from nti.solr import USERDATA_CATALOG
+from nti.solr import EVALUATIONS_CATALOG
+from nti.solr import TRANSCRIPTS_CATALOG
+from nti.solr import CONTENT_UNITS_CATALOG
 
 from nti.solr.interfaces import IStringValue
 from nti.solr.interfaces import ICoreDocument
@@ -140,3 +155,64 @@ def normalize_field(name):
 	if m is not None:
 		return m.groups()[0]
 	return name
+
+def lucene_escape(s):
+	if isinstance(s, six.string_types):
+		return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
+	return s
+
+CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
+BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
+CONTENT_UNIT_MIME_TYPE = u'application/vnd.nextthought.contentunit'
+CONTENT_PACKAGE_MIME_TYPE = u'application/vnd.nextthought.contentpackage'
+
+AUDIO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.audiotranscript'
+VIDEO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.videotranscript'
+
+COURSE_MIME_TYPE = u'application/vnd.nextthought.courses.courseinstance'
+CATALOG_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecataloglegacyentry'
+
+USER_MIME_TYPE = u'application/vnd.nextthought.user'
+COMMUNITY_MIME_TYPE = u'application/vnd.nextthought.community'
+DFL_MIME_TYPE = u'application/vnd.nextthought.dynamicfriendslist'
+FRIEND_LISTS_MIME_TYPE = u'application/vnd.nextthought.friendslist'
+
+MIME_TYPE_CATALOG_MAP = {
+	# content
+	CONTENT_MIME_TYPE: CONTENT_UNITS_CATALOG,
+	BOOK_CONTENT_MIME_TYPE: CONTENT_UNITS_CATALOG,
+	CONTENT_UNIT_MIME_TYPE: CONTENT_UNITS_CATALOG,
+	CONTENT_PACKAGE_MIME_TYPE: CONTENT_UNITS_CATALOG,
+	# transcripts
+	AUDIO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
+	VIDEO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
+	# courses
+	COURSE_MIME_TYPE: COURSES_CATALOG,
+	CATALOG_ENTRY_MIME_TYPE: COURSES_CATALOG,
+	# entities
+	DFL_MIME_TYPE: ENTITIES_CATALOG,
+	USER_MIME_TYPE: ENTITIES_CATALOG,
+	COMMUNITY_MIME_TYPE: ENTITIES_CATALOG,
+	FRIEND_LISTS_MIME_TYPE: ENTITIES_CATALOG,
+}
+# assets
+for m in chain(AUDIO_MIMETYES, 
+			   VIDEO_MIMETYES, 
+			   TIMELINE_MIMETYES,
+			   RELATED_WORK_REF_MIMETYES):
+	MIME_TYPE_CATALOG_MAP[m] = ASSETS_CATALOG
+# evaluations
+try:
+	from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
+	for m in ALL_EVALUATION_MIME_TYPES:
+		MIME_TYPE_CATALOG_MAP[m] = EVALUATIONS_CATALOG
+except ImportError:
+	pass
+
+# reverse
+_neg_ugd = set()
+CATALOG_MIME_TYPE_MAP = defaultdict(set)
+for name, value in MIME_TYPE_CATALOG_MAP.items():
+	_neg_ugd.add(name)
+	CATALOG_MIME_TYPE_MAP[value].add(name)
+CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = _neg_ugd
