@@ -226,6 +226,7 @@
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
 	<field name="site" type="string" indexed="true" required="false" stored="false"/>
 	<field name="containerId" multiValued="true" type="string" indexed="true" stored="true"/>
+	<field name="isUserGeneratedData" type="boolean" required="false" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
 
 	<!-- General fields -->
@@ -251,9 +252,6 @@
 	<copyField source="realname" dest="_text_"/>
 	<copyField source="education_*" dest="_text_"/>
 	<copyField source="professional_*" dest="_text_"/>
-
-	<!-- UGD -->
-	<field name="isUserGeneratedData" type="boolean" required="false" indexed="true" stored="false"/>
 
 	<!-- Tagged Content -->
 	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="false"/>
