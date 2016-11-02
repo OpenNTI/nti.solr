@@ -140,7 +140,9 @@ class UserDataCatalog(CoreCatalog):
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
 			fq['sharedWith'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in memberships)
-		if 'mimeType' not in fq:
-			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG)
-			fq['-mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types) # negative query
+		fq['isUserGeneratedData'] = "true" # always
+		searchOn = getattr(query, 'searchOn', None)
+		if 'mimeType' not in fq and searchOn:
+			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG) # negative list
+			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in searchOn if x not in types)
 		return term, fq, params
