@@ -25,6 +25,8 @@ from nti.contentsearch.search_results import _SearchResults as SearchResults
 
 from nti.dataserver.interfaces import IUser
 
+from nti.externalization.interfaces import LocatedExternalList
+
 from nti.property.property import Lazy
 
 from nti.solr import USERDATA_CATALOG
@@ -113,7 +115,7 @@ class _SOLRSearcher(object):
 		return None
 
 	def search(self, query, *args, **kwargs):
-		result = []
+		result = LocatedExternalList()
 		query = ISearchQuery(query)
 		for catalog in self.query_search_catalogs(query):
 			container = SearchResults(copy.deepcopy(query))
