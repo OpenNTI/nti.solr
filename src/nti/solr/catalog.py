@@ -32,9 +32,8 @@ import BTrees
 
 from nti.externalization.externalization import to_external_object
 
-from nti.externalization.interfaces import LocatedExternalDict
-
-from nti.property.property import alias, Lazy
+from nti.property.property import Lazy 
+from nti.property.property import alias
 from nti.property.property import readproperty
 
 from nti.solr import NTI_CATALOG
@@ -135,7 +134,7 @@ class CoreCatalog(object):
 
 	# zope catalog
 
-	def _bulild_from_catalog_query(self, query):
+	def _fq_from_catalog_query(self, query):
 		fq = {}
 		for name, value in query.items():
 			if name not in self.document_interface:
@@ -151,12 +150,15 @@ class CoreCatalog(object):
 			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
 			for k, v in value.items():
 				if k == 'any_of':
-					fq[k] = "+(%s)" % ' '.join(v)
+					fq[k] = "(%s)" % 'OR'.join(v)
 				elif k == 'all_of':
 					fq[k] = "(%s)" % 'AND'.join(v)
 				elif k == 'between':
 					fq[k] = "[%s TO %s]" % (v[0], v[1])
-		# query-term, filter-query, params
+		return fq
+
+	def _bulild_from_catalog_query(self, query):
+		fq = self._fq_from_catalog_query(query)
 		return ('*:*', fq, {'fl':','.join(self.return_fields)})
 
 	def apply(self, query):
@@ -166,8 +168,10 @@ class CoreCatalog(object):
 		else:
 			term, fq, params = self._bulild_from_catalog_query(query)
 		# prepare solr query
-		all_query = {'q': term}
-		all_query.update(fq)
+		all_query = [('q', term)]
+		for name, value in fq.items():
+			s = '%s:%s' % (name, value)
+			all_query.append(('fq', s))
 		q = urllib.urlencode(all_query)
 		# search
 		result = self.family.IF.BTree()
@@ -204,12 +208,8 @@ class CoreCatalog(object):
 				result.append(name)
 		return result
 
-	def _build_from_search_query(self, query):
-		fq = dict()
-		params = dict()
-		term = query.term
-		text_fields = self._text_fields
-		# filter query
+	def _fq_from_search_query(self, query):
+		fq = {}
 		for name, value in query.items():
 			if name not in self.document_interface:
 				continue
@@ -219,10 +219,14 @@ class CoreCatalog(object):
 					value = [SolrDatetime.toUnicode(x) for x in value]
 				fq[name] = "[%s TO %s]" % (value[0], value[1])
 			elif isinstance(value, (list, tuple, set)) and value:  # OR list
-				fq[name] = "+(%s)" % ' '.join(value)
+				fq[name] = "(%s)" % 'OR'.join(value)
 			else:
 				fq[name] = str(value)
-		# highlights
+		return fq
+
+	def _params_from_search_query(self, query):
+		params = {}
+		text_fields = self._text_fields
 		applyHighlights = getattr(query, 'applyHighlights', False)
 		if text_fields and applyHighlights:
 			params['hl'] = 'true'
@@ -237,18 +241,23 @@ class CoreCatalog(object):
 		if batchStart is not None and batchSize:
 			params['start'] = str(batchStart)
 			params['rows'] = str(batchSize)
+		return params
+	
+	def _build_from_search_query(self, query):
+		term = query.term
+		# filter query
+		fq = self._fq_from_search_query(query)
+		# parameters
+		params = self._params_from_search_query(query)
 		# query-term, filter-query, params
 		return (term, fq, params)
 
 	def search(self, query, *args, **kwargs):
-		if isinstance(query, primitive_types):
-			d = LocatedExternalDict()
-			d.term = str(query) if isinstance(query, six.string_types) else query
-			query = d  # replace
-		# prepare solr query
 		term, fq, params = self._build_from_search_query(query)
-		all_query = {'q': term}
-		all_query.update(fq)
+		all_query = [('q', term)]
+		for name, value in fq.items():
+			s = '%s:%s' % (name, value)
+			all_query.append(('fq', s))
 		q = urllib.urlencode(all_query)
 		return self.client.search(q, **params)
 
