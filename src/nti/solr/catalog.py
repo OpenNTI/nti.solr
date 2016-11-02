@@ -245,6 +245,8 @@ class CoreCatalog(object):
 		if batchStart is not None and batchSize:
 			params['start'] = str(batchStart)
 			params['rows'] = str(batchSize)
+		else:
+			params['rows'] = '500' # default number of rows
 		return params
 	
 	def _build_from_search_query(self, query):
