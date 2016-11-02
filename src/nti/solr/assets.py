@@ -193,3 +193,9 @@ class AssetsCatalog(CoreCatalog):
 			types = CATALOG_MIME_TYPE_MAP.get(ASSETS_CATALOG)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params
+
+	def clear(self, commit=None):
+		types = CATALOG_MIME_TYPE_MAP.get(ASSETS_CATALOG)
+		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
+		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
+	reset = clear

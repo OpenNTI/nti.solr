@@ -146,3 +146,8 @@ class UserDataCatalog(CoreCatalog):
 			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG) # negative list
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in searchOn if x not in types)
 		return term, fq, params
+
+	def clear(self, commit=None):
+		q = "isUserGeneratedData:true"
+		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
+	reset = clear
