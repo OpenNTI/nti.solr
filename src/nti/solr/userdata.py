@@ -36,6 +36,7 @@ from nti.solr.interfaces import IUserDataDocument
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import get_keywords
+from nti.solr.utils import lucene_escape
 from nti.solr.utils import document_creator
 from nti.solr.utils import resolve_content_parts
 
@@ -136,5 +137,5 @@ class UserDataCatalog(CoreCatalog):
 		username = getattr(query, 'username', None)
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
-			fq['sharedWith'] = "+(%s)" % ' '.join(memberships)
+			fq['sharedWith'] = "(%s)" % 'OR'.join(lucene_escape(x) for x in memberships)
 		return term, fq, params
