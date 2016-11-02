@@ -67,12 +67,13 @@ class _SOLRSearcher(object):
 	def query_search_catalogs(self, query):
 		if query.searchOn:
 			catalogs = set()
-			for m in query.searchOn:
+			for mimeType in query.searchOn:
 				# look for a mimeType catalog utility
-				catalog = component.queryUtility(ICoreCatalog, name=m)
-				if catalog is None:  # use mapper
-					catalog = MIME_TYPE_CATALOG_MAP.get(m)
-				if catalog is None:  # defaults to userdata
+				catalog = component.queryUtility(ICoreCatalog, name=mimeType)
+				if catalog is None: # use mapper
+					name = MIME_TYPE_CATALOG_MAP.get(mimeType) or u''
+					catalog = component.queryUtility(ICoreCatalog, name=name)
+				if catalog is None: # defaults to userdata
 					catalog = component.queryUtility(ICoreCatalog, name=USERDATA_CATALOG)
 				catalogs.add(catalog)
 			catalogs.discard(None)
