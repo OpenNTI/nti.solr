@@ -58,6 +58,7 @@ class CoreCatalog(object):
 	__parent__ = None
 	__name__ = alias('name')
 
+	max_rows = 500
 	auto_commit = True
 	return_fields = ('id', 'score')
 	document_interface = ICoreDocument
@@ -246,7 +247,7 @@ class CoreCatalog(object):
 			params['start'] = str(batchStart)
 			params['rows'] = str(batchSize)
 		else:
-			params['rows'] = '500' # default number of rows
+			params['rows'] = str(self.max_rows) # default number of rows
 		return params
 	
 	def _build_from_search_query(self, query):
