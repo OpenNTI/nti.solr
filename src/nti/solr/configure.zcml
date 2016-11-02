@@ -90,6 +90,10 @@
 			 provides=".interfaces.IIsDeletedObjectValue"
 			 for="*" />
 
+	<adapter factory=".metadata._DefaultIsUserGeneratedDataValue"
+			 provides=".interfaces.IIsUserGeneratedDataValue"
+			 for="*" />
+
 	<adapter factory=".metadata._MetadataDocumentCreator"
 			 provides=".interfaces.IMetadataDocument"
 			 for="*" />

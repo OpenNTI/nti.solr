@@ -39,6 +39,7 @@ from nti.dataserver.interfaces import IDevice
 from nti.dataserver.interfaces import IThreadable
 from nti.dataserver.interfaces import IFriendsList
 from nti.dataserver.interfaces import IModeledContent
+from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IUserTaggedContent
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 from nti.dataserver.interfaces import IInspectableWeakThreadable
@@ -73,6 +74,7 @@ from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ILastModifiedValue
 from nti.solr.interfaces import IIsDeletedObjectValue
 from nti.solr.interfaces import IIsTopLevelContentValue
+from nti.solr.interfaces import IIsUserGeneratedDataValue
 
 from nti.solr.schema import SolrDatetime
 
@@ -315,6 +317,13 @@ class _DefaultIsDeletedObjectValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return IDeletedObjectPlaceholder.providedBy(context)
+
+@interface.implementer(IIsUserGeneratedDataValue)
+class _DefaultIsUserGeneratedDataValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return IUserGeneratedData.providedBy(context)
 
 @interface.implementer(IMetadataDocument)
 class MetadataDocument(SchemaConfigured):

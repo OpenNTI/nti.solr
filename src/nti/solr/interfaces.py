@@ -113,6 +113,11 @@ class IIsDeletedObjectValue(IAttributeValue):
 	Adapter interface to check if the object is deleted
 	"""
 
+class IIsUserGeneratedDataValue(IAttributeValue):
+	"""
+	Adapter interface to check if the object is UGD
+	"""
+	
 class IIsTopLevelContentValue(IAttributeValue):
 	"""
 	Adapter interface to get the isTopLevelContent value from a given object
@@ -166,6 +171,8 @@ class IMetadataDocument(ICoreDocument):
 	isDeletedObject = Bool(title='Is deleted object flag', required=False)
 
 	isTopLevelContent = Bool(title='Is top level object flag', required=False)
+	
+	isUserGeneratedData = Bool(title='Is UGD object flag', required=False)
 
 tagField(IMetadataDocument['site'], False, ISiteValue)
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
@@ -173,6 +180,7 @@ tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
 tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
 tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
+tagField(IMetadataDocument['isUserGeneratedData'], False, IIsUserGeneratedDataValue)
 tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, multiValued=True)
 tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, multiValued=True)
 tagField(IMetadataDocument['containerId'], False, IContainerIdValue, multiValued=True)
@@ -398,7 +406,7 @@ class IUserDataDocument(IMetadataDocument):
 							  	  required=False,
 							  	  value_type=ValidTextLine(title="The keyword"),
 							   	  min_length=0)
-
+	
 tagField(IUserDataDocument['tags'], True, ITagsValue)
 tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IUserDataDocument['content_en'], True, IContentValue, provided=ITextField)
