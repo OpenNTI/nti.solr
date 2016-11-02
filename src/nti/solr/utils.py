@@ -171,7 +171,8 @@ AUDIO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.audiotranscript'
 VIDEO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.videotranscript'
 
 COURSE_MIME_TYPE = u'application/vnd.nextthought.courses.courseinstance'
-CATALOG_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecataloglegacyentry'
+CATALOG_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecatalogentry'
+CATALOG_LEGACY_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecataloglegacyentry'
 
 USER_MIME_TYPE = u'application/vnd.nextthought.user'
 COMMUNITY_MIME_TYPE = u'application/vnd.nextthought.community'
@@ -191,6 +192,7 @@ MIME_TYPE_CATALOG_MAP = {
 	# courses
 	COURSE_MIME_TYPE: COURSES_CATALOG,
 	CATALOG_ENTRY_MIME_TYPE: COURSES_CATALOG,
+	CATALOG_LEGACY_ENTRY_MIME_TYPE: COURSES_CATALOG,
 	# entities
 	DFL_MIME_TYPE: ENTITIES_CATALOG,
 	USER_MIME_TYPE: ENTITIES_CATALOG,
