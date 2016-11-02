@@ -39,6 +39,7 @@ from nti.solr.interfaces import IMediaNTIIDValue
 from nti.solr.interfaces import ITranscriptDocument
 
 from nti.solr.metadata import MetadataDocument
+from nti.solr.metadata import DefaultObjectIDValue
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 
@@ -54,13 +55,13 @@ class _BasicAttributeValue(object):
 	def __init__(self, context=None):
 		self.context = context
 
-@component.adapter(INTITranscript)
 @interface.implementer(IIDValue)
-class _TranscriptIDValue(_BasicAttributeValue):
+@component.adapter(INTITranscript)
+class _TranscriptIDValue(DefaultObjectIDValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return context.ntiid
+		return self.prefix(context) + context.ntiid
 
 @component.adapter(INTITranscript)
 @interface.implementer(IMediaNTIIDValue)
