@@ -62,7 +62,7 @@ class _SOLRSearcher(object):
 		return component.getUtility(IIntIds)
 
 	def registered_catalogs(self):
-		return {k:v for k, v in component.getUtilitiesFor(ICoreCatalog)}
+		return tuple(v for _, v in component.getUtilitiesFor(ICoreCatalog))
 
 	def query_search_catalogs(self, query):
 		if query.searchOn:
@@ -78,7 +78,7 @@ class _SOLRSearcher(object):
 				catalogs.add(catalog)
 			catalogs.discard(None)
 		else:
-			catalogs = tuple(self.registered_catalogs().values())
+			catalogs = self.registered_catalogs()
 		return catalogs
 
 	def _get_search_hit(self, catalog, result, highlighting=None):
