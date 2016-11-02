@@ -23,6 +23,9 @@ from nti.contentlibrary.interfaces import IContentPackage
 
 from nti.contenttypes.presentation.interfaces import INTIVideo
 from nti.contenttypes.presentation.interfaces import INTITranscript
+from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
+
+from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -38,6 +41,7 @@ from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IMediaNTIIDValue
 from nti.solr.interfaces import ITranscriptDocument
 
+from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
@@ -58,6 +62,18 @@ class _BasicAttributeValue(object):
 @interface.implementer(IIDValue)
 @component.adapter(INTITranscript)
 class _TranscriptIDValue(DefaultObjectIDValue):
+
+	@classmethod
+	def createdTime(cls, context):
+		if IUserCreatedAsset.providedBy(context.__parent__):
+			return super(_TranscriptIDValue, cls).createdTime(context)
+		return ZERO_DATETIME
+
+	@classmethod
+	def creator(cls, context):
+		if IUserCreatedAsset.providedBy(context.__parent__):
+			return super(_TranscriptIDValue, cls).creator(context)
+		return SYSTEM_USER_NAME
 
 	def value(self, context=None):
 		context = self.context if context is None else context
