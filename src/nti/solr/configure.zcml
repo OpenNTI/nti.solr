@@ -523,6 +523,8 @@
 				 	 .interfaces.IUnindexObjectEvent"/>
 
 	<!-- Utilities -->
+	<utility factory=".query._SOLRQueryValidator" />
+
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
 	<!-- Subscribers -->

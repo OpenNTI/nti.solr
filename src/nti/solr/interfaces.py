@@ -20,6 +20,7 @@ from zope.interface.interfaces import IObjectEvent
 from zope.location.interfaces import IContained
 
 from nti.contentsearch.interfaces import ISearcher
+from nti.contentsearch.interfaces import ISearchQueryValidator
 
 from nti.solr.schema import SolrDatetime
 
@@ -550,4 +551,7 @@ class ISOLR(interface.Interface):
 # searcher
 
 class ISOLRSearcher(ISearcher):
+	pass
+
+class ISOLRQueryValidator(ISearchQueryValidator):
 	pass
