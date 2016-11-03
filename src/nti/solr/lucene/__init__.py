@@ -12,6 +12,8 @@ logger = __import__('logging').getLogger(__name__)
 import re
 import six
 
+from nti.solr.lucene.grammar import expression
+
 def lucene_escape(s):
 	s = s if isinstance(s, six.string_types) else str(s)
 	return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
@@ -25,3 +27,9 @@ def is_phrase_search(term):
 
 def is_prefix_search(term):
 	return prefix_search.match(term) is not None if term else False
+
+def is_valid_query(term):
+	try:
+		return expression.parseString(term, parseAll=True)
+	except Exception:
+		return False
