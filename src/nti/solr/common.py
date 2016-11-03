@@ -40,7 +40,8 @@ from nti.solr import primitive_types
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
 
-from nti.solr.utils import lucene_escape
+from nti.solr.lucene import lucene_escape
+
 from nti.solr.utils import object_finder
 
 # queue funcs

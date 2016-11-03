@@ -156,10 +156,6 @@ def normalize_field(name):
 		return m.groups()[0]
 	return name
 
-def lucene_escape(s):
-	s = s if isinstance(s, six.string_types) else str(s)
-	return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
-
 # Known mimeTypes used to map to their corresponding
 # search catalogs
 

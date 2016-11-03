@@ -37,6 +37,8 @@ from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import IContentUnitDocument
 
+from nti.solr.lucene import lucene_escape
+
 from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
@@ -44,7 +46,6 @@ from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 
 from nti.solr.utils import get_keywords
-from nti.solr.utils import lucene_escape
 from nti.solr.utils import document_creator
 
 from nti.traversal.location import lineage
