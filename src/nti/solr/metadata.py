@@ -310,13 +310,15 @@ class _DefaultIsTopLevelContentValue(_BasicAttributeValue):
 			if IThreadable.providedBy(context):
 				return bool(context.inReplyTo is None)
 			return True
+		return None # no index
 
 @interface.implementer(IIsDeletedObjectValue)
 class _DefaultIsDeletedObjectValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return IDeletedObjectPlaceholder.providedBy(context)
+		result = IDeletedObjectPlaceholder.providedBy(context)
+		return True if result else None # no index
 
 @interface.implementer(IIsUserGeneratedDataValue)
 class _DefaultIsUserGeneratedDataValue(_BasicAttributeValue):
