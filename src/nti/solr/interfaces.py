@@ -299,12 +299,12 @@ class IEntityDocument(IMetadataDocument):
 
 	education_description = IndexedIterable(title='The education descriptions',
 							   			    required=False,
-							   			    value_type=ValidTextLine(title="The description"),
+							   			    value_type=ValidText(title="The description"),
 							   			    min_length=0)
 
 	professional_description = IndexedIterable(title='The professional company descriptions',
 							   			   	  required=False,
-							   			   	  value_type=ValidTextLine(title="The description"),
+							   			   	  value_type=ValidText(title="The description"),
 							   			      min_length=0)
 
 	professional_title = IndexedIterable(title='The company names',
@@ -316,11 +316,6 @@ class IEntityDocument(IMetadataDocument):
 							   			   required=False,
 							   			   value_type=ValidTextLine(title="The company name"),
 							   			   min_length=0)
-
-	professional_description = IndexedIterable(title='The professional company descriptions',
-							   			   	  required=False,
-							   			   	  value_type=ValidTextLine(title="The description"),
-							   			      min_length=0)
 
 	social_url = IndexedIterable(title='The social URLS',
 							   	 required=False,
