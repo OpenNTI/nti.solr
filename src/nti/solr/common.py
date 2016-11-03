@@ -40,6 +40,7 @@ from nti.solr import primitive_types
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
 
+from nti.solr.utils import lucene_escape
 from nti.solr.utils import object_finder
 
 # queue funcs
@@ -200,4 +201,4 @@ def unindex_content_package_assets(source, site=None, *args, **kwargs):
 
 def delete_user_data(username, *args, **kwargs):
 	catalog = component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
-	catalog.delete(q="creator:%s" % username.lower(), commit=False)
+	catalog.delete(q="creator:%s" % lucene_escape(username.lower()), commit=True)
