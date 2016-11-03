@@ -10,7 +10,6 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import six
-import urllib
 from collections import Mapping
 
 import pysolr
@@ -174,15 +173,13 @@ class CoreCatalog(object):
 			term, fq, params = query, {}, {'fl':','.join(self.return_fields)}
 		else:
 			term, fq, params = self._bulild_from_catalog_query(query)
-		# prepare solr query
-		all_query = [('q', term)]
-		for name, value in fq.items():
-			s = '%s:%s' % (name, value)
-			all_query.append(('fq', s))
-		q = urllib.urlencode(all_query)
+		# prepare solr params
+		fq_query = ['%s:%s' % (name, value) for name, value in fq.items()]
+		if fq_query:
+			params['fq'] = self._AND_.join(fq_query)
 		# search
 		result = self.family.IF.BTree()
-		for hit in self.client.search(q, **params):
+		for hit in self.client.search(term, **params):
 			try:
 				uid = int(hit['id'])
 				result[uid] = hit['score']
