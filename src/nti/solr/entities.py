@@ -154,7 +154,7 @@ class _DefaultEducationDescriptionValue(_DefaultEducationDegreeValue):
 
 	def value(self, context=None):
 		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.description) for x in source) if source else ()
+		return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
 
 @component.adapter(IEntity)
 @interface.implementer(ISocialURLValue)
