@@ -15,6 +15,8 @@ from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.solr.interfaces import ISOLRQueryValidator
 
+from nti.solr.lucene import is_valid_query
+
 @interface.implementer(ISOLRQueryValidator)
 class _SOLRQueryValidator(object):
 	
@@ -23,4 +25,4 @@ class _SOLRQueryValidator(object):
 	
 	def validate(self, query):
 		query = ISearchQuery(query)
-		return True
+		return is_valid_query(query.term)
