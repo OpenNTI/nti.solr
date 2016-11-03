@@ -44,9 +44,11 @@ from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
 
+from nti.solr.lucene import lucene_escape
+from nti.solr.lucene import is_phrase_search
+
 from nti.solr.schema import SolrDatetime
 
-from nti.solr.utils import lucene_escape
 from nti.solr.utils import object_finder
 
 @interface.implementer(ICoreCatalog)
@@ -249,8 +251,15 @@ class CoreCatalog(object):
 			params['rows'] = str(self.max_rows) # default number of rows
 		return params
 	
+	def _build_term_from_search_query(self, query):
+		text_fields = self._text_fields
+		term = lucene_escape(query.term) if not is_phrase_search(query.term) else query.term
+		if text_fields: # search all text fields
+			term = "(%s)" % self._OR_.join('%s:%s' % (name, term) for name in text_fields)
+		return term
+
 	def _build_from_search_query(self, query):
-		term = query.term
+		term = self._build_term_from_search_query(query)
 		# filter query
 		fq = self._fq_from_search_query(query)
 		# parameters
