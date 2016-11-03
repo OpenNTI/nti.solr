@@ -17,31 +17,24 @@ import argparse
 import functools
 import transaction
 
-from ZODB.POSException import POSKeyError
-
 import zope.exceptions
-import zope.browserpage
 
 from zope import component
 
-from zope.configuration import config
-from zope.configuration import xmlconfig
-
-from zope.container.contained import Contained
-
-from zope.dottedname import resolve as dottedname
+from zope.intid.interfaces import IIntIds
 
 from zope.event import notify
 
-from z3c.autoinclude.zcml import includePluginsDirective
+from ZODB.POSException import POSError
 
 from nti.contentlibrary.interfaces import IContentPackage
-
-from nti.dataserver.utils import run_with_dataserver
 
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 from nti.dataserver.interfaces import IDataserverTransactionRunner
+
+from nti.dataserver.utils import run_with_dataserver
+from nti.dataserver.utils.base_script import create_context
 
 from nti.site.site import getSite
 
@@ -56,17 +49,8 @@ except ImportError:
 LOG_ITER_COUNT = 1000
 DEFAULT_COMMIT_BATCH_SIZE = 2000
 
-class PluginPoint(Contained):
-
-	def __init__(self, name):
-		self.__name__ = name
-
-PP_APP = PluginPoint('nti.app')
-PP_APP_SITES = PluginPoint('nti.app.sites')
-PP_APP_PRODUCTS = PluginPoint('nti.app.products')
-
 def _all_objects_intids(users, last_oid):
-	obj = intids = component.getUtility(zope.intid.IIntIds)
+	obj = intids = component.getUtility(IIntIds)
 	usernames = {getattr(user, 'username', user).lower() for user in users or ()}
 
 	# These should be in order.
@@ -87,7 +71,7 @@ def _all_objects_intids(users, last_oid):
 				if	not IDeletedObjectPlaceholder.providedBy(obj) and \
 					(not usernames or creator in usernames):
 					yield uid, obj
-		except (TypeError, POSKeyError) as e:
+		except (TypeError, POSError) as e:
 			logger.error("Error processing object %s(%s); %s", type(obj), uid, e)
 
 class _SolrInitializer(object):
@@ -158,8 +142,6 @@ class _SolrInitializer(object):
 
 class Processor(object):
 
-	conf_package = 'nti.appserver'
-
 	def create_arg_parser(self):
 		arg_parser = argparse.ArgumentParser(description="Create a user-type object")
 		arg_parser.add_argument('--usernames', dest='usernames',
@@ -172,36 +154,6 @@ class Processor(object):
 		arg_parser.add_argument('-v', '--verbose', help="Be verbose",
 								action='store_true', dest='verbose')
 		return arg_parser
-
-	def create_context(self, env_dir):
-		etc = os.getenv('DATASERVER_ETC_DIR') or os.path.join(env_dir, 'etc')
-		etc = os.path.expanduser(etc)
-
-		context = config.ConfigurationMachine()
-		xmlconfig.registerCommonDirectives(context)
-
-		slugs = os.path.join(etc, 'package-includes')
-		if os.path.exists(slugs) and os.path.isdir(slugs):
-			package = dottedname.resolve('nti.dataserver')
-			context = xmlconfig.file('configure.zcml', package=package, context=context)
-			xmlconfig.include(context, files=os.path.join(slugs, '*.zcml'),
-							  package=self.conf_package)
-
-		library_zcml = os.path.join(etc, 'library.zcml')
-		if not os.path.exists(library_zcml):
-			raise Exception("Could not locate library zcml file %s", library_zcml)
-
-		xmlconfig.include(context, file=library_zcml, package=self.conf_package)
-
-		# Include zope.browserpage.meta.zcm for tales:expressiontype
-		# before including the products
-		xmlconfig.include(context, file="meta.zcml", package=zope.browserpage)
-
-		# include plugins
-		includePluginsDirective(context, PP_APP)
-		includePluginsDirective(context, PP_APP_SITES)
-		includePluginsDirective(context, PP_APP_PRODUCTS)
-		return context
 
 	def set_log_formatter(self, args):
 		ei = '%(asctime)s %(levelname)-5.5s [%(name)s][%(thread)d][%(threadName)s] %(message)s'
@@ -237,8 +189,8 @@ class Processor(object):
 		if not env_dir or not os.path.exists(env_dir) and not os.path.isdir(env_dir):
 			raise ValueError("Invalid dataserver environment root directory", env_dir)
 
-		last_oid_file = env_dir + '/data/.solr_initializer'
 		last_oid = 0
+		last_oid_file = env_dir + '/data/.solr_initializer'
 		if os.path.exists(last_oid_file):
 			with open(last_oid_file, 'r') as f:
 				file_last_oid = f.read()
@@ -246,7 +198,7 @@ class Processor(object):
 					last_oid = int(file_last_oid)
 
 		conf_packages = ('nti.solr', 'nti.appserver', 'nti.dataserver',)
-		context = self.create_context(env_dir)
+		context = create_context(env_dir, with_library=True)
 
 		run_with_dataserver(environment_dir=env_dir,
 							xmlconfig_packages=conf_packages,
