@@ -44,7 +44,7 @@ valid_word.setParseAction(
 	lambda t : t[0].replace('\\\\', chr(127)).replace('\\', '').replace(chr(127), '\\')
 )
 
-string = QuotedString('"')
+q_string = QuotedString('"')
 required_modifier = Literal("+")("required")
 prohibit_modifier = Literal("-")("prohibit")
 
@@ -60,7 +60,7 @@ excl_range_search = Group(LBRACE + term("lower") + to_ + term("upper") + RBRACE)
 range_search = incl_range_search("incl_range") | excl_range_search("excl_range")
 boost = (CARAT + number("boost"))
 
-string_expr = Group(string + proximity_modifier) | string
+string_expr = Group(q_string + proximity_modifier) | q_string
 word_expr = Group(valid_word + fuzzy_modifier) | valid_word
 term << ( Optional(field_name("field") + COLON) +
 		  (word_expr | string_expr | range_search | Group(LPAR + expression + RPAR)) +
