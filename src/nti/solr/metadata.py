@@ -234,6 +234,8 @@ class _DefaultInReplyToValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = getattr(context, "inReplyTo", None)
+		if not isinstance( result, six.string_types ):
+			result = INTIIDValue( result, None )
 		return to_unicode(result.lower()) if result else None
 
 @interface.implementer(ISharedWithValue)
