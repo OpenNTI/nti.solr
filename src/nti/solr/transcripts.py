@@ -16,8 +16,12 @@ from zope import interface
 
 from nti.common.string import to_unicode
 
+from nti.contentindexing.media.interfaces import IMediaTranscriptEntry
 from nti.contentindexing.media.interfaces import IAudioTranscriptParser
 from nti.contentindexing.media.interfaces import IVideoTranscriptParser
+
+from nti.contentindexing.utils import media_date_to_millis
+from nti.contentindexing.utils import mediatimestamp_to_datetime
 
 from nti.contentlibrary.interfaces import IContentPackage
 
@@ -37,9 +41,12 @@ from nti.solr.catalog import CoreCatalog
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
-from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IMediaNTIIDValue
+from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ITranscriptDocument
+from nti.solr.interfaces import ITranscriptCueEndTimeValue
+from nti.solr.interfaces import ITranscriptCueStartTimeValue
 
 from nti.solr.lucene import lucene_escape
 
@@ -48,8 +55,8 @@ from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
+from nti.solr.utils import NTI_TRANSCRIPT_MIME_TYPE
 
-from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 from nti.solr.utils import get_item_content_package
 
@@ -97,7 +104,7 @@ class _TranscriptMediaNTIIDValue(_BasicAttributeValue):
 class _TranscriptContentValue(_BasicAttributeValue):
 
 	@classmethod
-	def parse_content(cls, context, raw_content):
+	def transcript(cls, context, raw_content):
 		type_ = context.type or "text/vtt"
 		if INTIVideo.providedBy(context.__parent__):
 			provided = IVideoTranscriptParser
@@ -105,7 +112,20 @@ class _TranscriptContentValue(_BasicAttributeValue):
 			provided = IAudioTranscriptParser
 		parser = component.queryUtility(provided, name=type_)
 		if parser is not None:
-			transcript = parser.parse(to_unicode(raw_content))
+			return parser.parse(to_unicode(raw_content))
+		return None
+
+	@classmethod
+	def entries(cls, context, raw_content):
+		transcript = cls.transcript(context, raw_content)
+		if transcript is not None:
+			return transcript.entries
+		return ()
+
+	@classmethod
+	def parse_content(cls, context, raw_content):
+		transcript = cls.transcript(context, raw_content)
+		if transcript is not None:
 			return to_unicode(transcript.text)
 		return None
 
@@ -135,21 +155,50 @@ class _TranscriptContentValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return self.get_content(context)
+TranscriptContentValue = _TranscriptContentValue
 
-@component.adapter(INTITranscript)
-@interface.implementer(IKeywordsValue)
-class _TranscriptKeywordsValue(_BasicAttributeValue):
+@interface.implementer(IContentValue)
+@component.adapter(IMediaTranscriptEntry)
+class _TranscriptCueContentValue(_BasicAttributeValue):
+
+	language = 'en'
 
 	def lang(self, context=None):
 		context = self.context if context is None else context
-		return context.lang
-
+		return context.language or self.language
+	
 	def value(self, context=None):
 		context = self.context if context is None else context
-		adapted = IContentValue(context, None)
-		if adapted is not None:
-			return get_keywords(adapted.value(), self.lang(context))
-		return ()
+		return context.transcript
+
+@interface.implementer(IMimeTypeValue)
+@component.adapter(IMediaTranscriptEntry)
+class _TranscriptCueMimeTypeValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		return NTI_TRANSCRIPT_MIME_TYPE
+
+@component.adapter(IMediaTranscriptEntry)
+@interface.implementer(ITranscriptCueStartTimeValue)
+class _TranscriptCueStartTime(_BasicAttributeValue):
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if context.start_timestamp:
+			result = mediatimestamp_to_datetime(context.start_timestamp)
+			return media_date_to_millis(result)
+		return None
+
+@component.adapter(IMediaTranscriptEntry)
+@interface.implementer(ITranscriptCueEndTimeValue)
+class _TranscriptCueEndTime(_BasicAttributeValue):
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if context.end_timestamp:
+			result = mediatimestamp_to_datetime(context.end_timestamp)
+			return media_date_to_millis(result)
+		return None
 
 @interface.implementer(ITranscriptDocument)
 class TranscriptDocument(MetadataDocument):
@@ -157,12 +206,24 @@ class TranscriptDocument(MetadataDocument):
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.transcriptdocument'
 
-@component.adapter(INTITranscript)
-@interface.implementer(ITranscriptDocument)
-def _TranscriptDocumentCreator(obj, factory=TranscriptDocument):
-	return document_creator(obj, factory=factory, provided=ITranscriptDocument)
+def _transcript_documents_creator(transcript, factory=TranscriptDocument):
+	result = []
+	uid = IIDValue(transcript).value()
+	media = IMediaNTIIDValue(transcript).value()
+	source = document_creator(transcript, MetadataDocument, provided=IMetadataDocument)
+	for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
+		doc = factory()
+		doc.__dict__.update(source.__dict__) # update with source
+		doc.id = "%s@%s" % (uid, x)
+		doc.media = media
+		doc.content_en = IContentValue(entry).value()
+		doc.end_time = ITranscriptCueEndTimeValue(entry).value()
+		doc.start_time = ITranscriptCueStartTimeValue(entry).value()
+		result.append(doc)
+	return result
 
 @component.adapter(INTITranscript)
+@component.adapter(IMediaTranscriptEntry)
 @interface.implementer(ICoreCatalog)
 def _transcript_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=TRANSCRIPTS_CATALOG)

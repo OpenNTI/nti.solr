@@ -447,17 +447,29 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
-	<adapter factory=".transcripts._TranscriptKeywordsValue"
-			 provides=".interfaces.IKeywordsValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+	<adapter factory=".transcripts._TranscriptCueMimeTypeValue"
+			 provides=".interfaces.IMimeTypeValue"
+			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
 
-	<adapter factory=".transcripts._TranscriptDocumentCreator"
-			 provides=".interfaces.ITranscriptDocument"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+	<adapter factory=".transcripts._TranscriptCueContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
+
+	<adapter factory=".transcripts._TranscriptCueStartTime"
+			 provides=".interfaces.ITranscriptCueStartTimeValue"
+			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
+
+	<adapter factory=".transcripts._TranscriptCueEndTime"
+			 provides=".interfaces.ITranscriptCueEndTimeValue"
+			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
 
 	<adapter factory=".transcripts._transcript_to_catalog"
 			 provides=".interfaces.ICoreCatalog"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+
+	<adapter factory=".transcripts._transcript_to_catalog"
+			 provides=".interfaces.ICoreCatalog"
+			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
 
 	<utility factory=".transcripts.TranscriptsCatalog"
 			 	 provides=".interfaces.ICoreCatalog"

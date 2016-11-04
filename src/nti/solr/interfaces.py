@@ -25,6 +25,7 @@ from nti.contentsearch.interfaces import ISearchQueryValidator
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
+from nti.schema.field import Float
 from nti.schema.field import IndexedIterable
 from nti.schema.field import Text as ValidText
 from nti.schema.field import TextLine as ValidTextLine
@@ -341,20 +342,29 @@ class IMediaNTIIDValue(IAttributeValue):
 	Adapter interface to get the media (video/audio) NTIID associated with a transcript object
 	"""
 
+class ITranscriptCueStartTimeValue(IAttributeValue):
+	"""
+	Adapter interface to get the transcript cue start time 
+	"""
+
+class ITranscriptCueEndTimeValue(IAttributeValue):
+	"""
+	Adapter interface to get the transcript cue end time 
+	"""
+
 class ITranscriptDocument(IMetadataDocument):
 
-	content_en = ValidText(title='Text to index', required=False)
-
 	media = ValidText(title='The media ntiid', required=False)
-
-	keywords_en = IndexedIterable(title='The keywords',
-							   	  required=False,
-							   	  value_type=ValidTextLine(title="The keyword"),
-							   	  min_length=0)
+	
+	content_en = ValidText(title='Text to index', required=False)
+	
+	end_time = Float(title='end time', required=False)
+	start_time = Float(title='start time', required=False)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
+tagField(ITranscriptDocument['end_time'], False, ITranscriptCueStartTimeValue)
+tagField(ITranscriptDocument['start_time'], False, ITranscriptCueStartTimeValue)
 tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=ITextField)
-tagField(ITranscriptDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 # content units
 
