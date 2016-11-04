@@ -14,6 +14,8 @@ import six
 from zope import component
 from zope import interface
 
+from zope.event import notify
+
 from nti.common.string import to_unicode
 
 from nti.contentindexing.media.interfaces import IMediaTranscriptEntry
@@ -48,6 +50,9 @@ from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import ITranscriptCueEndTimeValue
 from nti.solr.interfaces import ITranscriptCueStartTimeValue
 
+from nti.solr.interfaces import ObjectIndexedEvent
+from nti.solr.interfaces import ObjectUnindexedEvent
+
 from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import ZERO_DATETIME
@@ -57,6 +62,7 @@ from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 from nti.solr.utils import NTI_TRANSCRIPT_MIME_TYPE
 
+from nti.solr.utils import object_finder
 from nti.solr.utils import document_creator
 from nti.solr.utils import get_item_content_package
 
@@ -206,27 +212,30 @@ class TranscriptDocument(MetadataDocument):
 
 	mimeType = mime_type = u'application/vnd.nextthought.solr.transcriptdocument'
 
-def _transcript_documents_creator(transcript, factory=TranscriptDocument):
-	result = []
-	uid = IIDValue(transcript).value()
-	media = IMediaNTIIDValue(transcript).value()
-	source = document_creator(transcript, MetadataDocument, provided=IMetadataDocument)
-	for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
-		doc = factory()
-		doc.__dict__.update(source.__dict__) # update with source
-		doc.id = "%s@%s" % (uid, x)
-		doc.media = media
-		doc.content_en = IContentValue(entry).value()
-		doc.end_time = ITranscriptCueEndTimeValue(entry).value()
-		doc.start_time = ITranscriptCueStartTimeValue(entry).value()
-		result.append(doc)
-	return result
-
 @component.adapter(INTITranscript)
 @component.adapter(IMediaTranscriptEntry)
 @interface.implementer(ICoreCatalog)
 def _transcript_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=TRANSCRIPTS_CATALOG)
+
+def _transcript_documents_creator(transcript, factory=TranscriptDocument):
+	if INTITranscript.providedBy(transcript):
+		result = []
+		uid = IIDValue(transcript).value()
+		media = IMediaNTIIDValue(transcript).value()
+		source = document_creator(transcript, MetadataDocument, provided=IMetadataDocument)
+		for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
+			doc = factory()
+			doc.__dict__.update(source.__dict__) # update with source
+			doc.id = "%s@%s" % (uid, x) # @ is id postfix
+			doc.media = media # ntiid of the media object
+			doc.content_en = IContentValue(entry).value()
+			doc.end_time = ITranscriptCueEndTimeValue(entry).value()
+			doc.start_time = ITranscriptCueStartTimeValue(entry).value()
+			result.append(doc)
+	else:
+		result = ()
+	return result
 
 class TranscriptsCatalog(CoreCatalog):
 
@@ -235,6 +244,21 @@ class TranscriptsCatalog(CoreCatalog):
 
 	def __init__(self, core=NTI_CATALOG, client=None):
 		CoreCatalog.__init__(self, core=core, client=client)
+
+	def index_doc(self, doc_id, value, commit=None, event=True):
+		commit = self.auto_commit if commit is None else commit
+		for document in _transcript_documents_creator(value):
+			self._do_index(doc_id, document, commit)
+		if event:
+			notify(ObjectIndexedEvent(value, doc_id))
+
+	def unindex_doc(self, doc_id, commit=None, event=True):
+		commit = self.auto_commit if commit is None else commit
+		q = "id:%s*" % doc_id # delete anything that match that id
+		self.client.delete(q=q, commit=commit)
+		if event:
+			obj = object_finder(doc_id)
+			notify(ObjectUnindexedEvent(obj, doc_id))
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)

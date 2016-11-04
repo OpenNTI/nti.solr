@@ -478,20 +478,22 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
 	name = ValidTextLine(title="Catalog name", required=True)
 	core = ValidTextLine(title="Core/Collection name", required=True)
 
-	def add(value, commit=True):
+	def add(value, commit=True, event=True):
 		"""
 		Add a document to the index.
 
 		@param value: the object to be indexed
 		@param commit: Commit operation
+		@param event: Notification event
 		"""
 
-	def remove(value, commit=True):
+	def remove(value, commit=True, event=True):
 		"""
 		Remove a document from the index
 
 		@param value: The object/id to remove
 		@param commit: Commit operation
+		@param event: Notification event
 		"""
 
 	def delete(uid=None, q=None, commit=True):
