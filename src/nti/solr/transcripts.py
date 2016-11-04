@@ -116,17 +116,11 @@ class _TranscriptContentValue(_BasicAttributeValue):
 			provided = IVideoTranscriptParser
 		else:
 			provided = IAudioTranscriptParser
-		parser = component.queryUtility(provided, name=type_)
-		if parser is not None:
-			return parser.parse(to_unicode(raw_content))
+		if raw_content:
+			parser = component.queryUtility(provided, name=type_)
+			if parser is not None:
+				return parser.parse(to_unicode(raw_content))
 		return None
-
-	@classmethod
-	def entries(cls, context, raw_content):
-		transcript = cls.transcript(context, raw_content)
-		if transcript is not None:
-			return transcript.entries
-		return ()
 
 	@classmethod
 	def parse_content(cls, context, raw_content):
@@ -136,7 +130,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
 		return None
 
 	@classmethod
-	def get_content(cls, context):
+	def raw_content(cls, context):
 		src = context.src
 		raw_content = None
 		# is in content pkg ?
@@ -150,9 +144,22 @@ class _TranscriptContentValue(_BasicAttributeValue):
 				raw_content = package.read_contents_of_sibling_entry(src)
 			except Exception:
 				logger.exception("Cannot read contents for %s", src)
+		return raw_content if raw_content else None
+
+	@classmethod
+	def get_content(cls, context):
+		raw_content = cls.raw_content(context)
 		if raw_content:
 			return cls.parse_content(context, raw_content)
 		return None
+
+	@classmethod
+	def entries(cls, context):
+		raw_content = cls.raw_content(context)
+		transcript = cls.transcript(context, raw_content)
+		if transcript is not None:
+			return transcript.entries
+		return ()
 
 	def lang(self, context=None):
 		context = self.context if context is None else context
@@ -223,7 +230,9 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
 		result = []
 		uid = IIDValue(transcript).value()
 		media = IMediaNTIIDValue(transcript).value()
-		source = document_creator(transcript, MetadataDocument, provided=IMetadataDocument)
+		source = document_creator(transcript, 
+								  factory=MetadataDocument,
+								  provided=IMetadataDocument)
 		for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
 			doc = factory()
 			doc.__dict__.update(source.__dict__) # update with source
@@ -247,14 +256,16 @@ class TranscriptsCatalog(CoreCatalog):
 
 	def index_doc(self, doc_id, value, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit
-		for document in _transcript_documents_creator(value):
-			self._do_index(doc_id, document, commit)
+		documents = _transcript_documents_creator(value)
+		size = len(documents) - 1
+		for x, document in enumerate(_transcript_documents_creator(value)):
+			self._do_index(document.id, document, commit==(size==x and commit))
 		if event:
 			notify(ObjectIndexedEvent(value, doc_id))
 
 	def unindex_doc(self, doc_id, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit
-		q = "id:%s*" % doc_id # delete anything that match that id
+		q = "id:%s*" % lucene_escape(doc_id) # delete anything that match that id
 		self.client.delete(q=q, commit=commit)
 		if event:
 			obj = object_finder(doc_id)
