@@ -158,6 +158,8 @@ class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
 @interface.implementer(IIDValue)
 class _DefaultIDValue(_BasicAttributeValue):
 
+	PREFIX_SEP = '#'
+
 	@classmethod
 	def _norm(cls, x):
 		return re.sub('[^\x00-\x7F]', '_', re.sub(' ', '_', re.sub('!', '', x)))
@@ -197,7 +199,7 @@ class _DefaultIDValue(_BasicAttributeValue):
 								(cls.mimeType, cls._type)):
 			value = convert(source(context))
 			result.append(value)
-		return '%s!=' % '-'.join(result)
+		return '%s%s' % ('-'.join(result), cls.PREFIX_SEP)
 
 	def value(self, context=None):
 		context = self.context if context is None else context

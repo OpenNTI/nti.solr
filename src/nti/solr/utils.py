@@ -134,9 +134,10 @@ def document_creator(obj, factory, provided=None):
 			setattr(result, k, value)
 	return result
 
-_k_pattern = re.compile('(.*)!=(.*)', re.UNICODE | re.IGNORECASE)
+_key_pattern = re.compile(r'([a-zA-Z0-9_.+-:,@]+\#)?([a-zA-Z0-9_.+-:,]+)(@.*)?$', 
+						  re.UNICODE | re.IGNORECASE)
 def normalized_key(doc_id):
-	m = _k_pattern.match(doc_id)
+	m = _key_pattern.match(doc_id)
 	if m is not None:
 		return m.groups()[1]
 	return doc_id
