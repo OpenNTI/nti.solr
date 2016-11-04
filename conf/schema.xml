@@ -242,10 +242,12 @@
 	<field name="realname" type="text_lower" indexed="true" required="false" stored="true"/>
 	<field name="email" type="string" indexed="true" required="false" stored="true"/>
 	<field name="professional_company" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
-	<field name="professional_description" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="professional_description" 	type="text_lower" multiValued="true" indexed="true" stored="true"
+											termVectors="true" termPositions="true" termOffsets="true"/>
 	<field name="professional_title" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
 	<field name="education_school" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
-	<field name="education_description" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
+	<field name="education_description" type="text_lower" multiValued="true" indexed="true" stored="true"
+										termVectors="true" termPositions="true" termOffsets="true"/>
 	<field name="education_degree" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
 	<field name="social_url" type="strings" indexed="true" required="false" stored="true"/>
 	<copyField source="alias" dest="_text_"/>
