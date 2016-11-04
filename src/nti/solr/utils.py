@@ -134,6 +134,10 @@ def document_creator(obj, factory, provided=None):
 			setattr(result, k, value)
 	return result
 
+# pattern to get any prefix por post fix that catalog may add to the 
+# document ids. The prefix is anything that comes before the first '#' and
+# may be use as split.key for sharding. The postfix is anything after '@'
+# in this applications ids CANNOT have an @
 _key_pattern = re.compile(r'([a-zA-Z0-9_.+-:,@]+\#)?([a-zA-Z0-9_.+-:,]+)(@.*)?$', 
 						  re.UNICODE | re.IGNORECASE)
 def normalized_key(doc_id):
