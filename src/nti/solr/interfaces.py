@@ -362,8 +362,8 @@ class ITranscriptDocument(IMetadataDocument):
 	cue_start_time = Float(title='Cue start time', required=False)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
-tagField(ITranscriptDocument['end_time'], False, ITranscriptCueStartTimeValue)
-tagField(ITranscriptDocument['start_time'], False, ITranscriptCueStartTimeValue)
+tagField(ITranscriptDocument['cue_end_time'], False, ITranscriptCueStartTimeValue)
+tagField(ITranscriptDocument['cue_start_time'], False, ITranscriptCueStartTimeValue)
 tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=ITextField)
 
 # content units
