@@ -133,6 +133,10 @@ def _unindex_contentpackage(obj, event):
 def _index_transcript(obj, event):
 	queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
 
+@component.adapter(INTITranscript, IUnindexObjectEvent)
+def _unindex_transcript(obj, event):
+	queue_add(TRANSCRIPTS_QUEUE, single_unindex_job, obj)
+
 @component.adapter(IPresentationAsset, IIntIdAddedEvent)
 def _asset_added(obj, event=None):
 	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
