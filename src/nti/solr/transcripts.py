@@ -230,8 +230,8 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
 			doc.id = "%s@%s" % (uid, x) # @ is id postfix
 			doc.media = media # ntiid of the media object
 			doc.content_en = IContentValue(entry).value()
-			doc.end_time = ITranscriptCueEndTimeValue(entry).value()
-			doc.start_time = ITranscriptCueStartTimeValue(entry).value()
+			doc.cue_end_time = ITranscriptCueEndTimeValue(entry).value()
+			doc.cue_start_time = ITranscriptCueStartTimeValue(entry).value()
 			result.append(doc)
 	else:
 		result = ()
