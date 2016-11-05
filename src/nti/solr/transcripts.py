@@ -260,7 +260,7 @@ class TranscriptsCatalog(CoreCatalog):
 		size = len(documents) - 1
 		for x, document in enumerate(_transcript_documents_creator(value)):
 			self._do_index(document.id, document, commit==(size==x and commit))
-		if event:
+		if event and documents:
 			notify(ObjectIndexedEvent(value, doc_id))
 
 	def unindex_doc(self, doc_id, commit=None, event=True):
