@@ -262,6 +262,7 @@ class TranscriptsCatalog(CoreCatalog):
 			self._do_index(document.id, document, commit==(size==x and commit))
 		if event and documents:
 			notify(ObjectIndexedEvent(value, doc_id))
+		return bool(documents)
 
 	def unindex_doc(self, doc_id, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit
@@ -270,6 +271,8 @@ class TranscriptsCatalog(CoreCatalog):
 		if event:
 			obj = object_finder(doc_id)
 			notify(ObjectUnindexedEvent(obj, doc_id))
+			return obj
+		return None
 
 	def _build_from_search_query(self, query):
 		term, fq, params = CoreCatalog._build_from_search_query(self, query)
