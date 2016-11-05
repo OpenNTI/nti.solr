@@ -265,7 +265,7 @@ class TranscriptsCatalog(CoreCatalog):
 
 	def unindex_doc(self, doc_id, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit
-		q = "id:%s*" % lucene_escape(doc_id) # delete anything that match that id
+		q = "id:%s*" % lucene_escape(doc_id) # delete anything that matches that id
 		self.client.delete(q=q, commit=commit)
 		if event:
 			obj = object_finder(doc_id)

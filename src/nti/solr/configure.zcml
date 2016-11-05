@@ -36,6 +36,10 @@
 	<adapter factory=".adapters._StringValue"
 			 provides=".interfaces.IStringValue"
 			 for="basestring" />
+			 
+	<adapter factory=".adapters._default_search_hit_adapter"
+			 provides="nti.contentsearch.interfaces.ISearchHit"
+			 for="* dolmen.builtins.interfaces.IDict" />
 
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultSiteValue"
