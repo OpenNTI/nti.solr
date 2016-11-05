@@ -162,11 +162,12 @@ class CoreCatalog(object):
 			assert isinstance(value, Mapping) and len(value) == 1, 'Invalid field query'
 			for k, v in value.items():
 				if k == 'any_of':
-					fq[k] = "(%s)" % self._OR_.join(lucene_escape(x) for x in v)
+					fq[name] = "(%s)" % self._OR_.join(lucene_escape(x) for x in v)
 				elif k == 'all_of':
-					fq[k] = "(%s)" % self._AND_.join(lucene_escape(x) for x in v)
+					fq[name] = "(%s)" % self._AND_.join(lucene_escape(x) for x in v)
 				elif k == 'between':
-					fq[k] = "[%s TO %s]" % (lucene_escape(v[0]), lucene_escape(v[1]))
+					# TODO: Convert to date
+					fq[name] = "[%s TO %s]" % (lucene_escape(v[0]), lucene_escape(v[1]))
 		return fq
 
 	def _bulild_from_catalog_query(self, query):
