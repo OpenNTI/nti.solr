@@ -25,7 +25,7 @@ from nti.contentsearch.interfaces import ISearchQueryValidator
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
-from nti.schema.field import Float
+from nti.schema.field import Number
 from nti.schema.field import IndexedIterable
 from nti.schema.field import Text as ValidText
 from nti.schema.field import TextLine as ValidTextLine
@@ -358,8 +358,8 @@ class ITranscriptDocument(IMetadataDocument):
 	
 	content_en = ValidText(title='Text to index', required=False)
 	
-	cue_end_time = Float(title='Cue end time', required=False)
-	cue_start_time = Float(title='Cue start time', required=False)
+	cue_end_time = Number(title='Cue end time', required=False)
+	cue_start_time = Number(title='Cue start time', required=False)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
 tagField(ITranscriptDocument['cue_end_time'], False, ITranscriptCueStartTimeValue)
