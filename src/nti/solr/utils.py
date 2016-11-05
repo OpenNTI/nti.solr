@@ -137,7 +137,7 @@ def document_creator(obj, factory, provided=None):
 # pattern to get any prefix por post fix that catalog may add to the 
 # document ids. The prefix is anything that comes before the first '#' and
 # may be use as split.key for sharding. The postfix is anything after '@'
-# in this applications ids CANNOT have an @
+# in this application ids CANNOT have an @
 _key_pattern = re.compile(r'([a-zA-Z0-9_.+-:,@]+\#)?([a-zA-Z0-9_.+-:,]+)(@.*)?$', 
 						  re.UNICODE | re.IGNORECASE)
 def normalized_key(doc_id):
@@ -151,8 +151,11 @@ def object_finder(doc_id, intids=None):
 	if is_valid_ntiid_string(doc_id):
 		return find_object_with_ntiid(doc_id)
 	else:
-		intids = component.getUtility(IIntIds) if intids is None else intids
-		return intids.queryObject(int(doc_id))
+		try:
+			intids = component.getUtility(IIntIds) if intids is None else intids
+			return intids.queryObject(int(doc_id))
+		except (ValueError, TypeError):
+			logger.error("Cannot get object with id %s", doc_id)
 
 _f_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
 def normalize_field(name):
