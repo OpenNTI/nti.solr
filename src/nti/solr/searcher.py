@@ -16,11 +16,10 @@ from zope import interface
 
 from zope.intid.interfaces import IIntIds
 
-from nti.contentsearch.interfaces import ISearchQuery
-from nti.contentsearch.interfaces import IResultTransformer
+from nti.contentsearch.interfaces import ISearchQuery, ISearchHit
 
-from nti.contentsearch.search_hits import SearchHit
 from nti.contentsearch.search_fragments import SearchFragment
+
 from nti.contentsearch.search_results import _SearchResults as SearchResults
 
 from nti.dataserver.interfaces import IUser
@@ -31,14 +30,8 @@ from nti.property.property import Lazy
 
 from nti.solr import USERDATA_CATALOG
 
-from nti.solr.interfaces import IIDValue
-from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICoreCatalog
-from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import ISOLRSearcher
-from nti.solr.interfaces import IMimeTypeValue
-from nti.solr.interfaces import IContainerIdValue
-from nti.solr.interfaces import ILastModifiedValue
 
 from nti.solr.utils import MIME_TYPE_CATALOG_MAP
 
@@ -47,12 +40,6 @@ from nti.solr.utils import normalize_field
 @component.adapter(IUser)
 @interface.implementer(ISOLRSearcher)
 class _SOLRSearcher(object):
-
-	HIT_FIELDS = ((INTIIDValue, 'NTIID'),
-				  (ICreatorValue, 'Creator'),
-				  (IMimeTypeValue, 'TargetMimeType'),
-				  (IContainerIdValue, 'ContainerId'),
-				  (ILastModifiedValue, 'lastModified'))
 
 	def __init__(self, entity=None):
 		self.entity = entity
@@ -85,14 +72,10 @@ class _SOLRSearcher(object):
 		try:
 			uid = result['id']
 			obj = catalog.get_object(uid, self.intids)
-			obj = IResultTransformer(obj, obj)
 			if obj is None:
 				return None
-			hit = SearchHit()
-			hit.Target = obj # trxed
-			hit.Score = result['score']
-			hit.ID = IIDValue(obj).value() or uid
-			# Fragments / Snippets
+			hit = component.getMultiAdapter((obj, result), ISearchHit)
+			# set fragments
 			fragments = list()
 			snippets = highlighting.get(uid) if highlighting else None
 			if snippets:
@@ -103,15 +86,8 @@ class _SOLRSearcher(object):
 					fragments.append(fragment)
 			if fragments:
 				hit.Fragments = fragments
-			# Add common field hit
-			for value_interface, name in self.HIT_FIELDS:
-				adapted = value_interface(obj, None)
-				if adapted is not None:
-					value = adapted.value()
-					setattr(hit, name, value)
-			# hit is ready
 			return hit
-		except (ValueError, TypeError, KeyError):
+		except Exception:
 			logger.debug('Could not create hit for %s', result)
 		return None
 
