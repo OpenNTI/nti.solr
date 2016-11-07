@@ -148,6 +148,7 @@ def _contentunit_to_catalog(obj):
 
 class ContentUnitsCatalog(MetadataCatalog):
 
+	name = CONTENT_UNITS_CATALOG
 	document_interface = IContentUnitDocument
 
 	def _build_from_search_query(self, query):
