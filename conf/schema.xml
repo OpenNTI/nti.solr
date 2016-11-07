@@ -261,13 +261,16 @@
 	<copyField source="tags" dest="suggest"/>
 	<copyField source="tags" dest="suggest_ngram"/>
 
+	<!-- MessageInfo  -->
+	<field name="channel" type="string" indexed="true" required="false" stored="false"/>
+	<field name="recipients" type="strings" indexed="true" required="false" stored="false"/>
+
 	<!-- Transcripts -->
 	<field name="media" type="string" indexed="true" required="false" stored="true"/> <!-- video / audio ntiid -->
 	<field name="cue_start_time" type="double" indexed="false" required="false" stored="true"/> <!-- video / audio cue startTime -->
 	<field name="cue_end_time" type="double" indexed="false" required="false" stored="true"/> <!-- video / audio cue endTime -->
 
-	<!-- <copyField source="id" dest="ntiid"/> -->
-
+	<!-- content fields -->
 	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
 					termVectors="true" termPositions="true" termOffsets="true"/>
 

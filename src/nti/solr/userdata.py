@@ -14,9 +14,12 @@ import itertools
 from zope import component
 from zope import interface
 
+from nti.chatserver.interfaces import IMessageInfo
+
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IUserGeneratedData 
+from nti.dataserver.interfaces import IRedaction
+from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
 
@@ -29,9 +32,13 @@ from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import IChannelValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IRecipientsValue
+from nti.solr.interfaces import IExplanationValue
 from nti.solr.interfaces import IUserDataDocument
+from nti.solr.interfaces import IReplacementContentValue
 
 from nti.solr.lucene import lucene_escape
 
@@ -93,6 +100,44 @@ class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
 			self.language = adapted.lang()
 			return get_keywords(adapted.value(), self.language)
 		return ()
+
+@component.adapter(IMessageInfo)
+@interface.implementer(IChannelValue)
+class _DefaultChannelValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return context.channel
+
+@component.adapter(IMessageInfo)
+@interface.implementer(IRecipientsValue)
+class _DefaultRecipientsValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return tuple(x.lower() for x in context.recipients if x)
+
+@component.adapter(IRedaction)
+@interface.implementer(IExplanationValue)
+class _DefaultRedactionExplanationValue(_BasicAttributeValue):
+
+	def lang(self, context):
+		return 'en'
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return context.redactionExplanation
+
+@component.adapter(IRedaction)
+@interface.implementer(IReplacementContentValue)
+class _DefaultReplacementContentValue(_BasicAttributeValue):
+
+	def lang(self, context):
+		return 'en'
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return context.replacementContent
 
 @interface.implementer(IUserDataDocument)
 class UserDataDocument(MetadataDocument):

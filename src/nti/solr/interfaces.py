@@ -398,12 +398,44 @@ class ITagsValue(IAttributeValue):
 	Adapter interface to get the tag values from a given object
 	"""
 
-class IUserDataDocument(IMetadataDocument):
+class IChannelValue(IAttributeValue):
+	"""
+	Adapter interface to get the channel value from a given object
+	"""
 
+class IExplanationValue(IAttributeValue):
+	"""
+	Adapter interface to get the explanation value from a given object
+	"""
+
+class IReplacementContentValue(IAttributeValue):
+	"""
+	Adapter interface to get the replacement content value from a given object
+	"""
+
+class IRecipientsValue(IAttributeValue):
+	"""
+	Adapter interface to get the recipients value from a given object
+	"""
+
+class IUserDataDocument(IMetadataDocument):
+	"""
+	User generated data document
+	"""
 	content_en = ValidText(title='Text to index', required=False)
 
 	title_en = ValidTextLine(title='Title to index', required=False)
 
+	redaction_explanation_en = ValidText(title='Text to index', required=False)
+	replacement_content_en = ValidText(title='Text to index', required=False)
+	
+	recipients = IndexedIterable(title='The recipient entities',
+								 required=False,
+								 value_type=ValidTextLine(title="The entiy"),
+								 min_length=0)
+	
+	channel = ValidTextLine(title='channel value', required=False)
+		
 	tags = IndexedIterable(title='The tags',
 						   required=False,
 						   value_type=ValidTextLine(title="The tag"),
@@ -415,8 +447,12 @@ class IUserDataDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IUserDataDocument['tags'], True, ITagsValue)
+tagField(IUserDataDocument['channel'], False, IChannelValue)
+tagField(IUserDataDocument['recipients'], True, IRecipientsValue)
 tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IUserDataDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IUserDataDocument['redaction_explanation_en'], True, IExplanationValue, provided=ITextField)
+tagField(IUserDataDocument['replacement_content_en'], True, IReplacementContentValue, provided=ITextField)
 tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class IAssetDocument(IMetadataDocument):

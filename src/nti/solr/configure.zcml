@@ -509,6 +509,22 @@
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+			 
+	<adapter factory=".userdata._DefaultChannelValue"
+			 provides=".interfaces.IChannelValue"
+			 for="nti.chatserver.interfaces.IMessageInfo" />
+
+	<adapter factory=".userdata._DefaultRecipientsValue"
+			 provides=".interfaces.IRecipientsValue"
+			 for="nti.chatserver.interfaces.IMessageInfo" />
+
+	<adapter factory=".userdata._DefaultRedactionExplanationValue"
+			 provides=".interfaces.IExplanationValue"
+			 for="nti.dataserver.interfaces.IRedaction" />
+
+	<adapter factory=".userdata._DefaultReplacementContentValue"
+			 provides=".interfaces.IReplacementContentValue"
+			 for="nti.dataserver.interfaces.IRedaction" />
 
 	<adapter factory=".userdata._UserDataDocumentCreator"
 			 provides=".interfaces.IUserDataDocument"
