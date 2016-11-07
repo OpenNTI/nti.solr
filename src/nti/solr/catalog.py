@@ -29,7 +29,7 @@ import BTrees
 
 from nti.externalization.externalization import to_external_object
 
-from nti.property.property import Lazy 
+from nti.property.property import Lazy
 from nti.property.property import alias
 from nti.property.property import readproperty
 
@@ -57,7 +57,7 @@ class CoreCatalog(object):
 
 	__parent__ = None
 	__name__ = alias('name')
-	
+
 	max_rows = 500
 	auto_commit = True
 	return_fields = ('id', 'score')
@@ -69,7 +69,7 @@ class CoreCatalog(object):
 
 	_OR_ = u' OR '
 	_AND_ = u' AND '
-	
+
 	def __init__(self, core=NTI_CATALOG, name=None, client=None, auto_commit=None):
 		self.core = core
 		if name is not None:
@@ -254,13 +254,13 @@ class CoreCatalog(object):
 			params['start'] = str(batchStart)
 			params['rows'] = str(batchSize)
 		else:
-			params['rows'] = str(self.max_rows) # default number of rows
+			params['rows'] = str(self.max_rows)  # default number of rows
 		return params
-	
+
 	def _build_term_from_search_query(self, query):
 		text_fields = self._text_fields
 		term = lucene_escape(query.term) if not is_phrase_search(query.term) else query.term
-		if text_fields: # search all text fields
+		if text_fields:  # search all text fields
 			term = "(%s)" % self._OR_.join('%s:%s' % (name, term) for name in text_fields)
 		return term
 
@@ -278,6 +278,7 @@ class CoreCatalog(object):
 		fq_query = ['%s:%s' % (name, value) for name, value in fq.items()]
 		if fq_query:
 			params['fq'] = self._AND_.join(fq_query)
+		params['sort'] = 'score desc,createdTime desc'  # for the time being
 		return self.client.search(term, **params)
 
 	def delete(self, uid=None, q=None, commit=True):
