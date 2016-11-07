@@ -20,7 +20,8 @@ from nti.contentsearch.interfaces import ISearchHit
 
 from nti.contentsearch.search_hits import SearchHit
 
-from nti.solr.interfaces import IIDValue
+from nti.contenttypes.presentation.interfaces import INTITranscript
+
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import IStringValue
 from nti.solr.interfaces import ICreatorValue
@@ -53,11 +54,19 @@ HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 def _default_search_hit_adapter(obj, result, hit=None):
 	hit = SearchHit() if hit is None else hit
 	hit.Target = obj
+	hit.ID = result['id']
 	hit.Score = result['score']
-	hit.ID = IIDValue(obj).value()
 	for value_interface, name in HIT_FIELDS:
 		adapted = value_interface(obj, None)
 		if adapted is not None:
 			value = adapted.value()
 			setattr(hit, name, value)
+	return hit
+
+@interface.implementer(ISearchHit)
+@component.adapter(INTITranscript, IDict)
+def _transcript_search_hit_adapter(obj, result):
+	hit = _default_search_hit_adapter(obj, result, SearchHit())
+	hit.EndMills = result['cue_end_time']
+	hit.StartMills = result['cue_start_time']
 	return hit

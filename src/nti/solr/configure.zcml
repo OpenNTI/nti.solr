@@ -41,6 +41,11 @@
 			 provides="nti.contentsearch.interfaces.ISearchHit"
 			 for="* dolmen.builtins.interfaces.IDict" />
 
+	<adapter factory=".adapters._transcript_search_hit_adapter"
+			 provides="nti.contentsearch.interfaces.ISearchHit"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript 
+			 	  dolmen.builtins.interfaces.IDict" />
+
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultSiteValue"
 			 provides=".interfaces.ISiteValue"
