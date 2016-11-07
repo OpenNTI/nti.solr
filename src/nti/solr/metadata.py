@@ -60,6 +60,10 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.site.interfaces import IHostPolicyFolder
 
+from nti.solr import NTI_CATALOG
+
+from nti.solr.catalog import CoreCatalog
+
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import INTIIDValue
@@ -341,3 +345,15 @@ class MetadataDocument(SchemaConfigured):
 @interface.implementer(IMetadataDocument)
 def _MetadataDocumentCreator(obj, factory=MetadataDocument):
 	return document_creator(obj, factory=factory, provided=IMetadataDocument)
+
+class MetadataCatalog(CoreCatalog):
+
+	document_interface = IMetadataDocument
+
+	def __init__(self, core=NTI_CATALOG, client=None):
+		CoreCatalog.__init__(self, core=core, client=client)
+
+	def _prepare_solr_query(self, term, fq, params):
+		term, params = CoreCatalog._prepare_solr_query(self, term, fq, params)
+		params['sort'] = 'score desc,createdTime desc'  # for the time being
+		return term, params

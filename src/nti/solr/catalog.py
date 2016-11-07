@@ -273,12 +273,15 @@ class CoreCatalog(object):
 		# query-term, filter-query, params
 		return (term, fq, params)
 
-	def search(self, query, *args, **kwargs):
-		term, fq, params = self._build_from_search_query(query)
+	def _prepare_solr_query(self, term, fq, params):
 		fq_query = ['%s:%s' % (name, value) for name, value in fq.items()]
 		if fq_query:
 			params['fq'] = self._AND_.join(fq_query)
-		params['sort'] = 'score desc,createdTime desc'  # for the time being
+		return term, params
+
+	def search(self, query, *args, **kwargs):
+		term, fq, params = self._build_from_search_query(query)
+		term, params = self._prepare_solr_query(term, fq, params)
 		return self.client.search(term, **params)
 
 	def delete(self, uid=None, q=None, commit=True):

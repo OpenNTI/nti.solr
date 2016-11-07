@@ -22,10 +22,7 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import NTI_CATALOG
 from nti.solr import ASSETS_CATALOG
-
-from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
@@ -38,6 +35,7 @@ from nti.solr.interfaces import IContainerIdValue
 from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import ZERO_DATETIME
+from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
@@ -181,16 +179,13 @@ def _AssetDocumentCreator(obj, factory=AssetDocument):
 def _asset_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=ASSETS_CATALOG)
 
-class AssetsCatalog(CoreCatalog):
+class AssetsCatalog(MetadataCatalog):
 
 	name = ASSETS_CATALOG
 	document_interface = IAssetDocument
 
-	def __init__(self, core=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, core=core, client=client)
-
 	def _build_from_search_query(self, query):
-		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(ASSETS_CATALOG)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)

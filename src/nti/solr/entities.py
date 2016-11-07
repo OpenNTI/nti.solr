@@ -27,10 +27,7 @@ from nti.dataserver.users.interfaces import IProfessionalProfile
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import NTI_CATALOG
 from nti.solr import ENTITIES_CATALOG
-
-from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import IAboutValue
 from nti.solr.interfaces import IAliasValue
@@ -49,6 +46,7 @@ from nti.solr.interfaces import IProfessionalDescriptionValue
 
 from nti.solr.lucene import lucene_escape
 
+from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
@@ -197,16 +195,13 @@ def _EntityDocumentCreator(obj, factory=EntityDocument):
 def _entity_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
 
-class EntitiesCatalog(CoreCatalog):
+class EntitiesCatalog(MetadataCatalog):
 
 	name = ENTITIES_CATALOG
 	document_interface = IEntityDocument
 
-	def __init__(self, core=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, core=core, client=client)
-
 	def _build_from_search_query(self, query):
-		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(ENTITIES_CATALOG)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)

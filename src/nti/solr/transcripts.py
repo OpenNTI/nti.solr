@@ -35,10 +35,7 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import NTI_CATALOG
 from nti.solr import TRANSCRIPTS_CATALOG
-
-from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
@@ -56,6 +53,7 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import ZERO_DATETIME
+from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
@@ -246,13 +244,10 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
 		result = ()
 	return result
 
-class TranscriptsCatalog(CoreCatalog):
+class TranscriptsCatalog(MetadataCatalog):
 
 	name = TRANSCRIPTS_CATALOG
 	document_interface = ITranscriptDocument
-
-	def __init__(self, core=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, core=core, client=client)
 
 	def index_doc(self, doc_id, value, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit
@@ -275,7 +270,7 @@ class TranscriptsCatalog(CoreCatalog):
 		return None
 
 	def _build_from_search_query(self, query):
-		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
 		if 'mimeType' not in fq:
 			types = CATALOG_MIME_TYPE_MAP.get(TRANSCRIPTS_CATALOG)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)

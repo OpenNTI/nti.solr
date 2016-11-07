@@ -25,10 +25,7 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import NTI_CATALOG
 from nti.solr import CONTENT_UNITS_CATALOG
-
-from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
@@ -40,6 +37,7 @@ from nti.solr.interfaces import IContentUnitDocument
 from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import ZERO_DATETIME
+from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
@@ -148,15 +146,12 @@ def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
 def _contentunit_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
 
-class ContentUnitsCatalog(CoreCatalog):
+class ContentUnitsCatalog(MetadataCatalog):
 
 	document_interface = IContentUnitDocument
 
-	def __init__(self, name=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, name=name, client=client)
-
 	def _build_from_search_query(self, query):
-		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
 		if 'containerId' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs

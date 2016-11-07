@@ -25,10 +25,7 @@ from nti.dataserver.users import User
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import NTI_CATALOG
 from nti.solr import USERDATA_CATALOG
-
-from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
@@ -42,6 +39,7 @@ from nti.solr.interfaces import IReplacementContentValue
 
 from nti.solr.lucene import lucene_escape
 
+from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
@@ -155,13 +153,10 @@ def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 def _userdata_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
 
-class UserDataCatalog(CoreCatalog):
+class UserDataCatalog(MetadataCatalog):
 
 	name = USERDATA_CATALOG
 	document_interface = IUserDataDocument
-
-	def __init__(self, core=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, core=core, client=client)
 
 	# principal methods
 
@@ -182,7 +177,7 @@ class UserDataCatalog(CoreCatalog):
 	# search methods
 
 	def _build_from_search_query(self, query):
-		term, fq, params = CoreCatalog._build_from_search_query(self, query)
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
 		username = getattr(query, 'username', None)
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
