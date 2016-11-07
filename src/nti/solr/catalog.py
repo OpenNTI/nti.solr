@@ -49,8 +49,8 @@ from nti.solr.lucene import is_phrase_search
 
 from nti.solr.schema import SolrDatetime
 
+from nti.solr.utils import normalize_key
 from nti.solr.utils import object_finder
-from nti.solr.utils import normalized_key
 
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
@@ -189,7 +189,7 @@ class CoreCatalog(object):
 		result = self.family.IF.BTree()
 		for hit in self.client.search(term, **params):
 			try:
-				uid = int(normalized_key(hit['id']))
+				uid = int(normalize_key(hit['id']))
 				result[uid] = hit['score']
 			except (ValueError, TypeError, KeyError):
 				pass
