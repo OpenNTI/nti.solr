@@ -67,6 +67,6 @@ def _default_search_hit_adapter(obj, result, hit=None):
 @component.adapter(INTITranscript, IDict)
 def _transcript_search_hit_adapter(obj, result):
 	hit = _default_search_hit_adapter(obj, result, SearchHit())
-	hit.EndMills = result['cue_end_time']
-	hit.StartMills = result['cue_start_time']
+	hit.EndMilliSecs = result['cue_end_time']
+	hit.StartMilliSecs = result['cue_start_time']
 	return hit
