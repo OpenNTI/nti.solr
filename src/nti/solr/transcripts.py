@@ -253,8 +253,9 @@ class TranscriptsCatalog(MetadataCatalog):
 		commit = self.auto_commit if commit is None else commit
 		documents = _transcript_documents_creator(value)
 		size = len(documents) - 1
-		for x, document in enumerate(_transcript_documents_creator(value)):
-			self._do_index(document.id, document, commit==(size==x and commit))
+		for x, document in enumerate(documents):
+			do_commit = bool(x == size and commit)
+			self._do_index(document.id, document, commit=do_commit)
 		if event and documents:
 			notify(ObjectIndexedEvent(value, doc_id))
 		return bool(documents)
