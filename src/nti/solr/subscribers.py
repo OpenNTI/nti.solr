@@ -23,6 +23,7 @@ from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
+from nti.contenttypes.presentation.interfaces import IPresentationAssetMovedEvent
 
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
@@ -160,6 +161,11 @@ def _asset_removed(obj, event):
 	if INTIMedia.providedBy(obj):
 		for transcript in getattr(obj, 'transcripts', None) or ():
 			queue_remove(TRANSCRIPTS_QUEUE, single_unindex_job, obj=transcript)
+
+@component.adapter(IPresentationAsset, IPresentationAssetMovedEvent)
+def _asset_moved(obj, event):
+	if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+		queue_modified(ASSETS_QUEUE, single_index_job, obj=obj)
 
 @component.adapter(IPresentationAsset, IIndexObjectEvent)
 def _index_asset(obj, event):
