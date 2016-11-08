@@ -153,6 +153,7 @@ def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 def _userdata_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
 
+@interface.implementer(ICoreCatalog)
 class UserDataCatalog(MetadataCatalog):
 
 	name = USERDATA_CATALOG
@@ -189,7 +190,10 @@ class UserDataCatalog(MetadataCatalog):
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in searchOn if x not in types)
 		return term, fq, params
 
-	def clear(self, commit=None):
-		q = "isUserGeneratedData:true"
+	def clear(self, username=None, commit=None):
+		q = ["isUserGeneratedData:true"]
+		if username:
+			q.append("creator:%s" % lucene_escape(username))
+		q = "(%s)" % self._AND_.join(q)
 		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
 	reset = clear
