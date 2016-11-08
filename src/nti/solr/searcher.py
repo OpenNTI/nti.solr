@@ -20,7 +20,10 @@ from nti.contentsearch.interfaces import ISearchQuery, ISearchHit
 
 from nti.contentsearch.search_fragments import SearchFragment
 
-from nti.contentsearch.search_results import _SearchResults as SearchResults
+try:
+	from nti.contentsearch.search_results import _SearchResults as SearchResults
+except ImportError:
+	from nti.contentsearch.search_results import SearchResults
 
 from nti.dataserver.interfaces import IUser
 
