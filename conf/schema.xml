@@ -261,6 +261,9 @@
 	<copyField source="tags" dest="suggest"/>
 	<copyField source="tags" dest="suggest_ngram"/>
 
+	<!-- Assets  -->
+	<field name="target" type="string" indexed="true" required="false" stored="true"/>
+
 	<!-- MessageInfo  -->
 	<field name="channel" type="string" indexed="true" required="false" stored="false"/>
 	<field name="recipients" type="strings" indexed="true" required="false" stored="false"/>

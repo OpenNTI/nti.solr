@@ -15,6 +15,7 @@ from zope import interface
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
+from nti.contenttypes.presentation.interfaces import IPointer
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
@@ -26,6 +27,7 @@ from nti.solr import ASSETS_CATALOG
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import ITargetValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
@@ -162,6 +164,16 @@ class _DefaultAssetKeywordsValue(_BasicAttributeValue):
 			self.language = adapted.lang()
 			return get_keywords(adapted.value(), self.language)
 		return ()
+
+@interface.implementer(ITargetValue)
+@component.adapter(IPresentationAsset)
+class _DefaultTargetValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		if IPointer.providedBy(context):
+			return context.target
+		return None
 
 @interface.implementer(IAssetDocument)
 class AssetDocument(MetadataDocument):

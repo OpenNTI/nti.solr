@@ -285,6 +285,10 @@
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
+	<adapter factory=".assets._DefaultTargetValue"
+			 provides=".interfaces.ITargetValue"
+			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+
 	<adapter factory=".assets._AssetDocumentCreator"
 			 provides=".interfaces.IAssetDocument"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />

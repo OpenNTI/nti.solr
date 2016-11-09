@@ -455,10 +455,17 @@ tagField(IUserDataDocument['redaction_explanation_en'], True, IExplanationValue,
 tagField(IUserDataDocument['replacement_content_en'], True, IReplacementContentValue, provided=ITextField)
 tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
+class ITargetValue(IStringValue):
+	"""
+	Adapter interface to get the target value from a given object
+	"""
+
 class IAssetDocument(IMetadataDocument):
 
 	ntiid = ValidTextLine(title='Asset ntiid', required=False)
 
+	target = ValidTextLine(title='Asset target ntiid', required=False)
+	
 	title_en = ValidTextLine(title='Title to index', required=False)
 
 	content_en = ValidText(title='Text to index', required=False)
@@ -469,6 +476,7 @@ class IAssetDocument(IMetadataDocument):
 							   	  min_length=0)
 
 tagField(IAssetDocument['ntiid'], True, INTIIDValue)
+tagField(IAssetDocument['target'], True, ITargetValue)
 tagField(IAssetDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IAssetDocument['content_en'], True, IContentValue, provided=ITextField)
 tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
