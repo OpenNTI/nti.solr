@@ -17,8 +17,6 @@ import pysolr
 from zope import component
 from zope import interface
 
-from zope.catalog.catalog import ResultSet
-
 from zope.event import notify
 
 from zope.intid.interfaces import IIntIds
@@ -51,6 +49,8 @@ from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import normalize_key
 from nti.solr.utils import object_finder
+
+from nti.zope_catalog.catalog import ResultSet
 
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
