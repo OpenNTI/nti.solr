@@ -34,11 +34,12 @@ from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlinePost
 from nti.dataserver.contenttypes.forums.interfaces import IPersonalBlogEntryPost
 
-from nti.dataserver.interfaces import IUser, IContainerContext
+from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IDevice
 from nti.dataserver.interfaces import IThreadable
 from nti.dataserver.interfaces import IFriendsList
 from nti.dataserver.interfaces import IModeledContent
+from nti.dataserver.interfaces import IContainerContext
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IUserTaggedContent
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
