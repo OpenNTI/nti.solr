@@ -28,6 +28,7 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ILastModifiedValue
+from nti.solr.interfaces import IContainerContextValue
 
 @component.adapter(basestring)
 @interface.implementer(IStringValue)
@@ -47,7 +48,8 @@ HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 			  (ICreatorValue, 'Creator'),
 			  (IMimeTypeValue, 'TargetMimeType'),
 			  (IContainerIdValue, 'ContainerId'),
-			  (ILastModifiedValue, 'lastModified'))
+			  (ILastModifiedValue, 'lastModified'),
+			  (IContainerContextValue, 'ContainerContext'))
 
 @interface.implementer(ISearchHit)
 @component.adapter(interface.Interface, IDict)
@@ -60,7 +62,8 @@ def _default_search_hit_adapter(obj, result, hit=None):
 		adapted = value_interface(obj, None)
 		if adapted is not None:
 			value = adapted.value()
-			setattr(hit, name, value)
+			if value is not None:
+				setattr(hit, name, value)
 	return hit
 
 @interface.implementer(ISearchHit)
