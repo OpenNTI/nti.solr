@@ -65,7 +65,7 @@ from nti.solr import NTI_CATALOG
 
 from nti.solr.catalog import CoreCatalog
 
-from nti.solr.interfaces import IIDValue, IContainerContextValue
+from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
@@ -78,6 +78,7 @@ from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ILastModifiedValue
 from nti.solr.interfaces import IIsDeletedObjectValue
+from nti.solr.interfaces import IContainerContextValue
 from nti.solr.interfaces import IIsTopLevelContentValue
 from nti.solr.interfaces import IIsUserGeneratedDataValue
 
