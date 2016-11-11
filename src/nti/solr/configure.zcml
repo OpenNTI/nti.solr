@@ -91,6 +91,10 @@
 			 provides=".interfaces.IInReplyToValue"
 			 for="*" />
 
+	<adapter factory=".metadata._DefaultContainerContextValue"
+			 provides=".interfaces.IContainerContextValue"
+			 for="*" />
+
 	<adapter factory=".metadata._DefaultIsTopLevelContentValue"
 			 provides=".interfaces.IIsTopLevelContentValue"
 			 for="*" />

@@ -34,7 +34,7 @@ from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlinePost
 from nti.dataserver.contenttypes.forums.interfaces import IPersonalBlogEntryPost
 
-from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IUser, IContainerContext
 from nti.dataserver.interfaces import IDevice
 from nti.dataserver.interfaces import IThreadable
 from nti.dataserver.interfaces import IFriendsList
@@ -64,7 +64,7 @@ from nti.solr import NTI_CATALOG
 
 from nti.solr.catalog import CoreCatalog
 
-from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import IIDValue, IContainerContextValue
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
@@ -335,6 +335,16 @@ class _DefaultIsUserGeneratedDataValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return IUserGeneratedData.providedBy(context)
+
+@interface.implementer(IContainerContextValue)
+class _DefaultContainerContextValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		container_context = IContainerContext(context, None)
+		if container_context is not None:
+			return to_unicode(container_context.context_id)
+		return None
 
 @interface.implementer(IMetadataDocument)
 class MetadataDocument(SchemaConfigured):

@@ -220,8 +220,9 @@
 	<field name="taggedTo" type="strings" indexed="true" stored="true"/>
 	<field name="inReplyTo" type="string" indexed="true" stored="false"/>
 	<field name="createdTime" type="tdate" indexed="true" stored="false"/>
-	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
 	<field name="sharedWith" type="strings" indexed="true" stored="true"/>
+	<field name="lastModified" type="tdate" indexed="true" stored="false"/>
+	<field name="containerContext" type="string" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
 	<field name="site" type="string" indexed="true" required="false" stored="false"/>

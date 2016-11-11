@@ -127,6 +127,11 @@ class IIsTopLevelContentValue(IAttributeValue):
 	Adapter interface to get the isTopLevelContent value from a given object
 	"""
 
+class IContainerContextValue(IAttributeValue):
+	"""
+	Adapter interface to get the container context value from a given object
+	"""
+	
 def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 			 type_=None, boost=None, provided=None):
 	field.setTaggedValue('__solr_stored__', stored)
@@ -168,6 +173,8 @@ class IMetadataDocument(ICoreDocument):
 								value_type=ValidTextLine(title="The entiy"),
 								min_length=0)
 
+	containerContext = ValidTextLine(title='The container context', required=False)
+	
 	createdTime = SolrDatetime(title='The created date', required=False)
 
 	lastModified = SolrDatetime(title='The last modified date', required=False)
@@ -183,6 +190,7 @@ tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
 tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
+tagField(IMetadataDocument['containerContext'], False, IContainerContextValue)
 tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
 tagField(IMetadataDocument['isUserGeneratedData'], False, IIsUserGeneratedDataValue)
 tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, multiValued=True)
