@@ -34,7 +34,7 @@ from nti.property.property import readproperty
 from nti.solr import NTI_CATALOG
 from nti.solr import primitive_types
 
-from nti.solr.interfaces import ISOLR
+from nti.solr.interfaces import ISOLR, IIntIdValue
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ITextField
 from nti.solr.interfaces import ICoreCatalog
@@ -47,6 +47,8 @@ from nti.solr.lucene import is_phrase_search
 
 from nti.solr.schema import SolrDatetime
 
+
+from nti.solr.utils import normalize_key
 from nti.solr.utils import object_finder
 
 from nti.zope_catalog.catalog import ResultSet
@@ -185,13 +187,22 @@ class CoreCatalog(object):
 		if fq_query:
 			params['fq'] = self._AND_.join(fq_query)
 		# search
+		intids = component.getUtility(IIntIds) 
 		result = self.family.IF.BTree()
 		for hit in self.client.search(term, **params):
+			uid = doc_id = None
 			try:
-				uid = int(hit['intid'])
-				result[uid] = hit['score']
-			except (ValueError, TypeError, KeyError):
-				pass
+				doc_id = normalize_key(hit['id'])
+				uid = int(doc_id)
+				score = hit['score']
+			except KeyError:
+				continue
+			except (ValueError, TypeError):
+				obj = self.get_object(doc_id, intids) if doc_id else None
+				adapted = IIntIdValue(obj, None)
+				uid = adapted.value() if adapted is not None else None
+			if uid is not None:
+				result[uid] = score 
 		return result
 
 	def searchResults(self, **searchterms):

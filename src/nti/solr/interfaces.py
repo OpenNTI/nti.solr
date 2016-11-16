@@ -158,8 +158,6 @@ tagField(ICoreDocument['id'], True, IIDValue)
 class IMetadataDocument(ICoreDocument):
 	site = ValidTextLine(title='The site', required=False)
 
-	intid = ValidTextLine(title='The intid', required=False)
-
 	creator = ValidTextLine(title='The creator', required=False)
 
 	mimeType = ValidTextLine(title='The mime type', required=False)
@@ -194,7 +192,6 @@ class IMetadataDocument(ICoreDocument):
 	isUserGeneratedData = Bool(title='Is UGD object flag', required=False)
 
 tagField(IMetadataDocument['site'], False, ISiteValue)
-tagField(IMetadataDocument['intid'], False, IIntIdValue)
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
