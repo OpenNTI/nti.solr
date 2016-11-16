@@ -224,7 +224,8 @@ class _DefaultIntIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
-		return component.getUtility(IIntIds).queryId(context)
+		uid = component.getUtility(IIntIds).queryId(context)
+		return to_unicode(uid) if uid is not None else None
 
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):

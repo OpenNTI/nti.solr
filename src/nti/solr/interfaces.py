@@ -158,7 +158,7 @@ tagField(ICoreDocument['id'], True, IIDValue)
 class IMetadataDocument(ICoreDocument):
 	site = ValidTextLine(title='The site', required=False)
 
-	intid = Int(title='The intid', required=False)
+	intid = ValidTextLine(title='The intid', required=False)
 
 	creator = ValidTextLine(title='The creator', required=False)
 
