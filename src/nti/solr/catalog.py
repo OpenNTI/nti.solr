@@ -190,18 +190,17 @@ class CoreCatalog(object):
 		intids = component.getUtility(IIntIds) 
 		result = self.family.IF.BTree()
 		for hit in self.client.search(term, **params):
-			uid = doc_id = None
+			uid = None
 			try:
-				doc_id = normalize_key(hit['id'])
-				uid = int(doc_id)
-				score = hit['score']
+				score = hit['score'] or 1.0
+				uid = int(normalize_key(hit['id']))
 			except KeyError:
 				continue
 			except (ValueError, TypeError):
-				obj = self.get_object(doc_id, intids) if doc_id else None
-				adapted = IIntIdValue(obj, None)
+				obj = self.get_object(hit['id'], intids)
+				adapted = IIntIdValue(obj, None) # get intid
 				uid = adapted.value() if adapted is not None else None
-			if uid is not None:
+			if uid is not None and uid not in result:
 				result[uid] = score 
 		return result
 

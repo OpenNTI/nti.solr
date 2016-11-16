@@ -464,6 +464,10 @@
 			 provides=".interfaces.IIDValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
+	<adapter factory=".transcripts._TranscriptIntIdValue"
+			 provides=".interfaces.IIntIdValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+
 	<adapter factory=".transcripts._TranscriptMediaNTIIDValue"
 			 provides=".interfaces.IMediaNTIIDValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />

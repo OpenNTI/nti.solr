@@ -37,7 +37,7 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import TRANSCRIPTS_CATALOG
 
-from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import IIDValue, IIntIdValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IMimeTypeValue
@@ -56,6 +56,7 @@ from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
+from nti.solr.metadata import DefaultObjectIntIdValue
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 from nti.solr.utils import NTI_TRANSCRIPT_MIME_TYPE
@@ -100,6 +101,18 @@ class _TranscriptMediaNTIIDValue(_BasicAttributeValue):
 		try:
 			parent = context.__parent__
 			return parent.ntiid
+		except AttributeError:
+			return None
+
+@component.adapter(INTITranscript)
+@interface.implementer(IIntIdValue)
+class _TranscriptIntIdValue(DefaultObjectIntIdValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		try:
+			parent = context.__parent__
+			return super(_TranscriptIntIdValue, self).value(parent)
 		except AttributeError:
 			return None
 
