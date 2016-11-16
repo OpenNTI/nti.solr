@@ -67,6 +67,7 @@ from nti.solr.catalog import CoreCatalog
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ISiteValue
+from nti.solr.interfaces import IIntIdValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
@@ -210,14 +211,20 @@ class _DefaultIDValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		try:
-			initds = component.getUtility(IIntIds)
-			uid = initds.queryId(context)
+			uid = component.getUtility(IIntIds).queryId(context)
 			uid = "%s%s" % (self.prefix(context), uid) if uid is not None else None
 			return to_unicode(uid) if uid is not None else None
 		except (LookupError, KeyError):
 			pass
 		return None
 DefaultObjectIDValue = _DefaultIDValue  # Export
+
+@interface.implementer(IIntIdValue)
+class _DefaultIntIdValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return component.getUtility(IIntIds).queryId(context)
 
 @interface.implementer(IContainerIdValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):

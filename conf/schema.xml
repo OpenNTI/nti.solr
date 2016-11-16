@@ -235,6 +235,7 @@
 	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<field name="ntiid" type="string" indexed="true" required="false" stored="true"/>
+	<field name="intid" type="int" indexed="false" required="false" stored="true"/>
 
 	<!-- Entity fields -->
 	<!-- Each prof/educational entry may have multiple values for these fields -->

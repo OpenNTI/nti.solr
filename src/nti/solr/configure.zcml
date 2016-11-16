@@ -67,6 +67,10 @@
 			 provides=".interfaces.INTIIDValue"
 			 for="*" />
 
+	<adapter factory=".metadata._DefaultIntIdValue"
+			 provides=".interfaces.IIntIdValue"
+			 for="*" />
+
  	<adapter factory=".metadata._DefaultCreatedTimeValue"
 			 provides=".interfaces.ICreatedTimeValue"
 			 for="*" />
