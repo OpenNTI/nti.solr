@@ -141,23 +141,23 @@
 	</configure>
 
 	<!-- User Generated Data -->
-	<subscriber handler="._userdata_added"
+	<subscriber handler=".userdata._userdata_added"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
 
-	<subscriber handler="._userdata_removed"
+	<subscriber handler=".userdata._userdata_removed"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.intid.interfaces.IIntIdRemovedEvent"/>
 
-	<subscriber handler="._userdata_modified"
+	<subscriber handler=".userdata._userdata_modified"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
-	<subscriber handler="._index_userdata"
+	<subscriber handler=".userdata._index_userdata"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 ..interfaces.IIndexObjectEvent"/>
 
-	<subscriber handler="._unindex_userdata"
+	<subscriber handler=".userdata._unindex_userdata"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 ..interfaces.IUnindexObjectEvent"/>
 
