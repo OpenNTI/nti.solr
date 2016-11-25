@@ -4,11 +4,6 @@
 			xmlns:zcml="http://namespaces.zope.org/zcml"
 			i18n_domain="zope">
 
-	<include package="zope.component" file="meta.zcml" />
-	<include package="zope.security" file="meta.zcml" />
-	<include package="zope.component" />
-	<include package="zope.security" />
-
 	<subscriber handler=".entities._entity_added"
 				for="nti.dataserver.interfaces.IEntity
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
