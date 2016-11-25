@@ -1,0 +1,164 @@
+<!-- -*- mode: nxml -*- -->
+<configure	xmlns="http://namespaces.zope.org/zope"
+			xmlns:i18n="http://namespaces.zope.org/i18n"
+			xmlns:zcml="http://namespaces.zope.org/zcml"
+			i18n_domain="zope">
+
+	<include package="zope.component" file="meta.zcml" />
+	<include package="zope.security" file="meta.zcml" />
+	<include package="zope.component" />
+	<include package="zope.security" />
+
+	<subscriber handler=".entities._entity_added"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".entities._entity_removed"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".entities._entity_modified"
+				for="nti.dataserver.interfaces.IEntity
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler=".entities._index_entity"
+					for="nti.dataserver.interfaces.IEntity
+					 	 ..interfaces.IIndexObjectEvent"/>
+
+	<!-- Content Units -->
+	<configure zcml:condition="installed nti.contentlibrary">
+		<subscriber handler=".contentunits._contentunit_added"
+					for="nti.contentlibrary.interfaces.IContentUnit
+						 zope.intid.interfaces.IIntIdAddedEvent"/>
+	
+		<subscriber handler=".contentunits._contentunit_removed"
+					for="nti.contentlibrary.interfaces.IContentUnit
+						 zope.intid.interfaces.IIntIdRemovedEvent"/>
+	
+		<subscriber handler=".contentunits._contentunit_modified"
+					for="nti.contentlibrary.interfaces.IContentUnit
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+	
+		<subscriber handler=".contentunits._index_contentunit"
+					for="nti.contentlibrary.interfaces.IContentUnit
+						 ..interfaces.IIndexObjectEvent"/>
+	
+		<subscriber handler=".contentunits._unindex_contentunit"
+					for="nti.contentlibrary.interfaces.IContentUnit
+						 ..interfaces.IUnindexObjectEvent"/>
+	
+		<subscriber handler=".contentunits._index_contentpackage"
+					for="nti.contentlibrary.interfaces.IContentPackage
+						 ..interfaces.IIndexObjectEvent"/>
+	
+		<subscriber handler=".contentunits._unindex_contentpackage"
+					for="nti.contentlibrary.interfaces.IContentPackage
+						 ..interfaces.IUnindexObjectEvent"/>
+	</configure>
+
+	<!-- Assets -->
+	<subscriber handler="._asset_added"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler="._asset_removed"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler="._asset_modified"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler="._asset_moved"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 nti.contenttypes.presentation.interfaces.IPresentationAssetMovedEvent"/>
+					 
+	<subscriber handler="._index_asset"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 ..interfaces.IIndexObjectEvent"/>
+
+	<subscriber handler="._unindex_asset"
+				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
+					 ..interfaces.IUnindexObjectEvent"/>
+
+	<!-- Courses -->
+	<configure zcml:condition="installed nti.contenttypes.courses">
+		<subscriber handler="._course_added"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+						 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+		<subscriber handler="._course_removed"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+		<subscriber handler="._course_modified"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+		<subscriber handler="._index_course"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	 ..interfaces.IIndexObjectEvent"/>
+
+		<subscriber handler="._unindex_course"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+					 	..interfaces.IUnindexObjectEvent"/>
+	</configure>
+
+	<!-- Assessments / Evaluations -->
+	<configure zcml:condition="installed nti.assessment">
+		<subscriber handler="._evaluation_added"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+		<subscriber handler="._evaluation_removed"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+		<subscriber handler="._evaluation_modified"
+					for="nti.assessment.interfaces.IQEvaluation
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+		<subscriber handler="._evaluation_published"
+					for="nti.assessment.interfaces.IQEvaluation
+						 nti.coremetadata.interfaces.IObjectPublishedEvent"/>
+
+ 		<subscriber handler="._evaluation_unpublished"
+					for="nti.assessment.interfaces.IQEvaluation
+						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
+
+		<subscriber handler="._index_evaluation"
+					for="nti.assessment.interfaces.IQEvaluation
+					 	 ..interfaces.IIndexObjectEvent"/>
+	</configure>
+
+	<!-- Transcripts -->
+	<subscriber handler="._index_transcript"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 ..interfaces.IIndexObjectEvent"/>
+
+	<subscriber handler="._unindex_transcript"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 ..interfaces.IUnindexObjectEvent"/>
+
+	<!-- User Generated Data -->
+	<subscriber handler="._userdata_added"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler="._userdata_removed"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler="._userdata_modified"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler="._index_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 ..interfaces.IIndexObjectEvent"/>
+
+	<subscriber handler="._unindex_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 ..interfaces.IUnindexObjectEvent"/>
+
+</configure>

@@ -186,87 +186,45 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<subscriber handler=".subscribers._entity_added"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-	<subscriber handler=".subscribers._entity_removed"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-	<subscriber handler=".subscribers._entity_modified"
-				for="nti.dataserver.interfaces.IEntity
-					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-	<subscriber handler=".subscribers._index_entity"
-					for="nti.dataserver.interfaces.IEntity
-					 	 .interfaces.IIndexObjectEvent"/>
-
 	<!-- Content Units -->
-	<adapter factory=".contentunits._DefaultContentUnitIDValue"
-			 provides=".interfaces.IIDValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._DefaultContainerIdValue"
-			 provides=".interfaces.IContainerIdValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._DefaultTitleValue"
-			 provides=".interfaces.ITitleValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._DefaultContentUnitContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
-			 provides=".interfaces.IKeywordsValue"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._ContentUnitDocumentCreator"
-			 provides=".interfaces.IContentUnitDocument"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<adapter factory=".contentunits._contentunit_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-	<utility factory=".contentunits.ContentUnitsCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 name='contentunits' />
-
-	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
-			 for=".interfaces.IContentUnitDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
-
-	<subscriber handler=".subscribers._contentunit_added"
-				for="nti.contentlibrary.interfaces.IContentUnit
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-	<subscriber handler=".subscribers._contentunit_removed"
-				for="nti.contentlibrary.interfaces.IContentUnit
-					 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-	<subscriber handler=".subscribers._contentunit_modified"
-				for="nti.contentlibrary.interfaces.IContentUnit
-					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-	<subscriber handler=".subscribers._index_contentunit"
-				for="nti.contentlibrary.interfaces.IContentUnit
-					 .interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler=".subscribers._unindex_contentunit"
-				for="nti.contentlibrary.interfaces.IContentUnit
-					 .interfaces.IUnindexObjectEvent"/>
-
-	<subscriber handler=".subscribers._index_contentpackage"
-				for="nti.contentlibrary.interfaces.IContentPackage
-					 .interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler=".subscribers._unindex_contentpackage"
-				for="nti.contentlibrary.interfaces.IContentPackage
-					 .interfaces.IUnindexObjectEvent"/>
+	<configure zcml:condition="installed nti.contentlibrary">
+		<adapter factory=".contentunits._DefaultContentUnitIDValue"
+				 provides=".interfaces.IIDValue"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._DefaultContainerIdValue"
+				 provides=".interfaces.IContainerIdValue"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._DefaultTitleValue"
+				 provides=".interfaces.ITitleValue"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._DefaultContentUnitContentValue"
+				 provides=".interfaces.IContentValue"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
+				 provides=".interfaces.IKeywordsValue"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._ContentUnitDocumentCreator"
+				 provides=".interfaces.IContentUnitDocument"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<adapter factory=".contentunits._contentunit_to_catalog"
+				 provides=".interfaces.ICoreCatalog"
+				 for="nti.contentlibrary.interfaces.IContentUnit" />
+	
+		<utility factory=".contentunits.ContentUnitsCatalog"
+				 provides=".interfaces.ICoreCatalog"
+				 name='contentunits' />
+	
+		<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
+				 for=".interfaces.IContentUnitDocument"
+				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+				 name="solr" />
+	</configure>
 
 	<!-- Assets -->
 	<adapter factory=".assets._DefaultAssetIDValue"
@@ -314,30 +272,6 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<subscriber handler=".subscribers._asset_added"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-	<subscriber handler=".subscribers._asset_removed"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-	<subscriber handler=".subscribers._asset_modified"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-	<subscriber handler=".subscribers._asset_moved"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 nti.contenttypes.presentation.interfaces.IPresentationAssetMovedEvent"/>
-					 
-	<subscriber handler=".subscribers._index_asset"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 .interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler=".subscribers._unindex_asset"
-				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 .interfaces.IUnindexObjectEvent"/>
-
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
 		<adapter factory=".courses._DefaultCourseCatalogTitleValue"
@@ -372,31 +306,10 @@
 				 for=".interfaces.ICourseCatalogDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
-
-		<subscriber handler=".subscribers._course_added"
-					for="nti.contenttypes.courses.interfaces.ICourseInstance
-						 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-		<subscriber handler=".subscribers._course_removed"
-					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-		<subscriber handler=".subscribers._course_modified"
-					for="nti.contenttypes.courses.interfaces.ICourseInstance
-						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-		<subscriber handler=".subscribers._index_course"
-					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	 .interfaces.IIndexObjectEvent"/>
-
-		<subscriber handler=".subscribers._unindex_course"
-					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	.interfaces.IUnindexObjectEvent"/>
 	</configure>
 
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
-
 		<adapter factory=".evaluations._DefaultEvaluationIDValue"
 			 	 provides=".interfaces.IIDValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />
@@ -433,30 +346,6 @@
 				 for=".interfaces.IEvaluationDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
-
-		<subscriber handler=".subscribers._evaluation_added"
-					for="nti.assessment.interfaces.IQEvaluation
-						 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-		<subscriber handler=".subscribers._evaluation_removed"
-					for="nti.assessment.interfaces.IQEvaluation
-						 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-		<subscriber handler=".subscribers._evaluation_modified"
-					for="nti.assessment.interfaces.IQEvaluation
-						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-		<subscriber handler=".subscribers._evaluation_published"
-					for="nti.assessment.interfaces.IQEvaluation
-						 nti.coremetadata.interfaces.IObjectPublishedEvent"/>
-
- 		<subscriber handler=".subscribers._evaluation_unpublished"
-					for="nti.assessment.interfaces.IQEvaluation
-						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
-
-		<subscriber handler=".subscribers._index_evaluation"
-					for="nti.assessment.interfaces.IQEvaluation
-					 	 .interfaces.IIndexObjectEvent"/>
 	</configure>
 
 	<!-- Transcripts -->
@@ -509,14 +398,6 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<subscriber handler=".subscribers._index_transcript"
-				for="nti.contenttypes.presentation.interfaces.INTITranscript
-				 	 .interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler=".subscribers._unindex_transcript"
-				for="nti.contenttypes.presentation.interfaces.INTITranscript
-				 	 .interfaces.IUnindexObjectEvent"/>
-
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
@@ -563,32 +444,13 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<subscriber handler=".subscribers._userdata_added"
-				for="nti.dataserver.interfaces.IUserGeneratedData
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
-
-	<subscriber handler=".subscribers._userdata_removed"
-				for="nti.dataserver.interfaces.IUserGeneratedData
-					 zope.intid.interfaces.IIntIdRemovedEvent"/>
-
-	<subscriber handler=".subscribers._userdata_modified"
-				for="nti.dataserver.interfaces.IUserGeneratedData
-					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
-
-	<subscriber handler=".subscribers._index_userdata"
-				for="nti.dataserver.interfaces.IUserGeneratedData
-				 	 .interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler=".subscribers._unindex_userdata"
-				for="nti.dataserver.interfaces.IUserGeneratedData
-				 	 .interfaces.IUnindexObjectEvent"/>
-
 	<!-- Utilities -->
 	<utility factory=".query._SOLRQueryValidator" />
 
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
 	<!-- Subscribers -->
+	<include package=".subscribers" />
 
 	<configure zcml:condition="have devmode">
 		<adapter factory=".searcher._SOLRSearcher"
