@@ -57,29 +57,38 @@
 	</configure>
 
 	<!-- Assets -->
-	<subscriber handler="._asset_added"
+	<subscriber handler=".assets._asset_added"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.intid.interfaces.IIntIdAddedEvent"/>
 
-	<subscriber handler="._asset_removed"
+	<subscriber handler=".assets._asset_removed"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.intid.interfaces.IIntIdRemovedEvent"/>
 
-	<subscriber handler="._asset_modified"
+	<subscriber handler=".assets._asset_modified"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
-	<subscriber handler="._asset_moved"
+	<subscriber handler=".assets._asset_moved"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 nti.contenttypes.presentation.interfaces.IPresentationAssetMovedEvent"/>
 					 
-	<subscriber handler="._index_asset"
+	<subscriber handler=".assets._index_asset"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 ..interfaces.IIndexObjectEvent"/>
 
-	<subscriber handler="._unindex_asset"
+	<subscriber handler=".assets._unindex_asset"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 ..interfaces.IUnindexObjectEvent"/>
+
+	<!-- Transcripts -->
+	<subscriber handler=".assets._index_transcript"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 ..interfaces.IIndexObjectEvent"/>
+
+	<subscriber handler=".assets._unindex_transcript"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 ..interfaces.IUnindexObjectEvent"/>
 
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
@@ -130,15 +139,6 @@
 					for="nti.assessment.interfaces.IQEvaluation
 					 	 ..interfaces.IIndexObjectEvent"/>
 	</configure>
-
-	<!-- Transcripts -->
-	<subscriber handler="._index_transcript"
-				for="nti.contenttypes.presentation.interfaces.INTITranscript
-				 	 ..interfaces.IIndexObjectEvent"/>
-
-	<subscriber handler="._unindex_transcript"
-				for="nti.contenttypes.presentation.interfaces.INTITranscript
-				 	 ..interfaces.IUnindexObjectEvent"/>
 
 	<!-- User Generated Data -->
 	<subscriber handler="._userdata_added"
