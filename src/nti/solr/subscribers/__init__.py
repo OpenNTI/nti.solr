@@ -16,9 +16,6 @@ from zope.intid.interfaces import IIntIdRemovedEvent
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
-from nti.contentlibrary.interfaces import IContentUnit
-from nti.contentlibrary.interfaces import IContentPackage
-
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
@@ -31,11 +28,9 @@ from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
 from nti.solr import ASSETS_QUEUE
 from nti.solr import COURSES_QUEUE
-from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
 from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import TRANSCRIPTS_QUEUE
-from nti.solr import CONTENT_UNITS_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
@@ -71,58 +66,6 @@ def _index_userdata(obj, event):
 @component.adapter(IUserGeneratedData, IUnindexObjectEvent)
 def _unindex_userdata(obj, event):
 	queue_remove(obj, None)
-
-# Entity subscribers
-@component.adapter(IEntity, IIntIdAddedEvent)
-def _entity_added(obj, event=None):
-	queue_add(ENTITIES_QUEUE, single_index_job, obj)
-
-@component.adapter(IEntity, IObjectModifiedEvent)
-def _entity_modified(obj, event):
-	queue_modified(ENTITIES_QUEUE, single_index_job, obj)
-
-@component.adapter(IEntity, IIntIdRemovedEvent)
-def _entity_removed(obj, event):
-	queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)
-	add_to_queue(USERDATA_QUEUE, delete_user_data, obj=obj,
-				 jid='userdata_removal', username=obj.username)
-
-@component.adapter(IEntity, IIndexObjectEvent)
-def _index_entity(obj, event):
-	_entity_added(obj, None)
-
-# Content units subscribers
-@component.adapter(IContentUnit, IIntIdAddedEvent)
-def _contentunit_added(obj, event=None):
-	queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
-
-@component.adapter(IContentUnit, IObjectModifiedEvent)
-def _contentunit_modified(obj, event):
-	queue_modified(CONTENT_UNITS_QUEUE, single_index_job, obj)
-
-@component.adapter(IContentUnit, IIntIdRemovedEvent)
-def _contentunit_removed(obj, event):
-	queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
-
-@component.adapter(IContentUnit, IIndexObjectEvent)
-def _index_contentunit(obj, event):
-	if not IContentPackage.providedBy(obj):
-		_contentunit_added(obj, None)
-
-@component.adapter(IContentUnit, IUnindexObjectEvent)
-def _unindex_contentunit(obj, event):
-	if not IContentPackage.providedBy(obj):
-		_contentunit_removed(obj, None)
-
-@component.adapter(IContentPackage, IIndexObjectEvent)
-def _index_contentpackage(obj, event):
-	add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
-	add_to_queue(ASSETS_QUEUE, index_content_package_assets, obj, jid='assets_added')
-
-@component.adapter(IContentPackage, IUnindexObjectEvent)
-def _unindex_contentpackage(obj, event):
-	add_to_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
-	add_to_queue(ASSETS_QUEUE, unindex_content_package_assets, obj, jid='assets_removed')
 
 # Assets subscribers
 
