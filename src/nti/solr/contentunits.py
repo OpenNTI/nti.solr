@@ -167,3 +167,66 @@ class ContentUnitsCatalog(MetadataCatalog):
 		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
 	reset = clear
+
+# jobs
+
+from zope.component.hooks import site as current_site
+
+from nti.contenttypes.presentation.interfaces import IPresentationAssetContainer
+
+from nti.solr.common import finder
+from nti.solr.common import get_job_site
+from nti.solr.common import process_asset
+
+def process_content_package(obj, index=True):
+	def recur(unit):
+		for child in unit.children or ():
+			recur(child)
+		catalog = ICoreCatalog(unit)
+		operation = catalog.add if index else catalog.remove
+		operation(unit, commit=False) # wait for server to commit
+	recur(obj)
+
+def index_content_package(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			logger.info("Content package indexing %s started", obj.ntiid)
+			process_content_package(obj, index=True)
+			logger.info("Content package indexing %s completed", obj.ntiid)
+
+def unindex_content_package(source, site=None, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			process_content_package(obj, index=False)
+
+def process_content_package_assets(obj, index=True):
+	collector = set()
+	def recur(unit):
+		container = IPresentationAssetContainer(unit, None)
+		if container:
+			collector.update(container.values())
+		for child in unit.children or ():
+			recur(child)
+	recur(obj)
+	for a in collector:
+		process_asset(a, index=index, commit=False)  # wait for server to commit
+
+def index_content_package_assets(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			logger.info("Content package %s assets indexing started", obj.ntiid)
+			process_content_package_assets(obj, index=True)
+			logger.info("Content package %s assets indexing completed", obj.ntiid)
+
+def unindex_content_package_assets(source, site=None, *args, **kwargs):
+	job_site = get_job_site(site)
+	with current_site(job_site):
+		obj = finder(source)
+		if IContentPackage.providedBy(obj):
+			process_content_package_assets(obj, index=False)

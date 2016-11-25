@@ -31,10 +31,11 @@ from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
-from nti.solr.common import index_content_package
-from nti.solr.common import unindex_content_package
-from nti.solr.common import index_content_package_assets
-from nti.solr.common import unindex_content_package_assets
+
+from nti.solr.contentunits import index_content_package
+from nti.solr.contentunits import unindex_content_package
+from nti.solr.contentunits import index_content_package_assets
+from nti.solr.contentunits import unindex_content_package_assets
 
 @component.adapter(IContentUnit, IIntIdAddedEvent)
 def _contentunit_added(obj, event=None):

@@ -47,10 +47,6 @@ from nti.solr.common import queue_modified
 from nti.solr.common import delete_user_data
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
-from nti.solr.common import index_content_package
-from nti.solr.common import unindex_content_package
-from nti.solr.common import index_content_package_assets
-from nti.solr.common import unindex_content_package_assets
 
 # UGD subscribers
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
