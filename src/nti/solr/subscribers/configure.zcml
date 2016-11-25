@@ -106,27 +106,27 @@
 
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
-		<subscriber handler="._evaluation_added"
+		<subscriber handler=".evaluations._evaluation_added"
 					for="nti.assessment.interfaces.IQEvaluation
 						 zope.intid.interfaces.IIntIdAddedEvent"/>
 
-		<subscriber handler="._evaluation_removed"
+		<subscriber handler=".evaluations._evaluation_removed"
 					for="nti.assessment.interfaces.IQEvaluation
 						 zope.intid.interfaces.IIntIdRemovedEvent"/>
 
-		<subscriber handler="._evaluation_modified"
+		<subscriber handler=".evaluations._evaluation_modified"
 					for="nti.assessment.interfaces.IQEvaluation
 						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
 
-		<subscriber handler="._evaluation_published"
+		<subscriber handler=".evaluations._evaluation_published"
 					for="nti.assessment.interfaces.IQEvaluation
 						 nti.coremetadata.interfaces.IObjectPublishedEvent"/>
 
- 		<subscriber handler="._evaluation_unpublished"
+ 		<subscriber handler=".evaluations._evaluation_unpublished"
 					for="nti.assessment.interfaces.IQEvaluation
 						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
 
-		<subscriber handler="._index_evaluation"
+		<subscriber handler=".evaluations._index_evaluation"
 					for="nti.assessment.interfaces.IQEvaluation
 					 	 ..interfaces.IIndexObjectEvent"/>
 	</configure>

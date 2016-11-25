@@ -22,14 +22,12 @@ from nti.contenttypes.presentation.interfaces import INTIDocketAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAssetMovedEvent
 
-from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 
 from nti.solr import ASSETS_QUEUE
 from nti.solr import COURSES_QUEUE
 from nti.solr import USERDATA_QUEUE
-from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import TRANSCRIPTS_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
@@ -113,31 +111,6 @@ def _index_asset(obj, event):
 @component.adapter(IPresentationAsset, IUnindexObjectEvent)
 def _unindex_asset(obj, event):
 	_asset_removed(obj, None)
-
-# Evaluation subscribers
-# XXX. Don't include assessment imports in case the assessment pkg is not available
-def _evaluation_added(obj, event):
-	if obj.isPublished():
-		queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
-
-def _evaluation_modified(obj, event):
-	if obj.isPublished():
-		queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
-
-def _evaluation_published(obj, event):
-	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
-
-def _evaluation_unpublished(obj, event):
-	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
-
-def _evaluation_removed(obj, event):
-	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
-
-def _index_evaluation(obj, event):
-	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
-
-def _unindex_evaluation(obj, event):
-	_evaluation_removed(obj, None)
 
 # Course subscribers
 # XXX. Don't include course imports in case the course pkg is not available
