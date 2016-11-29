@@ -21,10 +21,8 @@ from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.contentsearch.search_fragments import SearchFragment
 
-try:
-	from nti.contentsearch.search_results import _SearchResults as SearchResults
-except ImportError:
-	from nti.contentsearch.search_results import SearchResults
+from nti.contentsearch.search_results import SearchResults
+from nti.contentsearch.search_results import SearchResultsList
 
 from nti.dataserver.interfaces import IUser
 
@@ -80,7 +78,7 @@ class _SOLRSearcher(object):
 				return None
 			hit = component.queryMultiAdapter((obj, result), ISearchHit)
 			if hit is None:
-				continue
+				return None
 			# set fragments
 			fragments = list()
 			snippets = highlighting.get(uid) if highlighting else None
@@ -108,7 +106,9 @@ class _SOLRSearcher(object):
 					hit = self._get_search_hit(catalog, event, events.highlighting)
 					if hit is not None:
 						container.add(hit)
+				container.NumFound = events.hits
 				result.append(container)
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
+		result = SearchResultsList(Items=result, Query=query)
 		return result
