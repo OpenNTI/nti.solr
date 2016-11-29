@@ -78,7 +78,9 @@ class _SOLRSearcher(object):
 			obj = catalog.get_object(uid, self.intids)
 			if obj is None:
 				return None
-			hit = component.getMultiAdapter((obj, result), ISearchHit)
+			hit = component.queryMultiAdapter((obj, result), ISearchHit)
+			if hit is None:
+				continue
 			# set fragments
 			fragments = list()
 			snippets = highlighting.get(uid) if highlighting else None
