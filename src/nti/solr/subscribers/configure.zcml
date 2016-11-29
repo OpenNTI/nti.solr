@@ -156,4 +156,6 @@
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 ..interfaces.IUnindexObjectEvent"/>
 
+	<subscriber handler=".stream.onChange" />
+
 </configure>
