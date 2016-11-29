@@ -261,6 +261,8 @@ class TranscriptsCatalog(MetadataCatalog):
 
 	name = TRANSCRIPTS_CATALOG
 	document_interface = ITranscriptDocument
+	
+	return_fields = ('id', 'score', 'cue_end_time', 'cue_start_time')
 
 	def index_doc(self, doc_id, value, commit=None, event=True):
 		commit = self.auto_commit if commit is None else commit

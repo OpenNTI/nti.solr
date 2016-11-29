@@ -16,7 +16,8 @@ from zope import interface
 
 from zope.intid.interfaces import IIntIds
 
-from nti.contentsearch.interfaces import ISearchQuery, ISearchHit
+from nti.contentsearch.interfaces import ISearchHit
+from nti.contentsearch.interfaces import ISearchQuery 
 
 from nti.contentsearch.search_fragments import SearchFragment
 
@@ -82,16 +83,16 @@ class _SOLRSearcher(object):
 			fragments = list()
 			snippets = highlighting.get(uid) if highlighting else None
 			if snippets:
-				for name, value in snippets.values():
+				for name, value in snippets.items():
 					fragment = SearchFragment()
-					fragment.field = normalize_field(name)
-					fragment.matches = list(value)
+					fragment.Field = normalize_field(name)
+					fragment.Matches = list(value)
 					fragments.append(fragment)
 			if fragments:
 				hit.Fragments = fragments
 			return hit
-		except Exception:
-			logger.debug('Could not create hit for %s', result)
+		except Exception as e:
+			logger.debug('Could not create hit for %s. %s', result, e)
 		return None
 
 	def search(self, query, *args, **kwargs):

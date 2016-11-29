@@ -19,6 +19,7 @@ from nti.common.string import to_unicode
 from nti.contentsearch.interfaces import ISearchHit
 
 from nti.contentsearch.search_hits import SearchHit
+from nti.contentsearch.search_hits import TranscriptSearchHit
 
 from nti.contenttypes.presentation.interfaces import INTITranscript
 
@@ -69,7 +70,7 @@ def _default_search_hit_adapter(obj, result, hit=None):
 @interface.implementer(ISearchHit)
 @component.adapter(INTITranscript, IDict)
 def _transcript_search_hit_adapter(obj, result):
-	hit = _default_search_hit_adapter(obj, result, SearchHit())
+	hit = _default_search_hit_adapter(obj, result, TranscriptSearchHit())
 	hit.EndMilliSecs = result['cue_end_time']
 	hit.StartMilliSecs = result['cue_start_time']
 	return hit
