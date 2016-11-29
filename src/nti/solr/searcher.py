@@ -98,7 +98,7 @@ class _SOLRSearcher(object):
 		query = ISearchQuery(query)
 		result = LocatedExternalList()
 		for catalog in self.query_search_catalogs(query):
-			container = SearchResults(Query=copy.deepcopy(query))
+			container = SearchResults(Name=catalog.name, Query=copy.deepcopy(query))
 			try:
 				events = catalog.search(query, *args, **kwargs)
 				for event in events or ():
