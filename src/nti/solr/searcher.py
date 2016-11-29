@@ -108,5 +108,4 @@ class _SOLRSearcher(object):
 				result.append(container)
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
-		result.Query = query
 		return result
