@@ -88,7 +88,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		result = get_containerId(context)
-		return result
+		return (result,) if result else None
 
 @component.adapter(IQEvaluation)
 @interface.implementer(IContentValue)
