@@ -47,7 +47,6 @@ from nti.solr.lucene import is_phrase_search
 
 from nti.solr.schema import SolrDatetime
 
-
 from nti.solr.utils import normalize_key
 from nti.solr.utils import object_finder
 

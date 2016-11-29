@@ -95,10 +95,10 @@ class _SOLRSearcher(object):
 		return None
 
 	def search(self, query, *args, **kwargs):
-		result = LocatedExternalList()
 		query = ISearchQuery(query)
+		result = LocatedExternalList()
 		for catalog in self.query_search_catalogs(query):
-			container = SearchResults(copy.deepcopy(query))
+			container = SearchResults(Query=copy.deepcopy(query))
 			try:
 				events = catalog.search(query, *args, **kwargs)
 				for event in events or ():
@@ -108,4 +108,5 @@ class _SOLRSearcher(object):
 				result.append(container)
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
+		result.Query = query
 		return result
