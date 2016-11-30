@@ -233,10 +233,11 @@
 
 	<!-- General fields -->
 	<field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="false"/>
 	<field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
 	<field name="ntiid" type="string" indexed="true" required="false" stored="true"/>
-
+	<field name="keywords_en" type="text_lower" multiValued="true" indexed="true" stored="true"
+		   termVectors="true" termPositions="true" termOffsets="true" />
+	
 	<!-- Entity fields -->
 	<!-- Each prof/educational entry may have multiple values for these fields -->
 	<field name="username" type="strings" indexed="true" required="false" stored="true"/>
