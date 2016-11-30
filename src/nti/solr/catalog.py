@@ -34,9 +34,10 @@ from nti.property.property import readproperty
 from nti.solr import NTI_CATALOG
 from nti.solr import primitive_types
 
-from nti.solr.interfaces import ISOLR, IIntIdValue
+from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ITextField
+from nti.solr.interfaces import IIntIdValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import ObjectIndexedEvent
