@@ -41,7 +41,8 @@ class _AssetContainerIdValue(object):
 	def __init__(self, context, default=None):
 		self.context = context
 
-	def _containers(self, context, break_interface):
+	@classmethod
+	def _container_lineage(cls, context, break_interface):
 		result = set()
 		for item in lineage(context):
 			try:
@@ -54,18 +55,25 @@ class _AssetContainerIdValue(object):
 				return result, item
 		return result, None
 
+	@classmethod
+	def _course_containers(cls, context):
+		try:
+			from nti.contenttypes.courses.interfaces import ICourseInstance
+			from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
+
+			containers, item = cls._container_lineage(context, ICourseInstance)
+			containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
+			containers.discard(None)
+			return containers
+		except ImportError:
+			pass
+		return ()
+
 	def value(self, context=None):
 		context = self.context if context is None else context
-		containers, _ = self._containers(context, IContentPackage)
-		if not containers:
-			try:
-				from nti.contenttypes.courses.interfaces import ICourseInstance
-				from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-				containers, item = self._containers(context, ICourseInstance)
-				containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
-				containers.discard(None)
-			except ImportError:
-				pass
+		containers, _ = self._container_lineage(context, IContentPackage)
+		if not containers: # check for courses
+			containers = self._course_containers(context)
 		return tuple(containers)
 
 # transcripts
@@ -131,5 +139,5 @@ class _TranscriptContainerIdValue(_AssetContainerIdValue):
 	
 	def value(self, context=None):
 		context = self.context if context is None else context
-		containers, _ = self._containers(context.__parent__, IContentPackage)
+		containers, _ = self._container_lineage(context.__parent__, IContentPackage)
 		return tuple(containers)
