@@ -28,7 +28,7 @@ from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.traversal.traversal import find_interface
 
-from nti.solr.interfaces import ITranscriptSource
+from nti.solr.interfaces import ITranscriptSourceValue
 
 def get_content_package_from_ntiids(ntiids):
 	try:
@@ -60,8 +60,8 @@ def get_item_content_package(item):
 	result = get_content_package_from_ntiids(entries) if entries else None
 	return result
 
-@component.adapts(INTITranscript)
-@interface.implementer(ITranscriptSource)
+@component.adapter(INTITranscript)
+@interface.implementer(ITranscriptSourceValue)
 class _TranscriptSource(object):
 	
 	def __init__(self, context, default=None):

@@ -367,7 +367,7 @@
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 				 
 		<adapter factory="._mixins._TranscriptSource"
-				 provides=".interfaces.ITranscriptSource"
+				 provides=".interfaces.ITranscriptSourceValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 	</configure>
 	

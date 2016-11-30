@@ -40,8 +40,8 @@ from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IMediaNTIIDValue
 from nti.solr.interfaces import IMetadataDocument
-from nti.solr.interfaces import ITranscriptSource
 from nti.solr.interfaces import ITranscriptDocument
+from nti.solr.interfaces import ITranscriptSourceValue
 from nti.solr.interfaces import ITranscriptCueEndTimeValue
 from nti.solr.interfaces import ITranscriptCueStartTimeValue
 
@@ -137,7 +137,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
 
 	@classmethod
 	def raw_content(cls, context):
-		source = ITranscriptSource(context, None)
+		source = ITranscriptSourceValue(context, None)
 		return source.value() if source is not None else None
 
 	@classmethod

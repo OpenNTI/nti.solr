@@ -366,7 +366,7 @@ class ITranscriptCueEndTimeValue(IAttributeValue):
 	Adapter interface to get the transcript cue end time 
 	"""
 
-class ITranscriptSource(IAttributeValue):
+class ITranscriptSourceValue(IAttributeValue):
 	"""
 	Adapter interface to get a file source from a transcript
 	"""
