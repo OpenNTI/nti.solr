@@ -243,9 +243,11 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
- 	<adapter factory=".assets._DefaultContainerIdValue"
-			 provides=".interfaces.IContainerIdValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+	<configure zcml:condition="installed nti.contentlibrary">
+	 	<adapter factory="._mixins._AssetContainerIdValue"
+				 provides=".interfaces.IContainerIdValue"
+				 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
+	</configure>
 
 	<adapter factory=".assets._DefaultAssetKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
@@ -368,6 +370,10 @@
 				 
 		<adapter factory="._mixins._TranscriptSource"
 				 provides=".interfaces.ITranscriptSourceValue"
+				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+				 
+		<adapter factory="._mixins._TranscriptContainerIdValue"
+				 provides=".interfaces.IContainerIdValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 	</configure>
 	

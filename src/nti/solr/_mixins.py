@@ -20,18 +20,59 @@ from nti.contentlibrary.indexed_data import get_library_catalog
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
-from nti.contenttypes.courses.common import get_course_packages
-
 from nti.contenttypes.presentation.interfaces import INTITranscript
+from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.traversal.traversal import find_interface
 
+from nti.solr.interfaces import IContainerIdValue
 from nti.solr.interfaces import ITranscriptSourceValue
+
+from nti.traversal.location import lineage
+
+# assets
+
+@component.adapter(IPresentationAsset)
+@interface.implementer(IContainerIdValue)
+class _AssetContainerIdValue(object):
+	
+	def __init__(self, context, default=None):
+		self.context = context
+
+	def _containers(self, context, break_interface):
+		result = set()
+		for item in lineage(context):
+			try:
+				ntiid = item.ntiid
+				if ntiid:
+					result.add(ntiid)
+			except AttributeError:
+				pass
+			if break_interface.providedBy(item):
+				return result, item
+		return result, None
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		containers, _ = self._containers(context, IContentPackage)
+		if not containers:
+			try:
+				from nti.contenttypes.courses.interfaces import ICourseInstance
+				from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
+				containers, item = self._containers(context, ICourseInstance)
+				containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
+				containers.discard(None)
+			except ImportError:
+				pass
+		return tuple(containers)
+
+# transcripts
 
 def get_content_package_from_ntiids(ntiids):
 	try:
+		from nti.contenttypes.courses.common import get_course_packages
 		from nti.contenttypes.courses.interfaces import ICourseInstance
 		from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
@@ -84,3 +125,11 @@ class _TranscriptSource(object):
 				logger.exception("Cannot read contents for %s", src)
 		return StringIO(raw_content) if raw_content else None
 	
+@component.adapter(INTITranscript)
+@interface.implementer(IContainerIdValue)
+class _TranscriptContainerIdValue(_AssetContainerIdValue):
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		containers, _ = self._containers(context.__parent__, IContentPackage)
+		return tuple(containers)

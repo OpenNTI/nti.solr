@@ -12,9 +12,6 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
-from nti.contentlibrary.interfaces import IContentUnit
-from nti.contentlibrary.interfaces import IContentPackage
-
 from nti.contenttypes.presentation.interfaces import IPointer
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
@@ -32,7 +29,6 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IAssetDocument
-from nti.solr.interfaces import IContainerIdValue
 
 from nti.solr.lucene import lucene_escape
 
@@ -46,14 +42,11 @@ from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 
-from nti.traversal.location import lineage
-
 class _BasicAttributeValue(object):
 
 	def __init__(self, context=None, default=None):
 		self.context = context
 
-@component.adapter(IContentUnit)
 @component.adapter(IPresentationAsset)
 class _DefaultAssetIDValue(DefaultObjectIDValue):
 
@@ -100,37 +93,6 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 			  	or	getattr(context, 'creator', None)
 		result = getattr(result, 'username', result)
 		return result.lower() if result else None
-
-@component.adapter(IPresentationAsset)
-@interface.implementer(IContainerIdValue)
-class _DefaultContainerIdValue(_BasicAttributeValue):
-
-	def _containers(self, context, break_interface):
-		result = set()
-		for item in lineage(context):
-			try:
-				ntiid = item.ntiid
-				if ntiid:
-					result.add(ntiid)
-			except AttributeError:
-				pass
-			if break_interface.providedBy(item):
-				return result, item
-		return result, None
-
-	def value(self, context=None):
-		context = self.context if context is None else context
-		containers, _ = self._containers(context, IContentPackage)
-		if not containers:
-			try:
-				from nti.contenttypes.courses.interfaces import ICourseInstance
-				from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-				containers, item = self._containers(context, ICourseInstance)
-				containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
-				containers.discard(None)
-			except ImportError:
-				pass
-		return tuple(containers)
 
 @interface.implementer(IContentValue)
 @component.adapter(IPresentationAsset)
@@ -186,8 +148,8 @@ class AssetDocument(MetadataDocument):
 def _AssetDocumentCreator(obj, factory=AssetDocument):
 	return document_creator(obj, factory=factory, provided=IAssetDocument)
 
-@component.adapter(IContentUnit)
 @interface.implementer(ICoreCatalog)
+@component.adapter(IPresentationAsset)
 def _asset_to_catalog(obj):
 	return component.getUtility(ICoreCatalog, name=ASSETS_CATALOG)
 
