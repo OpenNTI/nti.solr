@@ -93,7 +93,7 @@ ZERO_DATETIME = datetime.utcfromtimestamp(0)
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 @interface.implementer(ISiteValue)

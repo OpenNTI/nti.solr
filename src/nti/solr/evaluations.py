@@ -46,7 +46,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 @component.adapter(IQEvaluation)

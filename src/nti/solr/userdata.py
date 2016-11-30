@@ -50,7 +50,7 @@ from nti.solr.utils import resolve_content_parts
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 @interface.implementer(ITitleValue)

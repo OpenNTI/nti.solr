@@ -24,7 +24,6 @@ from nti.contentsearch.interfaces import ISearchQueryValidator
 
 from nti.solr.schema import SolrDatetime
 
-from nti.schema.field import Int
 from nti.schema.field import Bool
 from nti.schema.field import Number
 from nti.schema.field import IndexedIterable
@@ -204,6 +203,7 @@ tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, multiValued=Tr
 tagField(IMetadataDocument['containerId'], False, IContainerIdValue, multiValued=True)
 tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue, provided=IDateField)
 tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue, provided=IDateField)
+
 # misc
 
 class IContentValue(IStringValue):
@@ -364,6 +364,11 @@ class ITranscriptCueStartTimeValue(IAttributeValue):
 class ITranscriptCueEndTimeValue(IAttributeValue):
 	"""
 	Adapter interface to get the transcript cue end time 
+	"""
+
+class ITranscriptSource(IAttributeValue):
+	"""
+	Adapter interface to get a file source from a transcript
 	"""
 
 class ITranscriptDocument(IMetadataDocument):
@@ -606,6 +611,7 @@ class ObjectUnindexedEvent(ObjectEvent):
 	def __init__(self, obj, doc_id=None):
 		ObjectEvent.__init__(self, obj)
 		self.doc_id = doc_id
+
 
 # registration
 

@@ -59,7 +59,7 @@ class _BasicAttributeValue(object):
 	field = None
 	interface = None
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 	def value(self, context=None):

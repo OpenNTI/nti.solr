@@ -9,8 +9,6 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-import six
-
 from zope import component
 from zope import interface
 
@@ -25,8 +23,6 @@ from nti.contentindexing.media.interfaces import IVideoTranscriptParser
 from nti.contentindexing.utils import media_date_to_millis
 from nti.contentindexing.utils import mediatimestamp_to_datetime
 
-from nti.contentlibrary.interfaces import IContentPackage
-
 from nti.contenttypes.presentation.interfaces import INTIVideo
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
@@ -37,12 +33,14 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import TRANSCRIPTS_CATALOG
 
-from nti.solr.interfaces import IIDValue, IIntIdValue
+from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import IIntIdValue 
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IMediaNTIIDValue
 from nti.solr.interfaces import IMetadataDocument
+from nti.solr.interfaces import ITranscriptSource
 from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import ITranscriptCueEndTimeValue
 from nti.solr.interfaces import ITranscriptCueStartTimeValue
@@ -63,13 +61,10 @@ from nti.solr.utils import NTI_TRANSCRIPT_MIME_TYPE
 
 from nti.solr.utils import object_finder
 from nti.solr.utils import document_creator
-from nti.solr.utils import get_item_content_package
-
-from nti.traversal.traversal import find_interface
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 @interface.implementer(IIDValue)
@@ -127,7 +122,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
 			provided = IVideoTranscriptParser
 		else:
 			provided = IAudioTranscriptParser
-		if raw_content:
+		if raw_content is not None:
 			parser = component.queryUtility(provided, name=type_)
 			if parser is not None:
 				return parser.parse(to_unicode(raw_content))
@@ -142,25 +137,13 @@ class _TranscriptContentValue(_BasicAttributeValue):
 
 	@classmethod
 	def raw_content(cls, context):
-		src = context.src
-		raw_content = None
-		# is in content pkg ?
-		if 		isinstance(src, six.string_types) \
-			and not src.startswith('/')  \
-			and '://' not in src:  # e.g. resources/...
-			package = find_interface(context, IContentPackage, strict=False)
-			if package is None:
-				package = get_item_content_package(context)
-			try:
-				raw_content = package.read_contents_of_sibling_entry(src)
-			except Exception:
-				logger.exception("Cannot read contents for %s", src)
-		return raw_content if raw_content else None
+		source = ITranscriptSource(context, None)
+		return source.value() if source is not None else None
 
 	@classmethod
 	def get_content(cls, context):
 		raw_content = cls.raw_content(context)
-		if raw_content:
+		if raw_content is not None:
 			return cls.parse_content(context, raw_content)
 		return None
 

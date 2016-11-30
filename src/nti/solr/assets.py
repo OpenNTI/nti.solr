@@ -50,7 +50,7 @@ from nti.traversal.location import lineage
 
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None):
+	def __init__(self, context=None, default=None):
 		self.context = context
 
 @component.adapter(IContentUnit)
