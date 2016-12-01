@@ -21,8 +21,14 @@ from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.contentsearch.search_fragments import SearchFragment
 
-from nti.contentsearch.search_results import SearchResults
-from nti.contentsearch.search_results import SearchResultsList
+try:
+	from nti.contentsearch.search_results import SearchResults
+	from nti.contentsearch.search_results import SearchResultsList
+except ImportError:
+	from nti.contentsearch.search_results import _SearchResults as SearchResults
+	class SearchResultsList(list):
+		def __init__(self, *args, **kwargs):
+			super(SearchResultsList, self).__init__()
 
 from nti.dataserver.interfaces import IUser
 
