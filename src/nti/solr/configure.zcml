@@ -465,13 +465,17 @@
 	<include package=".subscribers" />
 
 	<configure zcml:condition="have devmode">
-		<adapter factory=".searcher._SOLRSearcher"
-				 for="nti.dataserver.interfaces.IUser"
-			 	 provides=".interfaces.ISOLRSearcher" />
+		<configure zcml:condition="not-have testmode">
+			<adapter factory=".searcher._SOLRSearcher"
+				 	 for="nti.dataserver.interfaces.IUser"
+			 		 provides=".interfaces.ISOLRSearcher" />
+		</configure>
 	</configure>
 
 	<configure zcml:condition="have devmode">
-		<solr:registerSOLR url="http://localhost:8983/solr" />
+		<configure zcml:condition="not-have testmode">
+			<solr:registerSOLR url="http://localhost:8983/solr" />
+		</configure>
 	</configure>
 
 	<!-- Queues -->
