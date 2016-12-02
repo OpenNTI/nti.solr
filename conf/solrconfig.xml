@@ -1131,9 +1131,10 @@
 			<!-- uncomment this to require suggestions to occur in 1% of the documents
 			<float name="thresholdTokenFrequency">.01</float>
 			-->
+			<str name="buildOnOptimize">true</str>
 		</lst>
 
-		<!-- a spellchecker that can break or combine words.  See "/spell" handler below for usage -->
+		<!-- a spellchecker that can break or combine words.  See "/spell" handler below for usage
 		<lst name="spellchecker">
 			<str name="name">wordbreak</str>
 			<str name="classname">solr.WordBreakSolrSpellChecker</str>
@@ -1142,7 +1143,7 @@
 			<str name="breakWords">true</str>
 			<int name="maxChanges">10</int>
 		</lst>
-
+		 -->
 		<!-- a spellchecker that uses a different distance measure -->
 		<!--
 		<lst name="spellchecker">
@@ -1203,16 +1204,15 @@
 			collations (re-written queries) can include a combination of
 			corrections from both spellcheckers -->
 			<str name="spellcheck.dictionary">default</str>
-			<str name="spellcheck.dictionary">wordbreak</str>
 			<str name="spellcheck">on</str>
-			<str name="spellcheck.extendedResults">true</str>
 			<str name="spellcheck.count">10</str>
+			<str name="spellcheck.collate">true</str>
+			<str name="spellcheck.maxCollations">5</str>
+			<str name="spellcheck.maxCollationTries">10</str>
+			<str name="spellcheck.extendedResults">true</str>
 			<str name="spellcheck.alternativeTermCount">5</str>
 			<str name="spellcheck.maxResultsForSuggest">5</str>
-			<str name="spellcheck.collate">true</str>
 			<str name="spellcheck.collateExtendedResults">true</str>
-			<str name="spellcheck.maxCollationTries">10</str>
-			<str name="spellcheck.maxCollations">5</str>
 		</lst>
 		<arr name="last-components">
 			<str>spellcheck</str>
@@ -1228,22 +1228,33 @@
 	"Suggester" section of the reference guide available at
 	http://archive.apache.org/dist/lucene/solr/ref-guide
 	-->
-	<searchComponent name="suggest" class="solr.SuggestComponent">
-		<lst name="suggester">
-			<str name="name">mySuggester</str>
-			<str name="lookupImpl">FuzzyLookupFactory</str>
-			<str name="dictionaryImpl">DocumentDictionaryFactory</str>
-			<str name="field">cat</str>
-			<str name="weightField">price</str>
-			<str name="suggestAnalyzerFieldType">string</str>
-			<str name="buildOnStartup">false</str>
+	<searchComponent class="solr.SpellCheckComponent" name="suggest">
+		<lst name="spellchecker">
+			<str name="name">suggest</str>
+			<str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
+			<str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookupFactory</str>
+			<!-- 
+				Alternatives to lookupImpl: 
+				org.apache.solr.spelling.suggest.fst.FSTLookupFactory   [finite state automaton]
+				org.apache.solr.spelling.suggest.fst.WFSTLookupFactory [weighted finite state automaton]
+				org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory [default, jaspell-based]
+				org.apache.solr.spelling.suggest.tst.TSTLookupFactory   [ternary trees]
+			-->
+			<str name="field">content_en</str>  <!-- the indexed field to derive suggestions from -->
+			<float name="threshold">0.005</float>
+			<str name="buildOnOptimize">true</str>
+			<!--
+			<str name="sourceLocation">american-english</str>
+			-->
 		</lst>
 	</searchComponent>
-
-	<requestHandler name="/suggest" class="solr.SearchHandler" startup="lazy">
+	<requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
 		<lst name="defaults">
-			<str name="suggest">true</str>
-			<str name="suggest.count">10</str>
+			<str name="spellcheck">true</str>
+			<str name="spellcheck.count">10</str>
+			<str name="spellcheck.collate">true</str>
+			<str name="spellcheck.dictionary">suggest</str>
+			<str name="spellcheck.onlyMorePopular">true</str>
 		</lst>
 		<arr name="components">
 			<str>suggest</str>
