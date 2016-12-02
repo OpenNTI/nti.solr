@@ -293,5 +293,11 @@ class CoreCatalog(object):
 		term, params = self._prepare_solr_query(term, fq, params)
 		return self.client.search(term, **params)
 
+	def suggest(self, query, *args, **kwargs):
+		text_fields = self._text_fields
+		term, fq, params = query.term, self._fq_from_search_query(query), dict()
+		term, params = self._prepare_solr_query(term, fq, params)
+		return self.client.suggest_terms(text_fields, term, **params)
+
 	def delete(self, uid=None, q=None, commit=True):
 		return self.client.delete(id=uid, q=q, commit=commit)

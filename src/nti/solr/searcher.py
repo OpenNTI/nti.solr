@@ -23,9 +23,11 @@ from nti.contentsearch.search_fragments import SearchFragment
 
 try:
 	from nti.contentsearch.search_results import SearchResults
+	from nti.contentsearch.search_results import SuggestResults
 	from nti.contentsearch.search_results import SearchResultsList
 except ImportError:
 	from nti.contentsearch.search_results import _SearchResults as SearchResults
+	from nti.contentsearch.search_results import _SuggestResults as SuggestResults
 	class SearchResultsList(list):
 		def __init__(self, *args, **kwargs):
 			super(SearchResultsList, self).__init__()
@@ -58,6 +60,11 @@ class _SOLRSearcher(object):
 
 	def registered_catalogs(self):
 		return tuple(v for _, v in component.getUtilitiesFor(ICoreCatalog))
+
+	def _query_clone(self, query):
+		clone = copy.deepcopy(query)
+		clone.term = clone.term.lower()
+		return clone
 
 	def query_search_catalogs(self, query):
 		if query.searchOn:
@@ -101,15 +108,14 @@ class _SOLRSearcher(object):
 			logger.debug('Could not create hit for %s. %s', result, e)
 		return None
 
-	def search(self, query, *args, **kwargs):
+	def search2(self, query, *args, **kwargs):
 		query = ISearchQuery(query)
-		clone = copy.deepcopy(query)
-		clone.term = clone.term.lower()
 		result = LocatedExternalList()
+		clone = self._query_clone(query)
 		for catalog in self.query_search_catalogs(query):
 			container = SearchResults(Name=catalog.name.title(), Query=clone)
 			try:
-				events = catalog.search(query, *args, **kwargs)
+				events = catalog.search(clone, *args, **kwargs)
 				for event in events or ():
 					hit = self._get_search_hit(catalog, event, events.highlighting)
 					if hit is not None:
@@ -120,3 +126,23 @@ class _SOLRSearcher(object):
 				logger.exception("Error while executing query %s on %s", query, catalog)
 		result = SearchResultsList(Items=result, Query=query)
 		return result
+	
+	def _get_suggestions(self, catalog, events):
+		result = set()
+		for hits in events.values():
+			result.update(x for x,_ in hits)		
+		return result
+	
+	def sugggest(self, query, *args, **kwargs):
+		query = ISearchQuery(query)
+		clone = self._query_clone(query)
+		container = SuggestResults(Query=query)
+		for catalog in self.query_search_catalogs(query):
+			try:
+				events = catalog.suggest(clone)
+				container.extend(self._get_suggestions(catalog, events))
+			except Exception:
+				logger.exception("Error while executing query %s on %s", query, catalog)
+		result = SearchResultsList(Items=[container], Query=query)
+		return result
+	search = sugggest
