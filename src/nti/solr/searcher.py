@@ -108,7 +108,7 @@ class _SOLRSearcher(object):
 			logger.debug('Could not create hit for %s. %s', result, e)
 		return None
 
-	def search2(self, query, *args, **kwargs):
+	def search(self, query, *args, **kwargs):
 		query = ISearchQuery(query)
 		result = LocatedExternalList()
 		clone = self._query_clone(query)
@@ -133,16 +133,16 @@ class _SOLRSearcher(object):
 			result.update(x for x,_ in hits)		
 		return result
 	
-	def sugggest(self, query, *args, **kwargs):
+	def suggest(self, query, *args, **kwargs):
 		query = ISearchQuery(query)
 		clone = self._query_clone(query)
-		container = SuggestResults(Query=query)
+		container = SuggestResults(Name="Suggestions", Query=query)
 		for catalog in self.query_search_catalogs(query):
 			try:
 				events = catalog.suggest(clone)
-				container.extend(self._get_suggestions(catalog, events))
+				if events: # may be None
+					container.extend(self._get_suggestions(catalog, events))
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
 		result = SearchResultsList(Items=[container], Query=query)
 		return result
-	search = sugggest

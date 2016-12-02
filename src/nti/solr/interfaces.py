@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+from collections import Iterable
+
 from zope import interface
 
 from zope.index.interfaces import IInjection
@@ -33,6 +35,11 @@ from nti.schema.field import TextLine as ValidTextLine
 class ITextField(interface.Interface):
 	"""
 	Marker interface for text fields
+	"""
+
+class ISuggestField(interface.Interface):
+	"""
+	Marker interface for suggest fields
 	"""
 
 class IDateField(interface.Interface):
@@ -148,7 +155,10 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 	if boost is not None:
 		field.setTaggedValue('__solr_boost__', boost)
 	if provided is not None:
-		interface.alsoProvides(field, provided)
+		if not isinstance(provided, Iterable):
+			provided = (provided,)
+		for iface in provided:
+			interface.alsoProvides(field, iface)
 
 class ICoreDocument(interface.Interface):
 	id = ValidTextLine(title='The id', required=True)
@@ -383,7 +393,7 @@ class ITranscriptDocument(IMetadataDocument):
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
 tagField(ITranscriptDocument['cue_end_time'], False, ITranscriptCueStartTimeValue)
 tagField(ITranscriptDocument['cue_start_time'], False, ITranscriptCueStartTimeValue)
-tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(ITranscriptDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 
 # content units
 
@@ -407,7 +417,7 @@ class IContentUnitDocument(IMetadataDocument):
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
 tagField(IContentUnitDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IContentUnitDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IContentUnitDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(IContentUnitDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 # user data
@@ -469,7 +479,7 @@ tagField(IUserDataDocument['tags'], True, ITagsValue)
 tagField(IUserDataDocument['channel'], False, IChannelValue)
 tagField(IUserDataDocument['recipients'], True, IRecipientsValue)
 tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IUserDataDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IUserDataDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(IUserDataDocument['redaction_explanation_en'], True, IExplanationValue, provided=ITextField)
 tagField(IUserDataDocument['replacement_content_en'], True, IReplacementContentValue, provided=ITextField)
 tagField(IUserDataDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
@@ -497,7 +507,7 @@ class IAssetDocument(IMetadataDocument):
 tagField(IAssetDocument['ntiid'], True, INTIIDValue)
 tagField(IAssetDocument['target'], True, ITargetValue)
 tagField(IAssetDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IAssetDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IAssetDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(IAssetDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class ICourseCatalogDocument(IMetadataDocument):
@@ -515,7 +525,7 @@ class ICourseCatalogDocument(IMetadataDocument):
 
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
 tagField(ICourseCatalogDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(ICourseCatalogDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(ICourseCatalogDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(ICourseCatalogDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class IEvaluationDocument(IMetadataDocument):
@@ -533,7 +543,7 @@ class IEvaluationDocument(IMetadataDocument):
 
 tagField(IEvaluationDocument['ntiid'], True, INTIIDValue)
 tagField(IEvaluationDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IEvaluationDocument['content_en'], True, IContentValue, provided=ITextField)
+tagField(IEvaluationDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(IEvaluationDocument['keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
 
 class ICoreCatalog(IInjection, IIndexSearch, IContained):

@@ -40,6 +40,7 @@ from nti.solr.interfaces import ITextField
 from nti.solr.interfaces import IIntIdValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICoreDocument
+from nti.solr.interfaces import ISuggestField
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
 
@@ -219,7 +220,7 @@ class CoreCatalog(object):
 		results = ResultSet(results, intids)
 		return results
 
-	# content search / ISearcher
+	# content search / ISearcher.search
 
 	@Lazy
 	def _text_fields(self):
@@ -293,11 +294,28 @@ class CoreCatalog(object):
 		term, params = self._prepare_solr_query(term, fq, params)
 		return self.client.search(term, **params)
 
+	# content search / ISearcher.suggest
+
+	@Lazy
+	def _suggest_fields(self):
+		result = []
+		for name, field in self.document_interface.namesAndDescriptions(all=True):
+			if ISuggestField.providedBy(field):
+				result.append(name)
+		return result
+
+	def _prepare_solr_suggest(self, query):
+		params = {}
+		limit = getattr(query, 'limit', None)
+		if limit:
+			limit['terms.limit'] = limit
+		return params
+	
 	def suggest(self, query, *args, **kwargs):
-		text_fields = self._text_fields
-		term, fq, params = query.term, self._fq_from_search_query(query), dict()
-		term, params = self._prepare_solr_query(term, fq, params)
-		return self.client.suggest_terms(text_fields, term, **params)
+		suggest_fields = self._suggest_fields
+		params = self._prepare_solr_suggest(query)
+		if suggest_fields:
+			return self.client.suggest_terms(suggest_fields, query.term, **params)
 
 	def delete(self, uid=None, q=None, commit=True):
 		return self.client.delete(id=uid, q=q, commit=commit)
