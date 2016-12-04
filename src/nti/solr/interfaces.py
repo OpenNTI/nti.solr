@@ -637,7 +637,9 @@ class ISOLR(interface.Interface):
 # searcher
 
 class ISOLRSearcher(ISearcher):
-	pass
+	
+	def suggest(query, fields=None, *args, **kwargs):
+		pass
 
 class ISOLRQueryValidator(ISearchQueryValidator):
 	pass

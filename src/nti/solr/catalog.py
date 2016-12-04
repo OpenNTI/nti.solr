@@ -311,8 +311,8 @@ class CoreCatalog(object):
 			limit['terms.limit'] = limit
 		return params
 	
-	def suggest(self, query, *args, **kwargs):
-		suggest_fields = self._suggest_fields
+	def suggest(self, query, fields=None, *args, **kwargs):
+		suggest_fields = fields or self._suggest_fields
 		params = self._prepare_solr_suggest(query)
 		if suggest_fields:
 			return self.client.suggest_terms(suggest_fields, query.term, **params)
