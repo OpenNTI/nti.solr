@@ -125,7 +125,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
 		if raw_content is not None:
 			parser = component.queryUtility(provided, name=type_)
 			if parser is not None:
-				return parser.parse(to_unicode(raw_content))
+				return parser.parse(raw_content)
 		return None
 
 	@classmethod
