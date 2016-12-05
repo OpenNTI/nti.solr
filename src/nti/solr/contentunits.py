@@ -172,8 +172,6 @@ class ContentUnitsCatalog(MetadataCatalog):
 
 from zope.component.hooks import site as current_site
 
-from nti.assessment.interfaces import IQAssessmentItemContainer
-
 from nti.contenttypes.presentation.interfaces import IPresentationAssetContainer
 
 from nti.solr.common import finder
@@ -217,20 +215,6 @@ def process_content_package_assets(obj, index=True):
 	for obj in collector:
 		process_asset(obj, index=index, commit=False)  # wait for server to commit
 
-def process_content_package_evaluations(obj, index=True):
-	collector = set()
-	def recur(unit):
-		container = IQAssessmentItemContainer(unit, None)
-		if container:
-			collector.update(container.assessments())
-		for child in unit.children or ():
-			recur(child)
-	recur(obj)
-	for obj in collector:
-		catalog = ICoreCatalog(obj)
-		operation = catalog.add if index else catalog.remove
-		operation(obj, commit=False)
-
 def index_content_package_assets(source, site=None, *args, **kwargs):
 	job_site = get_job_site(site)
 	with current_site(job_site):
@@ -246,19 +230,3 @@ def unindex_content_package_assets(source, site=None, *args, **kwargs):
 		obj = finder(source)
 		if IContentPackage.providedBy(obj):
 			process_content_package_assets(obj, index=False)
-
-def index_content_package_evaluations(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			logger.info("Content package %s evaluations indexing started", obj.ntiid)
-			process_content_package_evaluations(obj, index=True)
-			logger.info("Content package %s evaluations indexing completed", obj.ntiid)
-
-def unindex_content_package_evaluations(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			process_content_package_evaluations(obj, index=False)
