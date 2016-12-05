@@ -20,6 +20,7 @@ from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
 from nti.solr import ASSETS_QUEUE
+from nti.solr import EVALUATIONS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
@@ -36,6 +37,8 @@ from nti.solr.contentunits import index_content_package
 from nti.solr.contentunits import unindex_content_package
 from nti.solr.contentunits import index_content_package_assets
 from nti.solr.contentunits import unindex_content_package_assets
+from nti.solr.contentunits import index_content_package_evaluations
+from nti.solr.contentunits import unindex_content_package_evaluations
 
 @component.adapter(IContentUnit, IIntIdAddedEvent)
 def _contentunit_added(obj, event=None):
@@ -63,8 +66,10 @@ def _unindex_contentunit(obj, event):
 def _index_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
 	add_to_queue(ASSETS_QUEUE, index_content_package_assets, obj, jid='assets_added')
+	add_to_queue(EVALUATIONS_QUEUE, index_content_package_evaluations, obj, jid='evaluations_added')
 
 @component.adapter(IContentPackage, IUnindexObjectEvent)
 def _unindex_contentpackage(obj, event):
 	add_to_queue(CONTENT_UNITS_QUEUE, unindex_content_package, obj, jid='removed')
 	add_to_queue(ASSETS_QUEUE, unindex_content_package_assets, obj, jid='assets_removed')
+	add_to_queue(EVALUATIONS_QUEUE, unindex_content_package_evaluations, obj, jid='evaluations_removed')
