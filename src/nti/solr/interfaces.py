@@ -551,6 +551,18 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
 	name = ValidTextLine(title="Catalog name", required=True)
 	core = ValidTextLine(title="Core/Collection name", required=True)
 
+	text_fields = IndexedIterable(title='The text fields',
+							  	  required=False,
+							  	  value_type=ValidTextLine(title="The field name"),
+							   	  min_length=0,
+							   	  readonly=True)
+
+	suggest_fields = IndexedIterable(title='The text fields',
+							  	  	 required=False,
+							  	  	 value_type=ValidTextLine(title="The field name"),
+							   		 min_length=0,
+							   	  	 readonly=True)
+
 	def add(value, commit=True, event=True):
 		"""
 		Add a document to the index.

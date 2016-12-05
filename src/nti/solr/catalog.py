@@ -223,7 +223,7 @@ class CoreCatalog(object):
 	# content search / ISearcher.search
 
 	@Lazy
-	def _text_fields(self):
+	def text_fields(self):
 		result = []
 		for name, field in self.document_interface.namesAndDescriptions(all=True):
 			if ITextField.providedBy(field):
@@ -248,7 +248,7 @@ class CoreCatalog(object):
 
 	def _params_from_search_query(self, query):
 		params = {}
-		text_fields = self._text_fields
+		text_fields = self.text_fields
 		applyHighlights = getattr(query, 'applyHighlights', False)
 		if text_fields and applyHighlights:
 			params['hl'] = 'true'
@@ -268,7 +268,7 @@ class CoreCatalog(object):
 		return params
 
 	def _build_term_from_search_query(self, query):
-		text_fields = self._text_fields
+		text_fields = self.text_fields
 		term = lucene_escape(query.term) if not is_phrase_search(query.term) else query.term
 		if text_fields:  # search all text fields
 			term = "(%s)" % self._OR_.join('%s:%s' % (name, term) for name in text_fields)
@@ -297,7 +297,7 @@ class CoreCatalog(object):
 	# content search / ISearcher.suggest
 
 	@Lazy
-	def _suggest_fields(self):
+	def suggest_fields(self):
 		result = []
 		for name, field in self.document_interface.namesAndDescriptions(all=True):
 			if ISuggestField.providedBy(field):
@@ -312,7 +312,7 @@ class CoreCatalog(object):
 		return params
 	
 	def suggest(self, query, fields=None, *args, **kwargs):
-		suggest_fields = fields or self._suggest_fields
+		suggest_fields = fields or self.suggest_fields
 		params = self._prepare_solr_suggest(query)
 		if suggest_fields:
 			return self.client.suggest_terms(suggest_fields, query.term, **params)
