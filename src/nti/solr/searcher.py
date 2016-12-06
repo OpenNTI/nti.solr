@@ -24,17 +24,11 @@ from nti.contentsearch.search_fragments import SearchFragment
 try:
 	from nti.contentsearch.search_results import SearchResults
 	from nti.contentsearch.search_results import SuggestResults
-	from nti.contentsearch.search_results import SearchResultsList
 except ImportError:
 	from nti.contentsearch.search_results import _SearchResults as SearchResults
 	from nti.contentsearch.search_results import _SuggestResults as SuggestResults
-	class SearchResultsList(list):
-		def __init__(self, *args, **kwargs):
-			super(SearchResultsList, self).__init__()
 
 from nti.dataserver.interfaces import IUser
-
-from nti.externalization.interfaces import LocatedExternalList
 
 from nti.property.property import Lazy
 
@@ -109,22 +103,21 @@ class _SOLRSearcher(object):
 		return None
 
 	def search(self, query, *args, **kwargs):
+		numFound = 0
 		query = ISearchQuery(query)
-		result = LocatedExternalList()
 		clone = self._query_clone(query)
+		result = SearchResults(Name="Hits", Query=query)
 		for catalog in self.query_search_catalogs(query):
-			container = SearchResults(Name=catalog.name.title(), Query=clone)
 			try:
 				events = catalog.search(clone, *args, **kwargs)
 				for event in events or ():
 					hit = self._get_search_hit(catalog, event, events.highlighting)
 					if hit is not None:
-						container.add(hit)
-				container.NumFound = events.hits
-				result.append(container)
+						result.add(hit)
+				numFound += events.hits
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
-		result = SearchResultsList(Items=result, Query=query)
+		result.NumFound = numFound
 		return result
 	
 	def _get_suggestions(self, catalog, events):
@@ -136,13 +129,12 @@ class _SOLRSearcher(object):
 	def suggest(self, query, *args, **kwargs):
 		query = ISearchQuery(query)
 		clone = self._query_clone(query)
-		container = SuggestResults(Name="Suggestions", Query=query)
+		result = SuggestResults(Name="Suggestions", Query=query)
 		for catalog in self.query_search_catalogs(query):
 			try:
 				events = catalog.suggest(clone)
 				if events: # may be None
-					container.extend(self._get_suggestions(catalog, events))
+					result.extend(self._get_suggestions(catalog, events))
 			except Exception:
 				logger.exception("Error while executing query %s on %s", query, catalog)
-		result = SearchResultsList(Items=[container], Query=query)
 		return result
