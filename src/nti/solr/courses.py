@@ -120,10 +120,12 @@ class CoursesCatalog(MetadataCatalog):
 	name = COURSES_CATALOG
 	document_interface = ICourseCatalogDocument
 
-	def _build_from_search_query(self, query):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
+																	text_fields,
+																	return_fields)
 		if 'mimeType' not in fq:
-			types = CATALOG_MIME_TYPE_MAP.get(COURSES_CATALOG)
+			types = CATALOG_MIME_TYPE_MAP.get(self.name)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params
 	

@@ -177,8 +177,10 @@ class UserDataCatalog(MetadataCatalog):
 
 	# search methods
 
-	def _build_from_search_query(self, query):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
+																	text_fields,
+																	return_fields)
 		username = getattr(query, 'username', None)
 		memberships = self.memberships(username)
 		if username and 'sharedWith' not in fq and username and memberships:
@@ -186,7 +188,7 @@ class UserDataCatalog(MetadataCatalog):
 		fq['isUserGeneratedData'] = "true" # always
 		searchOn = getattr(query, 'searchOn', None)
 		if 'mimeType' not in fq and searchOn:
-			types = CATALOG_MIME_TYPE_MAP.get(USERDATA_CATALOG) # negative list
+			types = CATALOG_MIME_TYPE_MAP.get(self.name) # XXX: Negative list
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in searchOn if x not in types)
 		return term, fq, params
 

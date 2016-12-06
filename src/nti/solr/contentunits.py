@@ -151,19 +151,21 @@ class ContentUnitsCatalog(MetadataCatalog):
 	name = CONTENT_UNITS_CATALOG
 	document_interface = IContentUnitDocument
 
-	def _build_from_search_query(self, query):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
+		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
+																	text_fields,
+																	return_fields)
 		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
 		if 'containerId' not in fq and packs:
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
 			fq['containerId'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in packs)
 		if 'mimeType' not in fq:
-			types = CATALOG_MIME_TYPE_MAP.get(CONTENT_UNITS_CATALOG)
+			types = CATALOG_MIME_TYPE_MAP.get(self.name)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params
 
 	def clear(self, commit=None):
-		types = CATALOG_MIME_TYPE_MAP.get(CONTENT_UNITS_CATALOG)
+		types = CATALOG_MIME_TYPE_MAP.get(self.name)
 		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
 	reset = clear
