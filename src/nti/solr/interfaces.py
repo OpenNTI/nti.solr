@@ -562,6 +562,12 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
 							  	  	 value_type=ValidTextLine(title="The field name"),
 							   		 min_length=0,
 							   	  	 readonly=True)
+	
+	return_fields = IndexedIterable(title='The fields to return',
+							  	  	required=False,
+							  	  	value_type=ValidTextLine(title="The field name"),
+							   		min_length=0,
+							   	  	readonly=True)
 
 	def add(value, commit=True, event=True):
 		"""

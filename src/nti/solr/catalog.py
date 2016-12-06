@@ -230,12 +230,13 @@ class CoreCatalog(object):
 				result.append(name)
 		return result
 
-	def _fq_from_search_query(self, query):
+	def _fq_from_search_query(self, query, document_interface=None):
 		fq = {}
+		document_interface = document_interface or self.document_interface
 		for name, value in query.items():
-			if name not in self.document_interface:
+			if name not in document_interface:
 				continue
-			field = self.document_interface[name]
+			field = document_interface[name]
 			if isinstance(value, tuple) and len(value) == 2:  # range
 				if IDatetime.providedBy(field):
 					value = [SolrDatetime.toUnicode(x) for x in value]
@@ -246,9 +247,9 @@ class CoreCatalog(object):
 				fq[name] = lucene_escape(str(value))
 		return fq
 
-	def _params_from_search_query(self, query):
+	def _params_from_search_query(self, query, text_fields=None, return_fields=None):
 		params = {}
-		text_fields = self.text_fields
+		text_fields = text_fields or self.text_fields
 		applyHighlights = getattr(query, 'applyHighlights', False)
 		if text_fields and applyHighlights:
 			params['hl'] = 'true'
@@ -256,7 +257,8 @@ class CoreCatalog(object):
 			params['hl.useFastVectorHighlighter'] = 'true'
 			params['hl.snippets'] = getattr(query, 'snippets', None) or '2'
 		# return fields
-		params['fl'] = ','.join(self.return_fields)
+		return_fields = return_fields or self.return_fields
+		params['fl'] = ','.join(return_fields)
 		# batching
 		batchSize = getattr(query, 'batchSize', None)
 		batchStart = getattr(query, 'batchStart', None)
@@ -267,19 +269,19 @@ class CoreCatalog(object):
 			params['rows'] = str(self.max_rows)  # default number of rows
 		return params
 
-	def _build_term_from_search_query(self, query):
-		text_fields = self.text_fields
+	def _build_term_from_search_query(self, query, text_fields=None):
+		text_fields = text_fields or self.text_fields
 		term = lucene_escape(query.term) if not is_phrase_search(query.term) else query.term
 		if text_fields:  # search all text fields
 			term = "(%s)" % self._OR_.join('%s:%s' % (name, term) for name in text_fields)
 		return term
 
-	def _build_from_search_query(self, query):
-		term = self._build_term_from_search_query(query)
+	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
+		term = self._build_term_from_search_query(query, text_fields)
 		# filter query
 		fq = self._fq_from_search_query(query)
 		# parameters
-		params = self._params_from_search_query(query)
+		params = self._params_from_search_query(query, text_fields, return_fields)
 		# query-term, filter-query, params
 		return (term, fq, params)
 
