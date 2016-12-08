@@ -43,12 +43,12 @@ class _AssetContainerIdValue(object):
 
 	@classmethod
 	def _container_lineage(cls, context, break_interface):
-		result = set()
+		result = list()
 		for item in lineage(context):
 			try:
 				ntiid = item.ntiid
 				if ntiid:
-					result.add(ntiid)
+					result.append(ntiid)
 			except AttributeError:
 				pass
 			if break_interface.providedBy(item):
@@ -62,8 +62,9 @@ class _AssetContainerIdValue(object):
 			from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 			containers, item = cls._container_lineage(context, ICourseInstance)
-			containers.add(getattr(ICourseCatalogEntry(item, None), 'ntiid', None))
-			containers.discard(None)
+			entry = ICourseCatalogEntry(item, None)
+			if entry is not None and entry.ntiid:
+				containers.append(entry.ntiid)
 			return containers
 		except ImportError:
 			pass
