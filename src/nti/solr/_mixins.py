@@ -15,8 +15,6 @@ from StringIO import StringIO
 from zope import component
 from zope import interface
 
-from nti.contentlibrary.indexed_data import get_library_catalog
-
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
@@ -104,12 +102,6 @@ def get_content_package_from_ntiids(ntiids):
 	except ImportError:
 		return None
 
-def get_item_content_package(item):
-	catalog = get_library_catalog()
-	entries = catalog.get_containers(item)
-	result = get_content_package_from_ntiids(entries) if entries else None
-	return result
-
 @component.adapter(INTITranscript)
 @interface.implementer(ITranscriptSourceValue)
 class _TranscriptSource(object):
@@ -126,12 +118,11 @@ class _TranscriptSource(object):
 			and not src.startswith('/')  \
 			and '://' not in src:  # e.g. resources/...
 			package = find_interface(context, IContentPackage, strict=False)
-			if package is None:
-				package = get_item_content_package(context)
-			try:
-				raw_content = package.read_contents_of_sibling_entry(src)
-			except Exception:
-				logger.exception("Cannot read contents for %s", src)
+			if package is not None:
+				try:
+					raw_content = package.read_contents_of_sibling_entry(src)
+				except Exception:
+					logger.exception("Cannot read contents for %s", src)
 		return StringIO(raw_content) if raw_content else None
 	
 @component.adapter(INTITranscript)
