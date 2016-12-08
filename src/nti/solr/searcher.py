@@ -92,6 +92,7 @@ class _SOLRSearcher(object):
 			if snippets:
 				for name, value in snippets.items():
 					fragment = SearchFragment()
+					fragment.__parent__ = hit # ownership
 					fragment.Field = normalize_field(name)
 					fragment.Matches = list(value)
 					fragments.append(fragment)

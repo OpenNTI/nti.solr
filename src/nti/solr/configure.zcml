@@ -461,6 +461,11 @@
 
 	<utility factory=".termextract._DefaultKeyWordFilter" name='solr' />
 
+	<!-- Decorators -->
+	<subscriber factory=".decorators._SearchFragmentDecorator"
+				for="nti.contentsearch.interfaces.ISearchFragment"
+				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
+				
 	<!-- Subscribers -->
 	<include package=".subscribers" />
 
