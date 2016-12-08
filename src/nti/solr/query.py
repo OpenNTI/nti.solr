@@ -42,3 +42,18 @@ def hl_snippets(query):
 	context = query.context or {}
 	snippets = context.get('hl.snippets') or context.get('snippets')
 	return str(snippets) if snippets else '2'
+
+def hl_useSimpleEncoder(query):
+	query = ISearchQuery(query)
+	context = query.context or {}
+	encoder = context.get('hl.encoder') or context.get('encoder')
+	return 'simple' == encoder
+
+def hl_useHTMLEncoder(query):
+	return not hl_useSimpleEncoder(query)
+
+def hl_removeEncodedHTML(query):
+	query = ISearchQuery(query)
+	context = query.context or {}
+	removed = context.get('hl.removeEncoded') or context.get('removeEncoded')
+	return not removed or is_true(removed) # true by default
