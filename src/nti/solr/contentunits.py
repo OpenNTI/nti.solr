@@ -73,14 +73,15 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):
-		result = set()
+		result = list()
 		context = self.context if context is None else context
 		for item in lineage(context):
+			if item is context:
+				continue
 			if IContentUnit.providedBy(item) and item.ntiid:
-				result.add(item.ntiid)
+				result.append(item.ntiid)
 			if IContentPackage.providedBy(item):
 				break
-		result.discard(context.ntiid)  # remove self
 		return tuple(result)
 
 @component.adapter(IContentUnit)
