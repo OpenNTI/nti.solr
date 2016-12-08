@@ -102,7 +102,9 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 	language = 'en'
 
 	def get_content(self, context):
-		return to_unicode(context.read_contents())
+		parent_key = getattr(context.__parent__, 'key', None)
+		if parent_key is None or parent_key != context.key: # don't index twice
+			return to_unicode(context.read_contents())
 
 	def lang(self, context=None):
 		return self.language
