@@ -47,6 +47,9 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 from nti.solr.lucene import lucene_escape
 from nti.solr.lucene import is_phrase_search
 
+from nti.solr.query import hl_snippets
+from nti.solr.query import hl_useFastVectorHighlighter
+
 from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import normalize_key
@@ -250,12 +253,12 @@ class CoreCatalog(object):
 	def _params_from_search_query(self, query, text_fields=None, return_fields=None):
 		params = {}
 		text_fields = text_fields or self.text_fields
-		applyHighlights = getattr(query, 'applyHighlights', False)
-		if text_fields and applyHighlights:
+		if text_fields and query.applyHighlights:
 			params['hl'] = 'true'
 			params['hl.fl'] = ','.join(text_fields)
-			params['hl.useFastVectorHighlighter'] = 'true'
-			params['hl.snippets'] = getattr(query, 'snippets', None) or '2'
+			if hl_useFastVectorHighlighter(query):
+				params['hl.useFastVectorHighlighter'] = 'true'
+			params['hl.snippets'] = hl_snippets(query)
 		# return fields
 		return_fields = return_fields or self.return_fields
 		params['fl'] = ','.join(return_fields)

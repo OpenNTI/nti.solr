@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import interface
 
+from nti.common.string import is_true
+
 from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.solr.interfaces import ISOLRQueryValidator
@@ -27,3 +29,16 @@ class _SOLRQueryValidator(object):
 		query = ISearchQuery(query)
 		if not bool(is_valid_query(query.term)):
 			raise AssertionError("Invalid query %s" % query.term)
+
+def hl_useFastVectorHighlighter(query):
+	query = ISearchQuery(query)
+	context = query.context or  {}
+	vector = 	context.get('hl.useFastVectorHighlighter') \
+			or	context.get('useFastVectorHighlighter')
+	return is_true(vector)
+
+def hl_snippets(query):
+	query = ISearchQuery(query)
+	context = query.context or {}
+	snippets = context.get('hl.snippets') or context.get('snippets')
+	return str(snippets) if snippets else '2'
