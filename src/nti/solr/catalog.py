@@ -63,6 +63,7 @@ class CoreCatalog(object):
 	__parent__ = None
 	__name__ = alias('name')
 
+	skip = False
 	max_rows = 500
 	auto_commit = True
 	return_fields = ('id', 'score')

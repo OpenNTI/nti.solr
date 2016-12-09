@@ -109,6 +109,8 @@ class _SOLRSearcher(object):
 		clone = self._query_clone(query)
 		result = SearchResults(Name="Hits", Query=query)
 		for catalog in self.query_search_catalogs(query):
+			if catalog.skip:
+				continue
 			try:
 				events = catalog.search(clone, *args, **kwargs)
 				for event in events or ():
