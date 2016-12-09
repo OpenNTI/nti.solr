@@ -29,4 +29,4 @@ class _SearchFragmentDecorator(object):
 		if hl_removeEncodedHTML(query):
 			for idx, match in enumerate(original.Matches or ()):
 				match = re.sub("&lt;.*&gt;", '', match)
-				original.Matches[idx] = match
+				external['Matches'][idx] = match
