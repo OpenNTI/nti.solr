@@ -48,7 +48,6 @@ from nti.solr.lucene import lucene_escape
 from nti.solr.lucene import is_phrase_search
 
 from nti.solr.query import hl_snippets
-from nti.solr.query import hl_useHTMLEncoder
 from nti.solr.query import hl_useFastVectorHighlighter
 
 from nti.solr.schema import SolrDatetime
@@ -259,8 +258,6 @@ class CoreCatalog(object):
 			params['hl.fl'] = ','.join(text_fields)
 			if hl_useFastVectorHighlighter(query):
 				params['hl.useFastVectorHighlighter'] = 'true'
-			if hl_useHTMLEncoder(query):
-				params['hl.encoder'] = 'html'
 			params['hl.snippets'] = hl_snippets(query)
 		# return fields
 		return_fields = return_fields or self.return_fields
