@@ -471,7 +471,11 @@
 	<subscriber factory=".decorators._SearchFragmentDecorator"
 				for="nti.contentsearch.interfaces.ISearchFragment"
 				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
-				
+	
+	<subscriber factory=".decorators._SearchHitDecorator"
+				for="nti.contentsearch.interfaces.ISearchHit"
+				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
+			
 	<!-- Subscribers -->
 	<include package=".subscribers" />
 

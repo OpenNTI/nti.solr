@@ -18,11 +18,16 @@ from zope import component
 
 from nti.common.string import to_unicode
 
+from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ISearchFragment
+
+from nti.externalization.interfaces import StandardExternalFields
 
 from nti.externalization.singleton import SingletonDecorator
 
 from nti.solr.query import hl_removeEncodedHTML
+
+CONTAINER_ID = StandardExternalFields.CONTAINER_ID
 
 @component.adapter(ISearchFragment)
 class _SearchFragmentDecorator(object):
@@ -55,3 +60,13 @@ class _SearchFragmentDecorator(object):
 			for idx, match in enumerate(original.Matches or ()):
 				match = self.sanitize(match)
 				external['Matches'][idx] = match
+
+@component.adapter(ISearchHit)
+class _SearchHitDecorator(object):
+
+	__metaclass__ = SingletonDecorator
+
+	def decorateExternalObject(self, original, external):
+		containers = original.get('Containers') or ()
+		if CONTAINER_ID not in external and len(containers) == 1:
+			external[CONTAINER_ID] = containers[0]
