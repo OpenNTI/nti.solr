@@ -74,6 +74,11 @@ class IStringValue(IAttributeValue):
 
 # metadata
 
+class IACEValue(IAttributeValue):
+	"""
+	Adapter interface to get the ace values from a given object
+	"""
+	
 class IIntIdValue(IAttributeValue):
 	"""
 	Adapter interface to get the int id value from a given object
@@ -165,6 +170,12 @@ class ICoreDocument(interface.Interface):
 tagField(ICoreDocument['id'], True, IIDValue)
 
 class IMetadataDocument(ICoreDocument):
+	
+	ace = IndexedIterable(title='The ACL aces',
+						  required=False,
+						  value_type=ValidTextLine(title="The ace"),
+						  min_length=0)
+
 	site = ValidTextLine(title='The site', required=False)
 
 	creator = ValidTextLine(title='The creator', required=False)
@@ -200,6 +211,7 @@ class IMetadataDocument(ICoreDocument):
 
 	isUserGeneratedData = Bool(title='Is UGD object flag', required=False)
 
+tagField(IMetadataDocument['ace'], True, IACEValue, multiValued=True, indexed=False)
 tagField(IMetadataDocument['site'], False, ISiteValue)
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
