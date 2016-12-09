@@ -17,9 +17,12 @@ from zope import interface
 from nti.common.string import to_unicode
 
 from nti.contentsearch.interfaces import ISearchHit
+from nti.contentsearch.interfaces import ITranscriptSearchHit
+from nti.contentsearch.interfaces import IContentUnitSearchHit
 
 from nti.contentsearch.search_hits import SearchHit
 from nti.contentsearch.search_hits import TranscriptSearchHit
+from nti.contentsearch.search_hits import ContentUnitSearchHit
 
 from nti.contenttypes.presentation.interfaces import INTITranscript
 
@@ -47,8 +50,8 @@ class _StringValue(object):
 
 HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 			  (ICreatorValue, 'Creator'),
+			  (IContainerIdValue, 'Containers'),
 			  (IMimeTypeValue, 'TargetMimeType'),
-			  (IContainerIdValue, 'ContainerId'),
 			  (ILastModifiedValue, 'lastModified'),
 			  (IContainerContextValue, 'ContainerContext'))
 
@@ -67,10 +70,14 @@ def _default_search_hit_adapter(obj, result, hit=None):
 				setattr(hit, name, value)
 	return hit
 
-@interface.implementer(ISearchHit)
+@interface.implementer(ITranscriptSearchHit)
 @component.adapter(INTITranscript, IDict)
 def _transcript_search_hit_adapter(obj, result):
 	hit = _default_search_hit_adapter(obj, result, TranscriptSearchHit())
 	hit.EndMilliSecs = result['cue_end_time']
 	hit.StartMilliSecs = result['cue_start_time']
 	return hit
+
+@interface.implementer(IContentUnitSearchHit)
+def _contentunit_search_hit_adapter(obj, result):
+	return _default_search_hit_adapter(obj, result, ContentUnitSearchHit())

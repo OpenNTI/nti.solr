@@ -42,7 +42,7 @@
 			 for="* dolmen.builtins.interfaces.IDict" />
 
 	<adapter factory=".adapters._transcript_search_hit_adapter"
-			 provides="nti.contentsearch.interfaces.ISearchHit"
+			 provides="nti.contentsearch.interfaces.ITranscriptSearchHit"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript 
 			 	  dolmen.builtins.interfaces.IDict" />
 
@@ -224,6 +224,12 @@
 				 for=".interfaces.IContentUnitDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
+				 
+		<adapter factory=".adapters._contentunit_search_hit_adapter"
+			 provides="nti.contentsearch.interfaces.IContentUnitSearchHit"
+			 for="nti.contentlibrary.interfaces.IContentUnit 
+			 	  dolmen.builtins.interfaces.IDict" />
+
 	</configure>
 
 	<!-- Assets -->
