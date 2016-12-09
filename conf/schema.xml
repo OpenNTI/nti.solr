@@ -225,8 +225,9 @@
 	<field name="containerContext" type="string" indexed="true" stored="true"/>
 	<field name="isDeletedObject" type="boolean" indexed="true" stored="false"/>
 	<field name="isTopLevelContent" type="boolean" indexed="true" stored="false"/>
-	<field name="intid" type="string" indexed="false" required="false" stored="true"/>
 	<field name="site" type="string" indexed="true" required="false" stored="false"/>
+	<field name="ace" multiValued="true" type="string" indexed="false" stored="true"/>
+	<field name="intid" type="string" indexed="false" required="false" stored="true"/>
 	<field name="containerId" multiValued="true" type="string" indexed="true" stored="true"/>
 	<field name="isUserGeneratedData" type="boolean" required="false" indexed="true" stored="false"/>
 	<!--%%%-metadata-end-%%%-->
