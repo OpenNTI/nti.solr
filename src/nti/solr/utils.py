@@ -11,10 +11,15 @@ logger = __import__('logging').getLogger(__name__)
 
 import re
 import six
+import functools
 from itertools import chain
-from _collections import defaultdict
+from collections import defaultdict
+
+import gevent
 
 from zope import component
+
+from zope.component.hooks import getSite
 
 from zope.interface.interfaces import IMethod
 
@@ -39,6 +44,8 @@ from nti.contenttypes.presentation import RELATED_WORK_REF_MIMETYES
 from nti.ntiids.ntiids import find_object_with_ntiid, is_valid_ntiid_string
 
 from nti.schema.interfaces import find_most_derived_interface
+
+from nti.site.interfaces import ISiteTransactionRunner
 
 from nti.solr import ASSETS_CATALOG
 from nti.solr import COURSES_CATALOG
@@ -163,6 +170,26 @@ def normalize_field(name):
 	if m is not None:
 		return m.groups()[0]
 	return name
+
+# searcher
+
+def gevent_spawn(func=None, **kwargs):
+	assert func is not None
+
+	# prepare function call
+	new_callable = functools.partial(func, **kwargs)
+
+	site_names = (getSite().__name__,)
+
+	def _runner():
+		transaction_runner = component.getUtility(ISiteTransactionRunner)
+		transaction_runner = functools.partial(transaction_runner,
+											   site_names=site_names,
+											   side_effect_free=True)
+		transaction_runner(new_callable)
+
+	greenlet = gevent.spawn(_runner)
+	return greenlet
 
 # Known mimeTypes used to map to their corresponding
 # search catalogs
