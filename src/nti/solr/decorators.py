@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.externalization.oids import to_external_ntiid_oid
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -23,6 +22,8 @@ from nti.contentsearch.interfaces import ISearchHit, ITranscriptSearchHit
 from nti.contentsearch.interfaces import ISearchFragment
 
 from nti.externalization.interfaces import StandardExternalFields
+
+from nti.externalization.oids import to_external_ntiid_oid
 
 from nti.externalization.singleton import SingletonDecorator
 
