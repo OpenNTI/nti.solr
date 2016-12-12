@@ -186,7 +186,7 @@ def gevent_spawn(func=None, **kwargs):
 		transaction_runner = functools.partial(transaction_runner,
 											   site_names=site_names,
 											   side_effect_free=True)
-		transaction_runner(new_callable)
+		return transaction_runner(new_callable)
 
 	greenlet = gevent.spawn(_runner)
 	return greenlet
