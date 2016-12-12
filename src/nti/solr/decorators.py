@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.externalization.oids import to_external_ntiid_oid
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -27,6 +28,7 @@ from nti.externalization.singleton import SingletonDecorator
 
 from nti.solr.query import hl_removeEncodedHTML
 
+NTIID = StandardExternalFields.NTIID
 CONTAINER_ID = StandardExternalFields.CONTAINER_ID
 
 @component.adapter(ISearchFragment)
@@ -106,3 +108,5 @@ class _SearchHitDecorator(object):
 		containers = external.get('Containers') or ()
 		if CONTAINER_ID not in external and len(containers) == 1:
 			external[CONTAINER_ID] = containers[0]
+		if not external.get(NTIID):
+			external[NTIID] = to_external_ntiid_oid(original)
