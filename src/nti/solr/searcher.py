@@ -40,13 +40,15 @@ from nti.solr.interfaces import ISOLRSearcher
 from nti.solr.utils import MIME_TYPE_CATALOG_MAP
 
 from nti.solr.utils import normalize_field
+from nti.solr.utils import gevent_spawn
 
 @component.adapter(IUser)
 @interface.implementer(ISOLRSearcher)
 class _SOLRSearcher(object):
 
-	def __init__(self, entity=None):
+	def __init__(self, entity=None, parallel_search=False):
 		self.entity = entity
+		self.parallel_search = False
 
 	@Lazy
 	def intids(self):
@@ -115,15 +117,27 @@ class _SOLRSearcher(object):
 			
 	def search(self, query, *args, **kwargs):
 		numFound = 0
+		generators = []
 		query = ISearchQuery(query)
 		clone = self._query_clone(query)
+		catalogs = self.query_search_catalogs(query)
+		parallel_search = self.parallel_search and len(catalogs) > 1
 		result = SearchResults(Name="Hits", Query=query)
 		for catalog in self.query_search_catalogs(query):
 			if catalog.skip:
 				continue
-			for hit, found in self._do_search(catalog, clone, *args, **kwargs):
+			if parallel_search:
+				generators.append(gevent_spawn(func=self._do_search,
+											   catalog=catalog,
+											   query=clone))
+			else:
+				generators.append(self._do_search(catalog, clone))
+		# collect valeus
+		for generator in generators:
+			values = generator.get() if parallel_search else generator
+			for hit, found in values:
 				result.add(hit)
-			numFound += found
+		numFound += found
 		result.NumFound = numFound
 		return result
 	
