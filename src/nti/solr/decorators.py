@@ -18,7 +18,7 @@ from zope import component
 
 from nti.common.string import to_unicode
 
-from nti.contentsearch.interfaces import ISearchHit
+from nti.contentsearch.interfaces import ISearchHit, ITranscriptSearchHit
 from nti.contentsearch.interfaces import ISearchFragment
 
 from nti.externalization.interfaces import StandardExternalFields
@@ -55,8 +55,8 @@ class _SearchFragmentDecorator(object):
 		return raw
 
 	def decorateExternalObject(self, original, external):
-		query = original.__parent__.Query
-		if hl_removeEncodedHTML(query):
+		hit = original.__parent__
+		if not ITranscriptSearchHit.providedBy(hit) and hl_removeEncodedHTML(hit.Query):
 			for idx, match in enumerate(original.Matches or ()):
 				match = self.sanitize(match)
 				external['Matches'][idx] = match
