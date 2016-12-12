@@ -36,6 +36,10 @@ class _SearchFragmentDecorator(object):
 
 	@classmethod
 	def sanitize(cls, raw, tag='em'):
+		"""
+		Clean any HTML by parsing the DOM elements getting their text 
+		and only leaving only the hightlighting element tags
+		"""
 		try:
 			text = []
 			end_ele = '</%s>' % tag
@@ -51,8 +55,8 @@ class _SearchFragmentDecorator(object):
 				if element.tag == tag:
 					text.append(end_ele)
 			raw = ''.join(text)
-		except Exception:
-			pass
+		except Exception as e:
+			logger.warn("Could not parse %s. %s", raw, e)
 		return raw
 	
 	@classmethod
