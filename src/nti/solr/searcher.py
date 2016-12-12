@@ -103,6 +103,16 @@ class _SOLRSearcher(object):
 			logger.debug('Could not create hit for %s. %s', result, e)
 		return None
 
+	def _do_search(self, catalog, query, *args, **kwargs):
+		try:
+			events = catalog.search(query, *args, **kwargs)
+			for event in events or ():
+				hit = self._get_search_hit(catalog, event, events.highlighting)
+				if hit is not None:
+					yield hit, events.hits
+		except Exception:
+			logger.exception("Error while executing query %s on %s", query, catalog)
+			
 	def search(self, query, *args, **kwargs):
 		numFound = 0
 		query = ISearchQuery(query)
@@ -111,15 +121,9 @@ class _SOLRSearcher(object):
 		for catalog in self.query_search_catalogs(query):
 			if catalog.skip:
 				continue
-			try:
-				events = catalog.search(clone, *args, **kwargs)
-				for event in events or ():
-					hit = self._get_search_hit(catalog, event, events.highlighting)
-					if hit is not None:
-						result.add(hit)
-				numFound += events.hits
-			except Exception:
-				logger.exception("Error while executing query %s on %s", query, catalog)
+			for hit, found in self._do_search(catalog, clone, *args, **kwargs):
+				result.add(hit)
+			numFound += found
 		result.NumFound = numFound
 		return result
 	
