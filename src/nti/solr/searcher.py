@@ -10,6 +10,9 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import copy
+import multiprocessing
+
+import gevent
 
 from zope import component
 from zope import interface
@@ -40,7 +43,9 @@ from nti.solr.interfaces import ISOLRSearcher
 from nti.solr.utils import MIME_TYPE_CATALOG_MAP
 
 from nti.solr.utils import normalize_field
-from nti.solr.utils import gevent_spawn
+from nti.solr.utils import transacted_func
+
+max_workers = multiprocessing.cpu_count()
 
 @component.adapter(IUser)
 @interface.implementer(ISOLRSearcher)
@@ -123,23 +128,32 @@ class _SOLRSearcher(object):
 		query = ISearchQuery(query)
 		clone = self._query_clone(query)
 		catalogs = self.query_search_catalogs(query)
+		result = SearchResults(Name="Hits", Query=query)	
+		# gevent pool
 		parallel_search = self.parallel_search and len(catalogs) > 1
-		result = SearchResults(Name="Hits", Query=query)
-		for catalog in self.query_search_catalogs(query):
+		pool = gevent.pool.Pool(max_workers) if parallel_search else None
+		# perform searched
+		for catalog in catalogs or ():
 			if catalog.skip:
 				continue
 			if parallel_search:
-				generators.append(gevent_spawn(func=self._do_search,
-											   catalog=catalog,
-											   query=clone))
+				runner = transacted_func(func=self._do_search,
+										 catalog=catalog,
+										 query=clone)
+				greenlet = pool.apply_async(runner)
+				generators.append(greenlet)
 			else:
 				generators.append(self._do_search(catalog, clone))
-		# collect valeus
+		# wait for greenlets
+		if parallel_search:
+			pool.join()
+		# collect values
 		for generator in generators:
+			found = 0 # in case no results
 			values = generator.get() if parallel_search else generator
 			for hit, found in values:
 				result.add(hit)
-		numFound += found
+			numFound += found # found is the same value
 		result.NumFound = numFound
 		return result
 	
