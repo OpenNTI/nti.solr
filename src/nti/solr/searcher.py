@@ -88,6 +88,8 @@ class _SOLRSearcher(object):
 			hit = component.queryMultiAdapter((obj, result), ISearchHit)
 			if hit is None:
 				return None
+			assert hit.ID, "search hit must have an ID"
+			assert hit.Target is not None, "search hit must have an target"
 			# set fragments
 			fragments = list()
 			snippets = highlighting.get(uid) if highlighting else None
