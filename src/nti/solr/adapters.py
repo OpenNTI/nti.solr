@@ -19,12 +19,16 @@ from nti.common.string import to_unicode
 from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ITranscriptSearchHit
 from nti.contentsearch.interfaces import IContentUnitSearchHit
+from nti.contentsearch.interfaces import IUserGeneratedDataSearchHit
 
 from nti.contentsearch.search_hits import SearchHit
 from nti.contentsearch.search_hits import TranscriptSearchHit
 from nti.contentsearch.search_hits import ContentUnitSearchHit
+from nti.contentsearch.search_hits import UserGeneratedDataSearchHit
 
 from nti.contenttypes.presentation.interfaces import INTITranscript
+
+from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import IStringValue
@@ -81,3 +85,8 @@ def _transcript_search_hit_adapter(obj, result):
 @interface.implementer(IContentUnitSearchHit)
 def _contentunit_search_hit_adapter(obj, result):
 	return _default_search_hit_adapter(obj, result, ContentUnitSearchHit())
+
+@component.adapter(IUserGeneratedData, IDict)
+@interface.implementer(IUserGeneratedDataSearchHit)
+def ugd_search_hit_adapter(obj, result):
+	return _default_search_hit_adapter(obj, result, UserGeneratedDataSearchHit())
