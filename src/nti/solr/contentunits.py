@@ -31,7 +31,7 @@ from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.lucene import lucene_escape
@@ -69,7 +69,7 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 		return self.prefix(context) + context.ntiid
 
 @component.adapter(IContentUnit)
-@interface.implementer(IContainerIdValue)
+@interface.implementer(IContainersValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):

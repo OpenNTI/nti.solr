@@ -34,7 +34,7 @@ from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import IStringValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
-from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ILastModifiedValue
 from nti.solr.interfaces import IContainerContextValue
 
@@ -54,7 +54,7 @@ class _StringValue(object):
 
 HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 			  (ICreatorValue, 'Creator'),
-			  (IContainerIdValue, 'Containers'),
+			  (IContainersValue, 'Containers'),
 			  (IMimeTypeValue, 'TargetMimeType'),
 			  (ILastModifiedValue, 'lastModified'),
 			  (IContainerContextValue, 'ContainerContext'))

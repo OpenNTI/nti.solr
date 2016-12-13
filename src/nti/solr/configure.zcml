@@ -85,7 +85,7 @@
 			 for="*" />
 
  	<adapter factory=".metadata._DefaultContainerIdValue"
-			 provides=".interfaces.IContainerIdValue"
+			 provides=".interfaces.IContainersValue"
 			 for="*" />
 
 	<adapter factory=".metadata._DefaultSharedWithValue"
@@ -198,7 +198,7 @@
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
 	
 		<adapter factory=".contentunits._DefaultContainerIdValue"
-				 provides=".interfaces.IContainerIdValue"
+				 provides=".interfaces.IContainersValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
 	
 		<adapter factory=".contentunits._DefaultTitleValue"
@@ -256,7 +256,7 @@
 
 	<configure zcml:condition="installed nti.contentlibrary">
 	 	<adapter factory="._mixins._AssetContainerIdValue"
-				 provides=".interfaces.IContainerIdValue"
+				 provides=".interfaces.IContainersValue"
 				 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 	</configure>
 
@@ -336,7 +336,7 @@
 				 for="nti.assessment.interfaces.IQEvaluation" />
 
 		<adapter factory=".evaluations._DefaultContainerIdValue"
-				 provides=".interfaces.IContainerIdValue"
+				 provides=".interfaces.IContainersValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />
 
 		<adapter factory=".evaluations._DefaultEvaluationKeywordsValue"
@@ -384,7 +384,7 @@
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 				 
 		<adapter factory="._mixins._TranscriptContainerIdValue"
-				 provides=".interfaces.IContainerIdValue"
+				 provides=".interfaces.IContainersValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 	</configure>
 	

@@ -74,7 +74,7 @@ from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import ITaggedToValue
 from nti.solr.interfaces import IInReplyToValue
 from nti.solr.interfaces import ISharedWithValue
-from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import IMetadataDocument
 from nti.solr.interfaces import ILastModifiedValue
@@ -228,7 +228,7 @@ class _DefaultIntIdValue(_BasicAttributeValue):
 		return to_unicode(uid) if uid is not None else None
 DefaultObjectIntIdValue = _DefaultIntIdValue
 
-@interface.implementer(IContainerIdValue)
+@interface.implementer(IContainersValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	_IGNORED_TYPES = {TYPE_OID, TYPE_UUID, TYPE_INTID}

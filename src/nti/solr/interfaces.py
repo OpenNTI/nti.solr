@@ -109,10 +109,11 @@ class IInReplyToValue(IAttributeValue):
 	Adapter interface to get the in-reply-to value from a given object
 	"""
 
-class IContainerIdValue(IAttributeValue):
+class IContainersValue(IAttributeValue):
 	"""
 	Adapter interface to get the containerId values from a given object
 	"""
+IContainerIdValue = IContainersValue
 
 class ISharedWithValue(IAttributeValue):
 	"""
@@ -222,7 +223,7 @@ tagField(IMetadataDocument['isTopLevelContent'], False, IIsTopLevelContentValue)
 tagField(IMetadataDocument['isUserGeneratedData'], False, IIsUserGeneratedDataValue)
 tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, multiValued=True)
 tagField(IMetadataDocument['sharedWith'], True, ISharedWithValue, multiValued=True)
-tagField(IMetadataDocument['containerId'], False, IContainerIdValue, multiValued=True)
+tagField(IMetadataDocument['containerId'], False, IContainersValue, multiValued=True)
 tagField(IMetadataDocument['createdTime'], False, ICreatedTimeValue, provided=IDateField)
 tagField(IMetadataDocument['lastModified'], False, ILastModifiedValue, provided=IDateField)
 

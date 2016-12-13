@@ -29,7 +29,7 @@ from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import IEvaluationDocument
 
 from nti.solr.lucene import lucene_escape
@@ -82,7 +82,7 @@ class _DefaultEvaluationTitleValue(_BasicAttributeValue):
 		return getattr(context, 'title', None)
 
 @component.adapter(IQEvaluation)
-@interface.implementer(IContainerIdValue)
+@interface.implementer(IContainersValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
 	def value(self, context=None):

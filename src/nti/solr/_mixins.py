@@ -25,7 +25,7 @@ from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.traversal.traversal import find_interface
 
-from nti.solr.interfaces import IContainerIdValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ITranscriptSourceValue
 
 from nti.traversal.location import lineage
@@ -33,7 +33,7 @@ from nti.traversal.location import lineage
 # assets
 
 @component.adapter(IPresentationAsset)
-@interface.implementer(IContainerIdValue)
+@interface.implementer(IContainersValue)
 class _AssetContainerIdValue(object):
 	
 	def __init__(self, context, default=None):
@@ -126,7 +126,7 @@ class _TranscriptSource(object):
 		return StringIO(raw_content) if raw_content else None
 	
 @component.adapter(INTITranscript)
-@interface.implementer(IContainerIdValue)
+@interface.implementer(IContainersValue)
 class _TranscriptContainerIdValue(_AssetContainerIdValue):
 	
 	def value(self, context=None):
