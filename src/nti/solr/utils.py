@@ -173,7 +173,7 @@ def normalize_field(name):
 
 # searcher
 
-def gevent_spawn(func=None, **kwargs):
+def transacted_func(func=None, **kwargs):
 	assert func is not None
 
 	# prepare function call
@@ -188,7 +188,10 @@ def gevent_spawn(func=None, **kwargs):
 											   side_effect_free=True)
 		return transaction_runner(new_callable)
 
-	greenlet = gevent.spawn(_runner)
+	return _runner
+
+def gevent_spawn(func=None, **kwargs):
+	greenlet = gevent.spawn(transacted_func(func, **kwargs))
 	return greenlet
 
 # Known mimeTypes used to map to their corresponding
