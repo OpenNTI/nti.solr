@@ -31,6 +31,7 @@ from nti.externalization.singleton import SingletonDecorator
 
 from nti.solr.query import hl_removeEncodedHTML
 
+ID = StandardExternalFields.ID
 NTIID = StandardExternalFields.NTIID
 CONTAINER_ID = StandardExternalFields.CONTAINER_ID
 
@@ -112,6 +113,7 @@ class _SearchHitDecorator(object):
 		containers = external.get('Containers') or ()
 		if CONTAINER_ID not in external and len(containers) == 1:
 			external[CONTAINER_ID] = containers[0]
+		external.pop(ID, None)
 
 @component.adapter(IUserGeneratedDataSearchHit)
 class _UGDSearchHitDecorator(object):
