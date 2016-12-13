@@ -103,8 +103,10 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
 	def get_content(self, context):
 		parent_key = getattr(context.__parent__, 'key', None)
-		if parent_key is None or parent_key != context.key: # don't index twice
+		if 		parent_key is None \
+			or	parent_key.absolute_path != context.key.absolute_path: # don't index twice
 			return to_unicode(context.read_contents())
+		return None
 
 	def lang(self, context=None):
 		return self.language
