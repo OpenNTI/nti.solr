@@ -63,9 +63,11 @@ HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 @component.adapter(interface.Interface, IDict)
 def _default_search_hit_adapter(obj, result, hit=None):
 	hit = SearchHit() if hit is None else hit
+	# set required fields
 	hit.Target = obj
 	hit.ID = result['id']
 	hit.Score = result['score']
+	# set extra fields
 	for value_interface, name in HIT_FIELDS:
 		adapted = value_interface(obj, None)
 		if adapted is not None:

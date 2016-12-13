@@ -18,8 +18,10 @@ from zope import component
 
 from nti.common.string import to_unicode
 
-from nti.contentsearch.interfaces import ISearchHit, ITranscriptSearchHit
+from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ISearchFragment
+from nti.contentsearch.interfaces import ITranscriptSearchHit
+from nti.contentsearch.interfaces import IUserGeneratedDataSearchHit
 
 from nti.externalization.interfaces import StandardExternalFields
 
@@ -106,10 +108,16 @@ class _SearchHitDecorator(object):
 	__metaclass__ = SingletonDecorator
 
 	def decorateExternalObject(self, original, external):
-		target = original.Target
 		containers = external.get('Containers') or ()
 		if CONTAINER_ID not in external and len(containers) == 1:
 			external[CONTAINER_ID] = containers[0]
+
+@component.adapter(IUserGeneratedDataSearchHit)
+class _UGDSearchHitDecorator(object):
+
+	__metaclass__ = SingletonDecorator
+
+	def decorateExternalObject(self, original, external):
+		target = original.Target
 		if not external.get(NTIID):
 			external[NTIID] = to_external_ntiid_oid(target)
-

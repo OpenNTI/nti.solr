@@ -480,7 +480,11 @@
 	<subscriber factory=".decorators._SearchHitDecorator"
 				for="nti.contentsearch.interfaces.ISearchHit"
 				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
-			
+	
+	<subscriber factory=".decorators._UGDSearchHitDecorator"
+				for="nti.contentsearch.interfaces.IUserGeneratedDataSearchHit"
+				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
+		
 	<!-- Subscribers -->
 	<include package=".subscribers" />
 
