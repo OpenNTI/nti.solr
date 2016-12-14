@@ -424,7 +424,7 @@
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+			 for="nti.dataserver.interfaces.ITitleValue" />
 
 	<adapter factory=".userdata._DefaultUserDataContentValue"
 			 provides=".interfaces.IContentValue"
@@ -433,6 +433,10 @@
 	<adapter factory=".userdata._HighlightContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IHighlight" />
+
+	<adapter factory=".userdata._HeadlineTopicContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
 
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"

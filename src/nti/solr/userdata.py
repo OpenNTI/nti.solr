@@ -18,10 +18,13 @@ from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
+from nti.dataserver.contenttypes.forums.interfaces import IHeadlineTopic
+
 from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IHighlight 
 from nti.dataserver.interfaces import IRedaction
 from nti.dataserver.interfaces import ITaggedContent
+from nti.dataserver.interfaces import ITitledContent
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
@@ -57,8 +60,8 @@ class _BasicAttributeValue(object):
 	def __init__(self, context=None, default=None):
 		self.context = context
 
+@component.adapter(ITitledContent)
 @interface.implementer(ITitleValue)
-@component.adapter(IUserGeneratedData)
 class _DefaultUserDataTitleValue(_BasicAttributeValue):
 
 	def lang(self, context):
@@ -92,6 +95,14 @@ class _HighlightContentValue(_DefaultUserDataContentValue):
 
 	def get_content(self, context):
 		return context.selectedText
+
+@component.adapter(IHeadlineTopic)
+@interface.implementer(IContentValue)
+class _HeadlineTopicContentValue(_DefaultUserDataContentValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return self.get_content(context.headline)
 
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IKeywordsValue)
