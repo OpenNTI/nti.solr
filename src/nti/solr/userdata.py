@@ -170,7 +170,7 @@ class UserDataCatalog(MetadataCatalog):
 	def memberships(self, username):
 		user = self.get_entity(username)
 		if user is not None:
-			dynamic_memberships = getattr(user, 'usernames_of_dynamic_memberships', ())
+			dynamic_memberships = user.usernames_of_dynamic_memberships or ()
 			usernames = itertools.chain((user.username,), dynamic_memberships)
 			return {x.lower() for x in usernames} - {'everyone'}
 		return ()
