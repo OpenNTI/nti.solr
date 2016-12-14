@@ -9,8 +9,6 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-from collections import Iterable
-
 from zope import interface
 
 from zope.index.interfaces import IInjection
@@ -161,7 +159,7 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 	if boost is not None:
 		field.setTaggedValue('__solr_boost__', boost)
 	if provided is not None:
-		if not isinstance(provided, Iterable):
+		if not isinstance(provided, (list, tuple, set)):
 			provided = (provided,)
 		for iface in provided:
 			interface.alsoProvides(field, iface)
@@ -488,9 +486,9 @@ class IUserDataDocument(IMetadataDocument):
 							  	  value_type=ValidTextLine(title="The keyword"),
 							   	  min_length=0)
 
-tagField(IUserDataDocument['tags'], True, ITagsValue)
 tagField(IUserDataDocument['channel'], False, IChannelValue)
 tagField(IUserDataDocument['recipients'], True, IRecipientsValue)
+tagField(IUserDataDocument['tags'], True, ITagsValue, provided=ITextField)
 tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IUserDataDocument['content_en'], True, IContentValue, provided=(ITextField, ISuggestField))
 tagField(IUserDataDocument['redaction_explanation_en'], True, IExplanationValue, provided=ITextField)
