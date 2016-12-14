@@ -424,7 +424,7 @@
 	<!-- User Generated Data -->
 	<adapter factory=".userdata._DefaultUserDataTitleValue"
 			 provides=".interfaces.ITitleValue"
-			 for="nti.dataserver.interfaces.ITitleValue" />
+			 for="nti.dataserver.interfaces.ITitledContent" />
 
 	<adapter factory=".userdata._DefaultUserDataContentValue"
 			 provides=".interfaces.IContentValue"
