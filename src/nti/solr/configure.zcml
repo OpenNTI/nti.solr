@@ -438,6 +438,10 @@
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 			 
+	<adapter factory=".userdata._DefaultTaggsValue"
+			 provides=".interfaces.ITagsValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
 	<adapter factory=".userdata._DefaultChannelValue"
 			 provides=".interfaces.IChannelValue"
 			 for="nti.chatserver.interfaces.IMessageInfo" />

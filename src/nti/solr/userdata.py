@@ -18,8 +18,10 @@ from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IUser, IHighlight
+from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IHighlight 
 from nti.dataserver.interfaces import IRedaction
+from nti.dataserver.interfaces import ITaggedContent
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
@@ -28,6 +30,7 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
 
+from nti.solr.interfaces import ITagsValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IChannelValue
@@ -106,6 +109,14 @@ class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
 			self.language = adapted.lang()
 			return get_keywords(adapted.value(), self.language)
 		return ()
+
+@component.adapter(ITaggedContent)
+@interface.implementer(ITagsValue)
+class _DefaultTaggsValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		return context.tags or ()
 
 @component.adapter(IMessageInfo)
 @interface.implementer(IChannelValue)
