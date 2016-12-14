@@ -27,11 +27,6 @@ from zope.intid.interfaces import IIntIds
 
 from nti.common.string import to_unicode
 
-from nti.contentlibrary.indexed_data import get_library_catalog
-
-from nti.contentlibrary.interfaces import IContentUnit
-from nti.contentlibrary.interfaces import IContentPackage
-
 from nti.contentprocessing.content_utils import tokenize_content
 
 from nti.contentprocessing.keyword import extract_key_words
@@ -59,41 +54,6 @@ from nti.solr.interfaces import IStringValue
 from nti.solr.interfaces import ICoreDocument
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
-
-from nti.traversal.traversal import find_interface
-
-# assets
-
-def get_content_package_from_ntiids(ntiids):
-	try:
-		from nti.contenttypes.courses.common import get_course_packages
-		from nti.contenttypes.courses.interfaces import ICourseInstance
-		from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-
-		result = None
-		for ntiid in ntiids or ():
-			obj = find_object_with_ntiid(ntiid)
-			if ICourseCatalogEntry.providedBy(obj) or ICourseInstance.providedBy(obj):
-				packages = get_course_packages(obj)
-				result = packages[0] if packages else None  # pick first
-				if result is not None:
-					break
-			elif IContentPackage.providedBy(obj):
-				result = obj
-				break
-			elif IContentUnit.providedBy(obj):
-				result = find_interface(obj, IContentPackage, strict=False)
-				if result is not None:
-					break
-		return result
-	except ImportError:
-		return None
-
-def get_item_content_package(item):
-	catalog = get_library_catalog()
-	entries = catalog.get_containers(item)
-	result = get_content_package_from_ntiids(entries) if entries else None
-	return result
 
 # content
 
