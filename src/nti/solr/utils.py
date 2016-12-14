@@ -40,8 +40,6 @@ from nti.ntiids.ntiids import find_object_with_ntiid, is_valid_ntiid_string
 
 from nti.schema.interfaces import find_most_derived_interface
 
-from nti.site.interfaces import ISiteTransactionRunner
-
 from nti.solr import ASSETS_CATALOG
 from nti.solr import COURSES_CATALOG
 from nti.solr import ENTITIES_CATALOG
@@ -142,6 +140,7 @@ def transacted_func(func=None, **kwargs):
 	site_names = (getSite().__name__,)
 
 	def _runner():
+		from nti.site.interfaces import ISiteTransactionRunner
 		transaction_runner = component.getUtility(ISiteTransactionRunner)
 		transaction_runner = functools.partial(transaction_runner,
 											   site_names=site_names,
@@ -217,3 +216,11 @@ for name, value in MIME_TYPE_CATALOG_MAP.items():
 	CATALOG_MIME_TYPE_MAP[value].add(name)
 CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = frozenset(_neg_ugd) # Negative query
 del _neg_ugd
+
+# register  mimeType
+
+def registerMimeType(mimeType, catalog):
+	if mimeType in MIME_TYPE_CATALOG_MAP:
+		raise ValueError("mimeType already registered")
+	MIME_TYPE_CATALOG_MAP[mimeType] = catalog
+	CATALOG_MIME_TYPE_MAP[catalog].add(mimeType)
