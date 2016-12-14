@@ -18,7 +18,8 @@ from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IRedaction, IUser
+from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IRedaction
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
