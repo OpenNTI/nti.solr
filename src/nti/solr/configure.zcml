@@ -430,6 +430,10 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
+	<adapter factory=".userdata._HighlightContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.IHighlight" />
+
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />

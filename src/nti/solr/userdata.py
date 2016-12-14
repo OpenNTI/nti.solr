@@ -18,7 +18,7 @@ from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IUser
+from nti.dataserver.interfaces import IUser, IHighlight
 from nti.dataserver.interfaces import IRedaction
 from nti.dataserver.interfaces import IUserGeneratedData
 
@@ -82,6 +82,13 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return self.get_content(context)
+
+@component.adapter(IHighlight)
+@interface.implementer(IContentValue)
+class _HighlightContentValue(_DefaultUserDataContentValue):
+
+	def get_content(self, context):
+		return context.selectedText
 
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IKeywordsValue)
