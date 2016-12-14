@@ -18,7 +18,7 @@ from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
-from nti.dataserver.interfaces import IRedaction
+from nti.dataserver.interfaces import IRedaction, IUser
 from nti.dataserver.interfaces import IUserGeneratedData
 
 from nti.dataserver.users import User
@@ -169,7 +169,7 @@ class UserDataCatalog(MetadataCatalog):
 
 	def memberships(self, username):
 		user = self.get_entity(username)
-		if user is not None:
+		if IUser.providedBy(user):
 			dynamic_memberships = user.usernames_of_dynamic_memberships or ()
 			usernames = itertools.chain((user.username,), dynamic_memberships)
 			return {x.lower() for x in usernames} - {'everyone'}
