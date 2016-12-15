@@ -125,12 +125,12 @@ class CoursesCatalog(MetadataCatalog):
 																	text_fields,
 																	return_fields)
 		if 'mimeType' not in fq:
-			types = CATALOG_MIME_TYPE_MAP.get(self.name)
+			types = self.get_mime_types(self.name)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params
 	
 	def clear(self, commit=None):
-		types = CATALOG_MIME_TYPE_MAP.get(COURSES_CATALOG)
+		types = self.get_mime_types(self.name)
 		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
 	reset = clear

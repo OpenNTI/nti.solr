@@ -54,6 +54,7 @@ from nti.solr.schema import SolrDatetime
 
 from nti.solr.utils import normalize_key
 from nti.solr.utils import object_finder
+from nti.solr.utils import mimeTypeRegistry
 
 from nti.zope_catalog.catalog import ResultSet
 
@@ -301,6 +302,10 @@ class CoreCatalog(object):
 		return self.client.search(term, **params)
 
 	# content search / ISearcher.suggest
+
+	def get_mime_types(self, catalog=None):
+		catalog = catalog or self.name
+		return mimeTypeRegistry.getMimeTypes(catalog)
 
 	@Lazy
 	def suggest_fields(self):

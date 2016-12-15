@@ -52,8 +52,6 @@ from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultSharedWithValue
 
-from nti.solr.utils import CATALOG_MIME_TYPE_MAP
-
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 from nti.solr.utils import resolve_content_parts
@@ -244,7 +242,7 @@ class UserDataCatalog(MetadataCatalog):
 		fq['isUserGeneratedData'] = "true" # always
 		searchOn = getattr(query, 'searchOn', None)
 		if 'mimeType' not in fq and searchOn:
-			types = CATALOG_MIME_TYPE_MAP.get(self.name) # XXX: Negative list
+			types = self.get_mime_types(self.name) # XXX: Negative list
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in searchOn if x not in types)
 		return term, fq, params
 

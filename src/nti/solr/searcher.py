@@ -40,10 +40,9 @@ from nti.solr import USERDATA_CATALOG
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ISOLRSearcher
 
-from nti.solr.utils import MIME_TYPE_CATALOG_MAP
-
 from nti.solr.utils import normalize_field
 from nti.solr.utils import transacted_func
+from nti.solr.utils import mimeTypeRegistry
 
 max_workers = multiprocessing.cpu_count()
 
@@ -74,7 +73,7 @@ class _SOLRSearcher(object):
 				# look for a mimeType catalog utility
 				catalog = component.queryUtility(ICoreCatalog, name=mimeType)
 				if catalog is None: # use mapper
-					name = MIME_TYPE_CATALOG_MAP.get(mimeType) or u''
+					name = mimeTypeRegistry.getCatalog(mimeType, u'')
 					catalog = component.queryUtility(ICoreCatalog, name=name)
 				if catalog is None: # defaults to userdata
 					catalog = component.queryUtility(ICoreCatalog, name=USERDATA_CATALOG)

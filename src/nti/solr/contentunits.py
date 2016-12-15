@@ -41,8 +41,6 @@ from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 
-from nti.solr.utils import CATALOG_MIME_TYPE_MAP
-
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 
@@ -165,12 +163,12 @@ class ContentUnitsCatalog(MetadataCatalog):
 			packs = packs.split() if isinstance(packs, six.string_types) else packs
 			fq['containerId'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in packs)
 		if 'mimeType' not in fq:
-			types = CATALOG_MIME_TYPE_MAP.get(self.name)
+			types = self.get_mime_types(self.name)
 			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		return term, fq, params
 
 	def clear(self, commit=None):
-		types = CATALOG_MIME_TYPE_MAP.get(self.name)
+		types = self.get_mime_types(self.name)
 		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
 		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
 	reset = clear

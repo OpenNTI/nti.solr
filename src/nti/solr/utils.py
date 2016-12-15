@@ -153,9 +153,43 @@ def gevent_spawn(func=None, **kwargs):
 	greenlet = gevent.spawn(transacted_func(func, **kwargs))
 	return greenlet
 
-# Known mimeTypes used to map to their corresponding
-# search catalogs
+# MimeType / Catalog registry
+class MimeTypeRegistry(object):
+	
+	instance = None
+	
+	def __new__(cls, *args, **kwargs):
+		if cls.instance is None:
+			cls.instance = super(MimeTypeRegistry, cls).__new__(cls, *args, **kwargs)
+		return cls.instance
 
+	def __init__(self, *args, **kwargs):
+		self.mime_type_catalog = {}
+		self.catalog_mime_type = defaultdict(set)
+		
+	def register_mime_type(self, mimeType, catalog):
+		if mimeType in self.mime_type_catalog:
+			raise ValueError("mimeType already registered")
+		if catalog == USERDATA_CATALOG:
+			raise ValueError("Cannot register in userdata catalog")
+		self.mime_type_catalog[mimeType] = catalog
+		self.catalog_mime_type[catalog].add(mimeType)
+		self.catalog_mime_type[USERDATA_CATALOG].add(mimeType) # Negative list
+	registerMimeType = register_mime_type
+	
+	def get_catalog(self, mimeType, default=None):
+		return self.mime_type_catalog.get(mimeType, default)
+	getCatalog = get_catalog
+	
+	def get_mime_types(self, catalog):
+		result = self.catalog_mime_type.get(catalog)
+		return tuple(result) if result else None
+	getMimeTypes = get_mime_types
+	
+# Global registry 
+mimeTypeRegistry = MimeTypeRegistry()
+
+# Known mimeTypes used to map to their corresponding  search catalogs
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
 CONTENT_UNIT_MIME_TYPE = u'application/vnd.nextthought.contentunit'
@@ -174,56 +208,42 @@ COMMUNITY_MIME_TYPE = u'application/vnd.nextthought.community'
 DFL_MIME_TYPE = u'application/vnd.nextthought.dynamicfriendslist'
 FRIEND_LISTS_MIME_TYPE = u'application/vnd.nextthought.friendslist'
 
-MIME_TYPE_CATALOG_MAP = {
+def _register():
 	# content
-	CONTENT_MIME_TYPE: CONTENT_UNITS_CATALOG,
-	BOOK_CONTENT_MIME_TYPE: CONTENT_UNITS_CATALOG,
-	CONTENT_UNIT_MIME_TYPE: CONTENT_UNITS_CATALOG,
-	CONTENT_PACKAGE_MIME_TYPE: CONTENT_UNITS_CATALOG,
+	mimeTypeRegistry.registerMimeType(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+	mimeTypeRegistry.registerMimeType(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+	mimeTypeRegistry.registerMimeType(CONTENT_UNIT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+	mimeTypeRegistry.registerMimeType(CONTENT_PACKAGE_MIME_TYPE, CONTENT_UNITS_CATALOG)
+	
 	# transcripts
-	NTI_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
-	AUDIO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
-	VIDEO_TRANSCRIPT_MIME_TYPE: TRANSCRIPTS_CATALOG,
+	mimeTypeRegistry.registerMimeType(NTI_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+	mimeTypeRegistry.registerMimeType(AUDIO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+	mimeTypeRegistry.registerMimeType(VIDEO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+	
 	# courses
-	COURSE_MIME_TYPE: COURSES_CATALOG,
-	CATALOG_ENTRY_MIME_TYPE: COURSES_CATALOG,
-	CATALOG_LEGACY_ENTRY_MIME_TYPE: COURSES_CATALOG,
+	mimeTypeRegistry.registerMimeType(COURSE_MIME_TYPE, COURSES_CATALOG)
+	mimeTypeRegistry.registerMimeType(CATALOG_ENTRY_MIME_TYPE, COURSES_CATALOG)
+	mimeTypeRegistry.registerMimeType(CATALOG_LEGACY_ENTRY_MIME_TYPE, COURSES_CATALOG)
+	
 	# entities
-	DFL_MIME_TYPE: ENTITIES_CATALOG,
-	USER_MIME_TYPE: ENTITIES_CATALOG,
-	COMMUNITY_MIME_TYPE: ENTITIES_CATALOG,
-	FRIEND_LISTS_MIME_TYPE: ENTITIES_CATALOG,
-}
-# assets
-for m in chain(AUDIO_MIMETYES, 
-			   VIDEO_MIMETYES, 
-			   TIMELINE_MIMETYES,
-			   RELATED_WORK_REF_MIMETYES):
-	MIME_TYPE_CATALOG_MAP[m] = ASSETS_CATALOG
-# evaluations
-try:
-	from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
-	for m in ALL_EVALUATION_MIME_TYPES:
-		MIME_TYPE_CATALOG_MAP[m] = EVALUATIONS_CATALOG
-except ImportError:
-	pass
-
-# reverse
-negative_userdata = set()
-CATALOG_MIME_TYPE_MAP = defaultdict(set)
-for name, value in MIME_TYPE_CATALOG_MAP.items():
-	negative_userdata.add(name)
-	CATALOG_MIME_TYPE_MAP[value].add(name)
-CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = set(negative_userdata) # Negative query
-del negative_userdata
-
-# register  mimeType
-
-def registerMimeType(mimeType, catalog):
-	if mimeType in MIME_TYPE_CATALOG_MAP:
-		raise ValueError("mimeType already registered")
-	if catalog == USERDATA_CATALOG:
-		raise ValueError("Cannot register in userdata catalog")
-	MIME_TYPE_CATALOG_MAP[mimeType] = catalog
-	CATALOG_MIME_TYPE_MAP[catalog].add(mimeType)
-	CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG].add(mimeType) # Negative list
+	mimeTypeRegistry.registerMimeType(DFL_MIME_TYPE, ENTITIES_CATALOG)
+	mimeTypeRegistry.registerMimeType(USER_MIME_TYPE, ENTITIES_CATALOG)
+	mimeTypeRegistry.registerMimeType(COMMUNITY_MIME_TYPE, ENTITIES_CATALOG)
+	mimeTypeRegistry.registerMimeType(FRIEND_LISTS_MIME_TYPE, ENTITIES_CATALOG)
+	
+	# assets
+	for m in chain(AUDIO_MIMETYES, 
+				   VIDEO_MIMETYES, 
+				   TIMELINE_MIMETYES,
+				   RELATED_WORK_REF_MIMETYES):
+		mimeTypeRegistry.registerMimeType(m, ASSETS_CATALOG)
+		
+	# evaluations
+	try:
+		from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
+		for m in ALL_EVALUATION_MIME_TYPES:
+			mimeTypeRegistry.registerMimeType(m, EVALUATIONS_CATALOG)
+	except ImportError:
+		pass
+_register()
+del _register
