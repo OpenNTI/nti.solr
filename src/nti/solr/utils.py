@@ -209,18 +209,21 @@ except ImportError:
 	pass
 
 # reverse
-_neg_ugd = set()
+negative_userdata = set()
 CATALOG_MIME_TYPE_MAP = defaultdict(set)
 for name, value in MIME_TYPE_CATALOG_MAP.items():
-	_neg_ugd.add(name)
+	negative_userdata.add(name)
 	CATALOG_MIME_TYPE_MAP[value].add(name)
-CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = frozenset(_neg_ugd) # Negative query
-del _neg_ugd
+CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG] = set(negative_userdata) # Negative query
+del negative_userdata
 
 # register  mimeType
 
 def registerMimeType(mimeType, catalog):
 	if mimeType in MIME_TYPE_CATALOG_MAP:
 		raise ValueError("mimeType already registered")
+	if catalog == USERDATA_CATALOG:
+		raise ValueError("Cannot register in userdata catalog")
 	MIME_TYPE_CATALOG_MAP[mimeType] = catalog
 	CATALOG_MIME_TYPE_MAP[catalog].add(mimeType)
+	CATALOG_MIME_TYPE_MAP[USERDATA_CATALOG].add(mimeType) # Negative list
