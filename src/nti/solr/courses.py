@@ -34,8 +34,6 @@ from nti.solr.lucene import lucene_escape
 from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
-from nti.solr.utils import CATALOG_MIME_TYPE_MAP
-
 from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
