@@ -260,7 +260,8 @@
 	<copyField source="professional_*" dest="_text_"/>
 
 	<!-- Tagged Content -->
-	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="false"/>
+	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="true"
+		   termVectors="true" termPositions="true" termOffsets="true" />
 	<copyField source="tags" dest="_text_"/>
 	<copyField source="tags" dest="suggest"/>
 	<copyField source="tags" dest="suggest_ngram"/>

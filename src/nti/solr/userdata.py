@@ -33,11 +33,12 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
 
-from nti.solr.interfaces import ITagsValue, ICreatorValue
+from nti.solr.interfaces import ITagsValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IChannelValue
 from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IRecipientsValue
 from nti.solr.interfaces import ISharedWithValue
