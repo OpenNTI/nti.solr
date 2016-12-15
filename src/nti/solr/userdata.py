@@ -69,9 +69,8 @@ class _UserDataSharedWithValue(DefaultSharedWithValue):
 	
 	def value(self, context=None):
 		context = self.context if context is None else context
-		sharedWith = DefaultSharedWithValue.value(self, context)
-		if not sharedWith: # add creator
-			sharedWith = (ICreatorValue(context).value(),)
+		sharedWith = tuple(DefaultSharedWithValue.value(self, context) or ())
+		sharedWith = (ICreatorValue(context).value(),) + sharedWith
 		return sharedWith
 
 @component.adapter(ITitledContent)
@@ -111,12 +110,18 @@ class _HighlightContentValue(_DefaultUserDataContentValue):
 		return context.selectedText
 
 @component.adapter(IHeadlineTopic)
+@interface.implementer(ITitleValue)
+class _HeadlineTopicTitleValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		return None
+
+@component.adapter(IHeadlineTopic)
 @interface.implementer(IContentValue)
 class _HeadlineTopicContentValue(_DefaultUserDataContentValue):
 
 	def value(self, context=None):
-		context = self.context if context is None else context
-		return self.get_content(context.headline)
+		return None
 
 @component.adapter(IUserGeneratedData)
 @interface.implementer(IKeywordsValue)
