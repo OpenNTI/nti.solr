@@ -182,9 +182,9 @@ class MimeTypeRegistry(object):
 		return self.mime_type_catalog.get(mimeType, default)
 	getCatalog = get_catalog
 	
-	def get_mime_types(self, catalog):
+	def get_mime_types(self, catalog, default=()):
 		result = self.catalog_mime_type.get(catalog)
-		return tuple(result) if result else None
+		return tuple(result) if result else default
 	getMimeTypes = get_mime_types
 	
 # Global registry 
