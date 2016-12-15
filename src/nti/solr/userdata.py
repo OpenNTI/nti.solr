@@ -70,7 +70,7 @@ class _UserDataSharedWithValue(DefaultSharedWithValue):
 	def value(self, context=None):
 		context = self.context if context is None else context
 		sharedWith = set(DefaultSharedWithValue.value(self, context) or ())
-		sharedWith = sharedWith.add(ICreatorValue(context).value())
+		sharedWith.add(ICreatorValue(context).value())
 		return tuple(sharedWith)
 
 @component.adapter(ITitledContent)
