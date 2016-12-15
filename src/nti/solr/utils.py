@@ -36,7 +36,8 @@ from nti.contenttypes.presentation import VIDEO_MIMETYES
 from nti.contenttypes.presentation import TIMELINE_MIMETYES
 from nti.contenttypes.presentation import RELATED_WORK_REF_MIMETYES
 
-from nti.ntiids.ntiids import find_object_with_ntiid, is_valid_ntiid_string
+from nti.ntiids.ntiids import is_valid_ntiid_string
+from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.schema.interfaces import find_most_derived_interface
 
