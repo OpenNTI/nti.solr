@@ -33,13 +33,14 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
 
-from nti.solr.interfaces import ITagsValue
+from nti.solr.interfaces import ITagsValue, ICreatorValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IChannelValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IRecipientsValue
+from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IExplanationValue
 from nti.solr.interfaces import IUserDataDocument
 from nti.solr.interfaces import IReplacementContentValue
@@ -48,6 +49,7 @@ from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
+from nti.solr.metadata import DefaultSharedWithValue
 
 from nti.solr.utils import CATALOG_MIME_TYPE_MAP
 
@@ -59,6 +61,17 @@ class _BasicAttributeValue(object):
 
 	def __init__(self, context=None, default=None):
 		self.context = context
+
+@component.adapter(ISharedWithValue)
+@interface.implementer(IUserGeneratedData)
+class _UserDataSharedWithValue(DefaultSharedWithValue):
+	
+	def value(self, context=None):
+		context = self.context if context is None else context
+		sharedWith = DefaultSharedWithValue.value(self, context)
+		if not sharedWith: # add creator
+			sharedWith = (ICreatorValue(context).value(),)
+		return sharedWith
 
 @component.adapter(ITitledContent)
 @interface.implementer(ITitleValue)

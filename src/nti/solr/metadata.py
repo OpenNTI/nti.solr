@@ -265,6 +265,7 @@ class _DefaultSharedWithValue(_BasicAttributeValue):
 		if sharedWith is not None:
 			sharedWith = tuple(to_unicode(x.lower()) for x in sharedWith)
 		return sharedWith
+DefaultSharedWithValue = _DefaultSharedWithValue
 
 @interface.implementer(ITaggedToValue)
 class _DefaultTaggedToValue(_BasicAttributeValue):
