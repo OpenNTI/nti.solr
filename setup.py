@@ -48,6 +48,7 @@ setup(
 	tests_require=TESTS_REQUIRE,
 	install_requires=[
 		'setuptools',
+		'pyparsing',
 		'pysolr',
 		'nti.async',
 		'nti.contentindexing',
