@@ -450,9 +450,13 @@
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 			 
-	<adapter factory=".userdata._DefaultTaggsValue"
+	<adapter factory=".userdata._DefaultTagsValue"
 			 provides=".interfaces.ITagsValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+			 for="nti.dataserver.interfaces.IUserTaggedContent" />
+
+	<adapter factory=".userdata._HeadlineTopicTagsValue"
+			 provides=".interfaces.ITagsValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
 
 	<adapter factory=".userdata._DefaultChannelValue"
 			 provides=".interfaces.IChannelValue"

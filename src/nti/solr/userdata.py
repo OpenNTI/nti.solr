@@ -23,9 +23,9 @@ from nti.dataserver.contenttypes.forums.interfaces import IHeadlineTopic
 from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IHighlight 
 from nti.dataserver.interfaces import IRedaction
-from nti.dataserver.interfaces import ITaggedContent
 from nti.dataserver.interfaces import ITitledContent
 from nti.dataserver.interfaces import IUserGeneratedData
+from nti.dataserver.interfaces import IUserTaggedContent
 
 from nti.dataserver.users import User
 
@@ -140,13 +140,20 @@ class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
 			return get_keywords(adapted.value(), self.language)
 		return ()
 
-@component.adapter(ITaggedContent)
 @interface.implementer(ITagsValue)
-class _DefaultTaggsValue(_BasicAttributeValue):
+@component.adapter(IUserTaggedContent)
+class _DefaultTagsValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		context = self.context if context is None else context
 		return context.tags or ()
+
+@component.adapter(IHeadlineTopic)
+@interface.implementer(ITagsValue)
+class _HeadlineTopicTagsValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		return None
 
 @component.adapter(IMessageInfo)
 @interface.implementer(IChannelValue)
