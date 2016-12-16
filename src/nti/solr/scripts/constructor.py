@@ -15,6 +15,8 @@ from z3c.autoinclude.zcml import includePluginsDirective
 
 from nti.async.utils.processor import Processor
 
+from nti.dataserver.utils.base_script import create_context
+
 from nti.solr import QUEUE_NAMES
 
 class PluginPoint(Contained):
@@ -32,6 +34,11 @@ class Constructor(Processor):
 	def extend_context(self, context):
 		includePluginsDirective(context, PP_SOLR)
 
+	def create_context(self, env_dir):
+		context = create_context(env_dir, with_library=True, plugins=False, slugs=False)
+		self.extend_context(context)
+		return context
+	
 	def process_args(self, args):
 		setattr(args, 'redis', True)
 		setattr(args, 'library', True)  # load library
