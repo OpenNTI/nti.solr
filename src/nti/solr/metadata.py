@@ -23,12 +23,12 @@ from zope.intid.interfaces import IIntIds
 
 from zope.mimetype.interfaces import IContentTypeAware
 
+from nti.base.interfaces import ICreatedTime
+from nti.base.interfaces import ILastModified
+
 from nti.common.string import to_unicode
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
-
-from nti.coremetadata.interfaces import ICreatedTime
-from nti.coremetadata.interfaces import ILastModified
 
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlinePost
@@ -229,7 +229,7 @@ class _DefaultIntIdValue(_BasicAttributeValue):
 DefaultObjectIntIdValue = _DefaultIntIdValue
 
 @interface.implementer(IContainersValue)
-class _DefaultContainerIdValue(_BasicAttributeValue):
+class _DefaultContainersValue(_BasicAttributeValue):
 
 	_IGNORED_TYPES = {TYPE_OID, TYPE_UUID, TYPE_INTID}
 

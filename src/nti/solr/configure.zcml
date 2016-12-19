@@ -84,7 +84,7 @@
 			 provides=".interfaces.ILastModifiedValue"
 			 for="*" />
 
- 	<adapter factory=".metadata._DefaultContainerIdValue"
+ 	<adapter factory=".metadata._DefaultContainersValue"
 			 provides=".interfaces.IContainersValue"
 			 for="*" />
 
@@ -449,7 +449,11 @@
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-			 
+			
+	<adapter factory=".userdata._UserGeneratedDataContainersValue"
+			 provides=".interfaces.IContainersValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+ 
 	<adapter factory=".userdata._DefaultTagsValue"
 			 provides=".interfaces.ITagsValue"
 			 for="nti.dataserver.interfaces.IUserTaggedContent" />

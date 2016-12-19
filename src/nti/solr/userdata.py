@@ -16,6 +16,8 @@ from zope import interface
 
 from nti.chatserver.interfaces import IMessageInfo
 
+from nti.common.string import to_unicode
+
 from nti.coremetadata.interfaces import IModeledContentBody
 
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlineTopic
@@ -26,6 +28,7 @@ from nti.dataserver.interfaces import IRedaction
 from nti.dataserver.interfaces import ITitledContent
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IUserTaggedContent
+from nti.dataserver.interfaces import IContained as INTIContained
 
 from nti.dataserver.users import User
 
@@ -40,6 +43,7 @@ from nti.solr.interfaces import IChannelValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import IRecipientsValue
 from nti.solr.interfaces import ISharedWithValue
 from nti.solr.interfaces import IExplanationValue
@@ -152,6 +156,19 @@ class _HeadlineTopicTagsValue(_BasicAttributeValue):
 
 	def value(self, context=None):
 		return None
+
+@interface.implementer(IContainersValue)
+@component.adapter(IUserGeneratedData)
+class _UserGeneratedDataContainersValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		context = self.context if context is None else context
+		contained = INTIContained(context, context)
+		try:
+			cid = contained.containerId
+			return (to_unicode(cid),)
+		except AttributeError:
+			return None
 
 @component.adapter(IMessageInfo)
 @interface.implementer(IChannelValue)
