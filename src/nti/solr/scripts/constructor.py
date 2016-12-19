@@ -38,7 +38,7 @@ class Constructor(Processor):
 		context = create_context(env_dir, with_library=True, 
 								 plugins=False, 
 								 slugs=True,
-								 slugs_files="*solr.zcml")
+								 slugs_files=("*solr.zcml", "*features.zcml"))
 		self.extend_context(context)
 		return context
 	
