@@ -35,9 +35,15 @@ class Constructor(Processor):
 		includePluginsDirective(context, PP_SOLR)
 
 	def create_context(self, env_dir):
-		context = create_context(env_dir, with_library=True, plugins=False, slugs=False)
+		context = create_context(env_dir, with_library=True, 
+								 plugins=False, 
+								 slugs=True,
+								 slugs_files="*solr.zcml")
 		self.extend_context(context)
 		return context
+	
+	def conf_packages(self):
+		return (self.conf_package, 'nti.app.solr', 'nti.async')
 	
 	def process_args(self, args):
 		setattr(args, 'redis', True)
