@@ -5,6 +5,7 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+import site
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -43,6 +44,12 @@ from nti.solr.utils import object_finder
 
 # queue funcs
 
+def get_site(site_name=None):
+	if site_name is None:
+		site = getSite()
+		site_name = site.__name__ if site is not None else None
+	return site_name
+
 def datetime_isoformat(now=None):
 	now = now or datetime.now()
 	return isodate.datetime_isoformat(now)
@@ -59,12 +66,12 @@ def put_job(name, func, jid, *args, **kwargs):
 	return job
 
 def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
+	site = get_site(site)
 	adpated = IIDValue(obj, None)
 	catalog = ICoreCatalog(obj, None)
-	site = getSite().__name__ if site is None else site
 	core = catalog.name if not core and catalog else core
 	doc_id = adpated.value() if adpated is not None else None
-	if doc_id and core:
+	if doc_id and core and site:
 		jid = '%s_%s' % (doc_id, jid)
 		return put_job(name, func, jid=jid, source=doc_id, site=site, core=core, **kwargs)
 	return None
