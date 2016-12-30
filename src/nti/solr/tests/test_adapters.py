@@ -18,9 +18,9 @@ from zope import interface
 
 from zope.mimetype.interfaces import IContentTypeAware
 
-from nti.coremetadata.interfaces import ICreated
-from nti.coremetadata.interfaces import ICreatedTime 
-from nti.coremetadata.interfaces import ILastModified 
+from nti.base.interfaces import ICreated
+from nti.base.interfaces import ICreatedTime 
+from nti.base.interfaces import ILastModified 
 
 from nti.dataserver.users import User
 
