@@ -36,7 +36,8 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import USERDATA_CATALOG
 
-from nti.solr.interfaces import ITagsValue
+from nti.solr.interfaces import IIDValue
+from nti.solr.interfaces import ITagsValue 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IChannelValue
@@ -110,6 +111,13 @@ class _HighlightContentValue(_DefaultUserDataContentValue):
 
 	def get_content(self, context):
 		return context.selectedText
+
+@interface.implementer(IIDValue)
+@component.adapter(IHeadlineTopic)
+class _HeadlineTopicIDValue(_BasicAttributeValue):
+
+	def value(self, context=None):
+		return None
 
 @component.adapter(IHeadlineTopic)
 @interface.implementer(ITitleValue)

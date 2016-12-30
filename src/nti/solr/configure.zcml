@@ -438,6 +438,10 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IHighlight" />
 
+	<adapter factory=".userdata._HeadlineTopicIDValue"
+			 provides=".interfaces.IIDValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
+
 	<adapter factory=".userdata._HeadlineTopicTitleValue"
 			 provides=".interfaces.ITitleValue"
 			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
