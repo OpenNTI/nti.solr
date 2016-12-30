@@ -155,7 +155,8 @@
 	<subscriber handler=".userdata._unindex_userdata"
 				for="nti.dataserver.interfaces.IUserGeneratedData
 				 	 ..interfaces.IUnindexObjectEvent"/>
-
+	<!--
 	<subscriber handler=".stream.onChange" />
+	-->
 
 </configure>
