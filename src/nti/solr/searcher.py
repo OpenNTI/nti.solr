@@ -115,13 +115,12 @@ class _SOLRSearcher(object):
             for event in events or ():
                 hit = self._get_search_hit(catalog, event, events.highlighting)
                 if hit is not None:
-                    yield hit, events.hits
+                    yield hit
         except Exception:
             logger.exception(
                 "Error while executing query %s on %s", query, catalog)
 
     def search(self, query, *args, **kwargs):
-        numFound = 0
         generators = []
         query = ISearchQuery(query)
         clone = self._query_clone(query)
@@ -147,12 +146,9 @@ class _SOLRSearcher(object):
             pool.join()
         # collect values
         for generator in generators:
-            found = 0  # in case no results
             values = generator.get() if parallel_search else generator
-            for hit, found in values:
+            for hit in values:
                 result.add(hit)
-            numFound += found  # found is the same value
-        result.NumFound = numFound
         return result
 
     def _get_suggestions(self, catalog, events):
