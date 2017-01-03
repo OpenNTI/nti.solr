@@ -36,19 +36,19 @@
 	<adapter factory=".adapters._StringValue"
 			 provides=".interfaces.IStringValue"
 			 for="basestring" />
-			 
+
 	<adapter factory=".adapters._default_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.ISearchHit"
 			 for="* dolmen.builtins.interfaces.IDict" />
 
 	<adapter factory=".adapters._transcript_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.ITranscriptSearchHit"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript 
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript
 			 	  dolmen.builtins.interfaces.IDict" />
 
 	<adapter factory=".adapters.ugd_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.IUserGeneratedDataSearchHit"
-			 for="nti.dataserver.interfaces.IUserGeneratedData 
+			 for="nti.dataserver.interfaces.IUserGeneratedData
 			 	  dolmen.builtins.interfaces.IDict" />
 
 	<!-- Metadata -->
@@ -196,43 +196,43 @@
 		<adapter factory=".contentunits._DefaultContentUnitIDValue"
 				 provides=".interfaces.IIDValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._DefaultContainerIdValue"
 				 provides=".interfaces.IContainersValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._DefaultTitleValue"
 				 provides=".interfaces.ITitleValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._DefaultContentUnitContentValue"
 				 provides=".interfaces.IContentValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
 				 provides=".interfaces.IKeywordsValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._ContentUnitDocumentCreator"
 				 provides=".interfaces.IContentUnitDocument"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<adapter factory=".contentunits._contentunit_to_catalog"
 				 provides=".interfaces.ICoreCatalog"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
-	
+
 		<utility factory=".contentunits.ContentUnitsCatalog"
 				 provides=".interfaces.ICoreCatalog"
 				 name='contentunits' />
-	
+
 		<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
 				 for=".interfaces.IContentUnitDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
-				 
+
 		<adapter factory=".adapters._contentunit_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.IContentUnitSearchHit"
-			 for="nti.contentlibrary.interfaces.IContentUnit 
+			 for="nti.contentlibrary.interfaces.IContentUnit
 			 	  dolmen.builtins.interfaces.IDict" />
 
 	</configure>
@@ -378,16 +378,16 @@
 		<adapter factory=".transcripts._TranscriptContentValue"
 				 provides=".interfaces.IContentValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-				 
+
 		<adapter factory="._mixins._TranscriptSource"
 				 provides=".interfaces.ITranscriptSourceValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-				 
+
 		<adapter factory="._mixins._TranscriptContainerIdValue"
 				 provides=".interfaces.IContainersValue"
 				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 	</configure>
-	
+
 	<adapter factory=".transcripts._TranscriptCueMimeTypeValue"
 			 provides=".interfaces.IMimeTypeValue"
 			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
@@ -453,11 +453,11 @@
 	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
 			 provides=".interfaces.IKeywordsValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-			
+
 	<adapter factory=".userdata._UserGeneratedDataContainersValue"
 			 provides=".interfaces.IContainersValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
- 
+
 	<adapter factory=".userdata._DefaultTagsValue"
 			 provides=".interfaces.ITagsValue"
 			 for="nti.dataserver.interfaces.IUserTaggedContent" />
@@ -508,24 +508,22 @@
 	<subscriber factory=".decorators._SearchFragmentDecorator"
 				for="nti.contentsearch.interfaces.ISearchFragment"
 				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
-	
+
 	<subscriber factory=".decorators._SearchHitDecorator"
 				for="nti.contentsearch.interfaces.ISearchHit"
 				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
-	
+
 	<subscriber factory=".decorators._UGDSearchHitDecorator"
 				for="nti.contentsearch.interfaces.IUserGeneratedDataSearchHit"
 				provides="nti.externalization.interfaces.IExternalObjectDecorator"/>
-		
+
 	<!-- Subscribers -->
 	<include package=".subscribers" />
 
-	<configure zcml:condition="have devmode">
-		<configure zcml:condition="not-have testmode">
-			<adapter factory=".searcher._SOLRSearcher"
-				 	 for="nti.dataserver.interfaces.IUser"
-			 		 provides=".interfaces.ISOLRSearcher" />
-		</configure>
+	<configure zcml:condition="not-have testmode">
+		<adapter factory=".searcher._SOLRSearcher"
+				 for="nti.dataserver.interfaces.IUser"
+			 	 provides=".interfaces.ISOLRSearcher" />
 	</configure>
 
 	<configure zcml:condition="have devmode">
