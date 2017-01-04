@@ -309,6 +309,10 @@ class CoreCatalog(object):
     def _prepare_solr_query(self, term, fq, params):
         return prepare_solr_query(term, fq, params)
 
+    def execute(self, term, fq, params):
+        term, params = self._prepare_solr_query(term, fq, params)
+        return self.client.search(term, **params)
+    
     def search(self, query, *args, **kwargs):
         term, fq, params = self.build_from_search_query(query)
         term, params = self._prepare_solr_query(term, fq, params)

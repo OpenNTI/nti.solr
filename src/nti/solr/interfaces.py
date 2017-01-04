@@ -720,12 +720,23 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         
     def build_from_search_query(query):
         """
-        Return a triplet (:class:`ISOLRQueryTerm`, 
-        :class:`ISOLRFilterQuery`, :class:`ISOLRQueryParams`) from the specified query
+        Return a triplet 
+        (:class:`ISOLRQueryTerm`, 
+         :class:`ISOLRFilterQuery`, 
+         :class:`ISOLRQueryParams`) from the specified query
         
         :param query a :class:`nti.contentsearch.interfaces.ISearcherQuery` object
         """
 
+    def execute(term, fq, params):
+        """
+        Execute a solr search
+        
+        :param term a :class:`ISOLRQueryTerm` object
+        :param fq a :class:`ISOLRFilterQuery` object
+        :param params a :class:`ISOLRQueryParams` object
+        """
+        
 class IIndexObjectEvent(IObjectEvent):
     """
     Event to signal object must be indexed
