@@ -10,9 +10,6 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import copy
-import multiprocessing
-
-import gevent
 
 from zope import component
 from zope import interface
@@ -37,19 +34,15 @@ from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ISOLRSearcher
 
 from nti.solr.utils import normalize_field
-from nti.solr.utils import transacted_func
 from nti.solr.utils import mimeTypeRegistry
-
-max_workers = multiprocessing.cpu_count()
 
 
 @component.adapter(IUser)
 @interface.implementer(ISOLRSearcher)
 class _SOLRSearcher(object):
 
-    def __init__(self, entity=None, parallel_search=False):
+    def __init__(self, entity=None):
         self.entity = entity
-        self.parallel_search = False
 
     @Lazy
     def intids(self):
@@ -126,28 +119,14 @@ class _SOLRSearcher(object):
         clone = self._query_clone(query)
         catalogs = self.query_search_catalogs(query)
         result = SearchResults(Name="Hits", Query=query)
-        # gevent pool
-        parallel_search = self.parallel_search and len(catalogs) > 1
-        pool = gevent.pool.Pool(max_workers) if parallel_search else None
         # perform searched
         for catalog in catalogs or ():
             if catalog.skip:
                 continue
-            if parallel_search:
-                runner = transacted_func(func=self._do_search,
-                                         catalog=catalog,
-                                         query=clone)
-                greenlet = pool.apply_async(runner)
-                generators.append(greenlet)
-            else:
-                generators.append(self._do_search(catalog, clone))
-        # wait for greenlets
-        if parallel_search:
-            pool.join()
+            generators.append(self._do_search(catalog, clone))
         # collect values
         for generator in generators:
-            values = generator.get() if parallel_search else generator
-            for hit in values:
+            for hit in generator:
                 result.add(hit)
         return result
 
