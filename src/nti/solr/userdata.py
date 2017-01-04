@@ -301,6 +301,6 @@ class UserDataCatalog(MetadataCatalog):
         if username:
             q.append("creator:%s" % lucene_escape(username))
         q = "(%s)" % self._AND_.join(q)
-        self.client.delete(
-            q=q, commit=self.auto_commit if commit is None else bool(commit))
+        commit = self.auto_commit if commit is None else bool(commit)
+        self.client.delete(q=q, commit=commit)
     reset = clear
