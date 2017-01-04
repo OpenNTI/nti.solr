@@ -147,13 +147,19 @@ def prepare_solr_query(term, fq, params):
         term = "((%s)%s(%s))" % (term, _AND_, fq_query)
     return term, params
 
-def merge_solr_triplets(triplets):
-    term, fq, params = triplets[0]
-    for t_term, t_fq, t_params in triplets[1:]:
-        fq += t_fq
-        term += t_term
-        params += t_params
-    return term, fq, params
+def prepare_solr_triplets(triplets):
+    terms = []
+    params = None
+    for count, triplet in enumerate(triplets):
+        term, fq, t_params = triplet
+        if count:
+            params += t_params
+        else:
+            params = t_params
+        term, params = prepare_solr_query(term, fq, params)
+        terms.append(term)
+    term = _OR_.join(terms)
+    return term, params
 
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)
