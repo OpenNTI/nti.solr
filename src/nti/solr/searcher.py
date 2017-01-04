@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.solr.query import prepare_solr_triplets
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -34,6 +33,8 @@ from nti.solr import USERDATA_CATALOG
 
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ISOLRSearcher
+
+from nti.solr.query import prepare_solr_triplets
 
 from nti.solr.utils import normalize_field
 from nti.solr.utils import mimeTypeRegistry
@@ -125,7 +126,7 @@ class _SOLRSearcher(object):
             if catalog.skip:
                 continue
             core = catalog.core
-            cores[core] = catalog # store
+            cores[core] = catalog  # store
             queries[core].append(catalog.build_from_search_query(query))
         # perform search
         for core, triplet in queries.items():
