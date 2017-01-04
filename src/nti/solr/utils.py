@@ -124,9 +124,8 @@ def object_finder(doc_id, intids=None):
     if is_valid_ntiid_string(doc_id):
         return find_object_with_ntiid(doc_id)
     else:
+        intids = component.getUtility(IIntIds) if intids is None else intids
         try:
-            intids = component.getUtility(
-                IIntIds) if intids is None else intids
             return intids.queryObject(int(doc_id))
         except (ValueError, TypeError):
             logger.error("Cannot get object with id %s", doc_id)
