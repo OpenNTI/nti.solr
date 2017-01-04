@@ -48,10 +48,11 @@ class TermMixin(object):
 
     def __contains__(self, *args, **kwargs):
         return self._terms.__contains__(*args, **kwargs)
-            
+
     def __iadd__(self, other):
         self._terms.update(other._terms)
         return self
+
 
 @interface.implementer(ISOLRQueryTerm)
 class QueryTerm(TermMixin):
@@ -122,7 +123,7 @@ class QueryParms(dict):
             if values:
                 own = set(self.pop(name) or ())
                 own.update(values)
-                temp[name] = list(values)
+                temp[name] = list(own)
         # update list fields
         self.update(temp)
         for name, value in other.items():
@@ -147,6 +148,7 @@ def prepare_solr_query(term, fq, params):
         term = "((%s)%s(%s))" % (term, _AND_, fq_query)
     return term, params
 
+
 def prepare_solr_triplets(triplets):
     terms = []
     params = None
@@ -160,6 +162,7 @@ def prepare_solr_triplets(triplets):
         terms.append(term)
     term = _OR_.join(terms)
     return term, params
+
 
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)
