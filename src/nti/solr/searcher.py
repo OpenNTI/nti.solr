@@ -5,11 +5,13 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
+from nti.solr.query import prepare_solr_triplets
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
 import copy
+from collections import defaultdict
 
 from zope import component
 from zope import interface
@@ -102,31 +104,34 @@ class _SOLRSearcher(object):
             logger.debug('Could not create hit for %s. %s', result, e)
         return None
 
-    def _do_search(self, catalog, query, *args, **kwargs):
+    def _do_search(self, catalog, term, params):
         try:
-            events = catalog.search(query, *args, **kwargs)
+            events = catalog.client.search(term, **params)
             for event in events or ():
                 hit = self._get_search_hit(catalog, event, events.highlighting)
                 if hit is not None:
                     yield hit
         except Exception:
-            logger.exception(
-                "Error while executing query %s on %s", query, catalog)
+            logger.exception("Error while executing query %s", term)
 
     def search(self, query, *args, **kwargs):
-        generators = []
+        cores = {}
+        queries = defaultdict(list)
         query = ISearchQuery(query)
-        clone = self._query_clone(query)
         catalogs = self.query_search_catalogs(query)
         result = SearchResults(Name="Hits", Query=query)
-        # perform search
+        # collect catalogs by core and build query triplets
         for catalog in catalogs or ():
             if catalog.skip:
                 continue
-            generators.append(self._do_search(catalog, clone))
-        # collect values
-        for generator in generators:
-            for hit in generator:
+            core = catalog.core
+            cores[core] = catalog # store
+            queries[core].append(catalog.build_from_search_query(query))
+        # perform search
+        for core, triplet in queries.items():
+            catalog = cores[core]
+            term, params = prepare_solr_triplets(triplet)
+            for hit in self._do_search(catalog, term, params):
                 result.add(hit)
         return result
 
