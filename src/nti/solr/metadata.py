@@ -91,291 +91,314 @@ from nti.traversal.traversal import find_interface
 
 ZERO_DATETIME = datetime.utcfromtimestamp(0)
 
+
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None, default=None):
-		self.context = context
+    def __init__(self, context=None, default=None):
+        self.context = context
+
 
 @interface.implementer(ISiteValue)
 class _DefaultSiteValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		folder = find_interface(context, IHostPolicyFolder, strict=False)
-		return folder.__name__ if folder is not None else getSite().__name__
+    def value(self, context=None):
+        context = self.context if context is None else context
+        folder = find_interface(context, IHostPolicyFolder, strict=False)
+        return folder.__name__ if folder is not None else getSite().__name__
+
 
 @interface.implementer(ICreatorValue)
 class _DefaultCreatorValue(_BasicAttributeValue):
 
-	def _get_creator(self, context, name='creator'):
-		try:
-			creator = getattr(context, name, None)
-			creator = getattr(creator, 'username', creator)
-			if isinstance(creator, six.string_types):
-				return to_unicode(creator.lower())
-		except (TypeError):
-			pass
-		return None
+    def _get_creator(self, context, name='creator'):
+        try:
+            creator = getattr(context, name, None)
+            creator = getattr(creator, 'username', creator)
+            if isinstance(creator, six.string_types):
+                return to_unicode(creator.lower())
+        except (TypeError):
+            pass
+        return None
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = 	self._get_creator(context, 'creator') \
-				 or self._get_creator(context, 'Creator') \
-				 or SYSTEM_USER_NAME
-		return result
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result =  self._get_creator(context, 'creator') \
+            or self._get_creator(context, 'Creator') \
+            or SYSTEM_USER_NAME
+        return result
+
 
 @interface.implementer(INTIIDValue)
 class _DefaultNTIIDValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = getattr(context, 'ntiid', None) or getattr(context, 'NTIID', None)
-		return to_unicode(result) if result else None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = getattr(context, 'ntiid', None) or getattr(
+            context, 'NTIID', None)
+        return to_unicode(result) if result else None
+
 
 @interface.implementer(IMimeTypeValue)
 class _DefaultMimeTypeValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		context = IContentTypeAware(context, context)
-		result = getattr(context, 'mimeType', None) or getattr(context, 'mime_type', None)
-		return to_unicode(result) if result else None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        context = IContentTypeAware(context, context)
+        result = getattr(context, 'mimeType', None) or getattr(
+            context, 'mime_type', None)
+        return to_unicode(result) if result else None
 DefaultObjectMimeTypeValue = _DefaultMimeTypeValue  # export
+
 
 @interface.implementer(ICreatedTimeValue)
 class _DefaultCreatedTimeValue(_BasicAttributeValue):
 
-	attribute = 'createdTime'
-	interface = ICreatedTime
+    attribute = 'createdTime'
+    interface = ICreatedTime
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		context = self.interface(context, context)
-		if context is not None:
-			result = getattr(context, self.attribute, None) or 0
-			result = SolrDatetime.convert(result)
-			return SolrDatetime.toUnicode(result) if result else None
-		return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        context = self.interface(context, context)
+        if context is not None:
+            result = getattr(context, self.attribute, None) or 0
+            result = SolrDatetime.convert(result)
+            return SolrDatetime.toUnicode(result) if result else None
+        return None
+
 
 @interface.implementer(ILastModifiedValue)
 class _DefaultLastModifiedValue(_DefaultCreatedTimeValue):
-	attribute = 'lastModified'
-	interface = ILastModified
+    attribute = 'lastModified'
+    interface = ILastModified
+
 
 @interface.implementer(IIDValue)
 class _DefaultIDValue(_BasicAttributeValue):
 
-	PREFIX_SEP = '#'
+    PREFIX_SEP = '#'
 
-	@classmethod
-	def _norm(cls, x):
-		return re.sub(r'[^\x00-\x7F]', '_', re.sub(r'[#\s]', '_', re.sub(r'!', '', x)))
+    @classmethod
+    def _norm(cls, x):
+        return re.sub(r'[^\x00-\x7F]', '_', re.sub(r'[#\s]', '_', re.sub(r'!', '', x)))
 
-	@classmethod
-	def _type(cls, x):
-		return x.split('.')[-1]
+    @classmethod
+    def _type(cls, x):
+        return x.split('.')[-1]
 
-	@classmethod
-	def _semt(cls, x):
-		dt = SolrDatetime.convert(x)
-		return "%s%sS" % (dt.year, int(ceil(dt.month / 6.0)))
+    @classmethod
+    def _semt(cls, x):
+        dt = SolrDatetime.convert(x)
+        return "%s%sS" % (dt.year, int(ceil(dt.month / 6.0)))
 
-	@classmethod
-	def createdTime(self, context):
-		adapted = ICreatedTimeValue(context, None)
-		value = adapted.value() if adapted is not None else None
-		return value or ZERO_DATETIME
+    @classmethod
+    def createdTime(self, context):
+        adapted = ICreatedTimeValue(context, None)
+        value = adapted.value() if adapted is not None else None
+        return value or ZERO_DATETIME
 
-	@classmethod
-	def creator(self, context):
-		adapted = ICreatorValue(context, None)
-		value = adapted.value() if adapted is not None else None
-		return value or SYSTEM_USER_NAME
+    @classmethod
+    def creator(self, context):
+        adapted = ICreatorValue(context, None)
+        value = adapted.value() if adapted is not None else None
+        return value or SYSTEM_USER_NAME
 
-	@classmethod
-	def mimeType(self, context):
-		adapted = IMimeTypeValue(context, None)
-		value = adapted.value() if adapted is not None else None
-		return value or 'unknown'
+    @classmethod
+    def mimeType(self, context):
+        adapted = IMimeTypeValue(context, None)
+        value = adapted.value() if adapted is not None else None
+        return value or 'unknown'
 
-	@classmethod
-	def prefix(cls, context):
-		result = []
-		for source, convert in ((cls.createdTime, cls._semt),
-								(cls.creator, cls._norm),
-								(cls.mimeType, cls._type)):
-			value = convert(source(context))
-			result.append(value)
-		return '%s%s' % ('-'.join(result), cls.PREFIX_SEP)
+    @classmethod
+    def prefix(cls, context):
+        result = []
+        for source, convert in ((cls.createdTime, cls._semt),
+                                (cls.creator, cls._norm),
+                                (cls.mimeType, cls._type)):
+            value = convert(source(context))
+            result.append(value)
+        return '%s%s' % ('-'.join(result), cls.PREFIX_SEP)
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		try:
-			uid = component.getUtility(IIntIds).queryId(context)
-			uid = "%s%s" % (self.prefix(context), uid) if uid is not None else None
-			return to_unicode(uid) if uid is not None else None
-		except (LookupError, KeyError):
-			pass
-		return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        try:
+            uid = component.getUtility(IIntIds).queryId(context)
+            uid = "%s%s" % (
+                self.prefix(context), uid) if uid is not None else None
+            return to_unicode(uid) if uid is not None else None
+        except (LookupError, KeyError):
+            pass
+        return None
 DefaultObjectIDValue = _DefaultIDValue  # Export
+
 
 @interface.implementer(IIntIdValue)
 class _DefaultIntIdValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		uid = component.getUtility(IIntIds).queryId(context)
-		return to_unicode(uid) if uid is not None else None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        uid = component.getUtility(IIntIds).queryId(context)
+        return to_unicode(uid) if uid is not None else None
 DefaultObjectIntIdValue = _DefaultIntIdValue
+
 
 @interface.implementer(IContainersValue)
 class _DefaultContainersValue(_BasicAttributeValue):
 
-	_IGNORED_TYPES = {TYPE_OID, TYPE_UUID, TYPE_INTID}
+    _IGNORED_TYPES = {TYPE_OID, TYPE_UUID, TYPE_INTID}
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		contained = INTIContained(context, None)
-		if contained is not None:
-			cid = contained.containerId
-			if		is_ntiid_of_types(cid, self._IGNORED_TYPES) \
-				and not ICommentPost.providedBy(context):
-				return None
-			else:
-				return (to_unicode(cid),)
-		return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        contained = INTIContained(context, None)
+        if contained is not None:
+            cid = contained.containerId
+            if		is_ntiid_of_types(cid, self._IGNORED_TYPES) \
+                    and not ICommentPost.providedBy(context):
+                return None
+            else:
+                return (to_unicode(cid),)
+        return None
+
 
 @interface.implementer(IInReplyToValue)
 class _DefaultInReplyToValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = getattr(context, "inReplyTo", None)
-		if not isinstance( result, six.string_types ):
-			result = INTIIDValue( result, None )
-			result = result.value() if result else None
-		return to_unicode(result.lower()) if result else None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = getattr(context, "inReplyTo", None)
+        if not isinstance(result, six.string_types):
+            result = INTIIDValue(result, None)
+            result = result.value() if result else None
+        return to_unicode(result.lower()) if result else None
+
 
 @interface.implementer(ISharedWithValue)
 class _DefaultSharedWithValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		sharedWith = getattr(context, "sharedWith", None)
-		if sharedWith is not None:
-			sharedWith = tuple(to_unicode(x.lower()) for x in sharedWith)
-		return sharedWith
+    def value(self, context=None):
+        context = self.context if context is None else context
+        sharedWith = getattr(context, "sharedWith", None)
+        if sharedWith is not None:
+            sharedWith = tuple(to_unicode(x.lower()) for x in sharedWith)
+        return sharedWith
 DefaultSharedWithValue = _DefaultSharedWithValue
+
 
 @interface.implementer(ITaggedToValue)
 class _DefaultTaggedToValue(_BasicAttributeValue):
 
-	# Tags are normally lower cased, but depending on when we get called
-	# it's vaguely possible that we might see an upper-case value?
-	_ENTITY_TYPES = {TYPE_NAMED_ENTITY, TYPE_NAMED_ENTITY.lower(),
-					 TYPE_MEETINGROOM, TYPE_MEETINGROOM.lower()}
+    # Tags are normally lower cased, but depending on when we get called
+    # it's vaguely possible that we might see an upper-case value?
+    _ENTITY_TYPES = {TYPE_NAMED_ENTITY, TYPE_NAMED_ENTITY.lower(),
+                     TYPE_MEETINGROOM, TYPE_MEETINGROOM.lower()}
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		context = IUserTaggedContent(context, None)
-		if context is None:
-			return None
-		raw_tags = context.tags
-		if not raw_tags:
-			return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        context = IUserTaggedContent(context, None)
+        if context is None:
+            return None
+        raw_tags = context.tags
+        if not raw_tags:
+            return None
 
-		username_tags = set()
-		for raw_tag in raw_tags:
-			if is_ntiid_of_types(raw_tag, self._ENTITY_TYPES):
-				entity = find_object_with_ntiid(raw_tag)
-				if entity is not None:
-					# We actually have to be a bit careful here; we only want
-					# to catch certain types of entity tags, those that are either
-					# to an individual or those that participate in security
-					# relationships; (e.g., it doesn't help to use a regular FriendsList
-					# since that is effectively flattened).
-					# Currently, this abstraction doesn't exactly exist so we
-					# are very specific about it. See also :mod:`sharing`
-					if IUser.providedBy(entity):
-						username_tags.add(entity.username)
-					elif IDynamicSharingTargetFriendsList.providedBy(entity):
-						username_tags.add(entity.NTIID)
-		return tuple(username_tags)
+        username_tags = set()
+        for raw_tag in raw_tags:
+            if is_ntiid_of_types(raw_tag, self._ENTITY_TYPES):
+                entity = find_object_with_ntiid(raw_tag)
+                if entity is not None:
+                    # We actually have to be a bit careful here; we only want
+                    # to catch certain types of entity tags, those that are either
+                    # to an individual or those that participate in security
+                    # relationships; (e.g., it doesn't help to use a regular FriendsList
+                    # since that is effectively flattened).
+                    # Currently, this abstraction doesn't exactly exist so we
+                    # are very specific about it. See also :mod:`sharing`
+                    if IUser.providedBy(entity):
+                        username_tags.add(entity.username)
+                    elif IDynamicSharingTargetFriendsList.providedBy(entity):
+                        username_tags.add(entity.NTIID)
+        return tuple(username_tags)
+
 
 @interface.implementer(IIsTopLevelContentValue)
 class _DefaultIsTopLevelContentValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		# TODO: This is messy
-		# NOTE: This is referenced by persistent objects, must stay
-		if getattr(context, '__is_toplevel_content__', False):
-			return True
+    def value(self, context=None):
+        context = self.context if context is None else context
+        # TODO: This is messy
+        # NOTE: This is referenced by persistent objects, must stay
+        if getattr(context, '__is_toplevel_content__', False):
+            return True
 
-		if IModeledContent.providedBy(context):
-			if IFriendsList.providedBy(context) or IDevice.providedBy(context):
-				# These things are modeled content, for some reason
-				return False
-			if IPersonalBlogEntryPost.providedBy(context):
-				return bool(context.sharedWith)
+        if IModeledContent.providedBy(context):
+            if IFriendsList.providedBy(context) or IDevice.providedBy(context):
+                # These things are modeled content, for some reason
+                return False
+            if IPersonalBlogEntryPost.providedBy(context):
+                return bool(context.sharedWith)
 
-			# HeadlinePosts (which are IMutedInStream) are threadable,
-			# but we don't consider them top-level. (At this writing,
-			# we don't consider the containing Topic to be top-level
-			# either, because it isn't IModeledContent.)
-			elif IHeadlinePost.providedBy(context):
-				return False
+            # HeadlinePosts (which are IMutedInStream) are threadable,
+            # but we don't consider them top-level. (At this writing,
+            # we don't consider the containing Topic to be top-level
+            # either, because it isn't IModeledContent.)
+            elif IHeadlinePost.providedBy(context):
+                return False
 
-			if IInspectableWeakThreadable.providedBy(context):
-				return bool(not context.isOrWasChildInThread())
-			if IThreadable.providedBy(context):
-				return bool(context.inReplyTo is None)
-			return True
-		return None # no index
+            if IInspectableWeakThreadable.providedBy(context):
+                return bool(not context.isOrWasChildInThread())
+            if IThreadable.providedBy(context):
+                return bool(context.inReplyTo is None)
+            return True
+        return None  # no index
+
 
 @interface.implementer(IIsDeletedObjectValue)
 class _DefaultIsDeletedObjectValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = IDeletedObjectPlaceholder.providedBy(context)
-		return True if result else None # no index
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = IDeletedObjectPlaceholder.providedBy(context)
+        return True if result else None  # no index
+
 
 @interface.implementer(IIsUserGeneratedDataValue)
 class _DefaultIsUserGeneratedDataValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return IUserGeneratedData.providedBy(context)
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return IUserGeneratedData.providedBy(context)
+
 
 @interface.implementer(IContainerContextValue)
 class _DefaultContainerContextValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		container_context = IContainerContext(context, None)
-		if container_context is not None:
-			return to_unicode(container_context.context_id)
-		return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        container_context = IContainerContext(context, None)
+        if container_context is not None:
+            return to_unicode(container_context.context_id)
+        return None
+
 
 @interface.implementer(IMetadataDocument)
 class MetadataDocument(SchemaConfigured):
-	createDirectFieldProperties(IMetadataDocument)
+    createDirectFieldProperties(IMetadataDocument)
 
-	mimeType = mime_type = u'application/vnd.nextthought.solr.metadatadocument'
+    mimeType = mime_type = u'application/vnd.nextthought.solr.metadatadocument'
+
 
 @interface.implementer(IMetadataDocument)
 def _MetadataDocumentCreator(obj, factory=MetadataDocument):
-	return document_creator(obj, factory=factory, provided=IMetadataDocument)
+    return document_creator(obj, factory=factory, provided=IMetadataDocument)
+
 
 class MetadataCatalog(CoreCatalog):
 
-	document_interface = IMetadataDocument
+    document_interface = IMetadataDocument
 
-	def __init__(self, core=NTI_CATALOG, client=None):
-		CoreCatalog.__init__(self, core=core, client=client)
+    def __init__(self, core=NTI_CATALOG, client=None):
+        CoreCatalog.__init__(self, core=core, client=client)
 
-	def _prepare_solr_query(self, term, fq, params):
-		term, params = CoreCatalog._prepare_solr_query(self, term, fq, params)
-		params['sort'] = 'score desc,createdTime desc'  # for the time being
-		return term, params
+    def _prepare_solr_query(self, term, fq, params):
+        term, params = CoreCatalog._prepare_solr_query(self, term, fq, params)
+        params['sort'] = 'score desc,createdTime desc'  # for the time being
+        return term, params

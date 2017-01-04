@@ -42,121 +42,130 @@ from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
 
+
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None, default=None):
-		self.context = context
+    def __init__(self, context=None, default=None):
+        self.context = context
+
 
 @component.adapter(IQEvaluation)
 class _DefaultEvaluationIDValue(DefaultObjectIDValue):
 
-	@classmethod
-	def createdTime(cls, context):
-		if IQEditableEvaluation.providedBy(context):
-			return super(_DefaultEvaluationIDValue, cls).createdTime(context)
-		return ZERO_DATETIME
+    @classmethod
+    def createdTime(cls, context):
+        if IQEditableEvaluation.providedBy(context):
+            return super(_DefaultEvaluationIDValue, cls).createdTime(context)
+        return ZERO_DATETIME
 
-	@classmethod
-	def creator(cls, context):
-		if IQEditableEvaluation.providedBy(context):
-			return super(_DefaultEvaluationIDValue, cls).creator(context)
-		return SYSTEM_USER_NAME
+    @classmethod
+    def creator(cls, context):
+        if IQEditableEvaluation.providedBy(context):
+            return super(_DefaultEvaluationIDValue, cls).creator(context)
+        return SYSTEM_USER_NAME
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		if IQEditableEvaluation.providedBy(context):
-			return super(_DefaultEvaluationIDValue, self).creator(context)
-		return self.prefix(context) + context.ntiid
+    def value(self, context=None):
+        context = self.context if context is None else context
+        if IQEditableEvaluation.providedBy(context):
+            return super(_DefaultEvaluationIDValue, self).creator(context)
+        return self.prefix(context) + context.ntiid
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(ITitleValue)
 class _DefaultEvaluationTitleValue(_BasicAttributeValue):
 
-	def lang(self, context):
-		return 'en'
+    def lang(self, context):
+        return 'en'
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return getattr(context, 'title', None)
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return getattr(context, 'title', None)
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(IContainersValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = get_containerId(context)
-		return (result,) if result else None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = get_containerId(context)
+        return (result,) if result else None
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(IContentValue)
 class _DefaultEvaluationContentValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def get_content(self, context):
-		return getattr(context, 'content', None)
+    def get_content(self, context):
+        return getattr(context, 'content', None)
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return self.get_content(context)
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return self.get_content(context)
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(IKeywordsValue)
 class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		adapted = IContentValue(context, None)
-		if adapted is not None:
-			self.language = adapted.lang()
-			content = component.getAdapter(adapted.value(),
-										   IPlainTextContentFragment,
-										   name='text')
-			return get_keywords(content, self.language)
-		return ()
+    def value(self, context=None):
+        context = self.context if context is None else context
+        adapted = IContentValue(context, None)
+        if adapted is not None:
+            self.language = adapted.lang()
+            content = component.getAdapter(adapted.value(),
+                                           IPlainTextContentFragment,
+                                           name='text')
+            return get_keywords(content, self.language)
+        return ()
+
 
 @interface.implementer(IEvaluationDocument)
 class EvaluationDocument(MetadataDocument):
-	createDirectFieldProperties(IEvaluationDocument)
+    createDirectFieldProperties(IEvaluationDocument)
 
-	mimeType = mime_type = u'application/vnd.nextthought.solr.evaluationdocument'
+    mimeType = mime_type = u'application/vnd.nextthought.solr.evaluationdocument'
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(IEvaluationDocument)
 def _EvaluationDocumentCreator(obj, factory=EvaluationDocument):
-	return document_creator(obj, factory=factory, provided=IEvaluationDocument)
+    return document_creator(obj, factory=factory, provided=IEvaluationDocument)
+
 
 @component.adapter(IQEvaluation)
 @interface.implementer(ICoreCatalog)
 def _evaluation_to_catalog(obj):
-	return component.getUtility(ICoreCatalog, name=EVALUATIONS_CATALOG)
+    return component.getUtility(ICoreCatalog, name=EVALUATIONS_CATALOG)
+
 
 class EvaluationsCatalog(MetadataCatalog):
 
-	skip = True
-	name = EVALUATIONS_CATALOG
-	document_interface = IEvaluationDocument
+    skip = True
+    name = EVALUATIONS_CATALOG
+    document_interface = IEvaluationDocument
 
-	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
-																	text_fields,
-																	return_fields)
-		if 'mimeType' not in fq:
-			types = self.get_mime_types(self.name)
-			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		return term, fq, params
+    def _build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+        if 'mimeType' not in fq:
+            types = self.get_mime_types(self.name)
+            fq.add_or('mimeType', [lucene_escape(x) for x in types])
+        return term, fq, params
 
-	def clear(self, commit=None):
-		types = self.get_mime_types(self.name)
-		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
-	reset = clear
+    def clear(self, commit=None):
+        types = self.get_mime_types(self.name)
+        q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
+        self.client.delete(
+            q=q, commit=self.auto_commit if commit is None else bool(commit))
+    reset = clear

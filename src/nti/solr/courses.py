@@ -36,99 +36,107 @@ from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
 
+
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None, default=None):
-		self.context = context
+    def __init__(self, context=None, default=None):
+        self.context = context
 
-	def entry(self, context):
-		return ICourseCatalogEntry(context, None)
+    def entry(self, context):
+        return ICourseCatalogEntry(context, None)
+
 
 @component.adapter(ICourseInstance)
 @interface.implementer(INTIIDValue)
 class _DefaultNTIIDValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return to_unicode(getattr(self.entry(context), 'ntiid', None))
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return to_unicode(getattr(self.entry(context), 'ntiid', None))
+
 
 @interface.implementer(ITitleValue)
 @component.adapter(ICourseInstance)
 class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 
-	def lang(self, context):
-		return 'en'
+    def lang(self, context):
+        return 'en'
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return to_unicode(getattr(self.entry(context), 'title', None))
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return to_unicode(getattr(self.entry(context), 'title', None))
+
 
 @component.adapter(ICourseInstance)
 @interface.implementer(IContentValue)
 class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def get_content(self, context):
-		return to_unicode(getattr(context, 'description', None))
+    def get_content(self, context):
+        return to_unicode(getattr(context, 'description', None))
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return self.get_content(self.entry(context))
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return self.get_content(self.entry(context))
+
 
 @component.adapter(ICourseInstance)
 @interface.implementer(IKeywordsValue)
 class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def value(self, context=None):
-		result = ()
-		context = self.context if context is None else context
-		context = ICourseInstance(context, None)
-		keywords = ICourseKeywords(context, None)
-		if keywords:
-			result = keywords.keywords or ()
-		return result
+    def value(self, context=None):
+        result = ()
+        context = self.context if context is None else context
+        context = ICourseInstance(context, None)
+        keywords = ICourseKeywords(context, None)
+        if keywords:
+            result = keywords.keywords or ()
+        return result
+
 
 @interface.implementer(ICourseCatalogDocument)
 class CourseCatalogDocument(MetadataDocument):
-	createDirectFieldProperties(ICourseCatalogDocument)
+    createDirectFieldProperties(ICourseCatalogDocument)
 
-	mimeType = mime_type = u'application/vnd.nextthought.solr.coursecatalogdocument'
+    mimeType = mime_type = u'application/vnd.nextthought.solr.coursecatalogdocument'
+
 
 @component.adapter(ICourseInstance)
 @interface.implementer(ICourseCatalogDocument)
 def _CourseCatalogDocumentCreator(obj, factory=CourseCatalogDocument):
-	return document_creator(obj, factory=factory, provided=ICourseCatalogDocument)
+    return document_creator(obj, factory=factory, provided=ICourseCatalogDocument)
+
 
 @component.adapter(ICourseInstance)
 @interface.implementer(ICoreCatalog)
 def _course_to_catalog(obj):
-	return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
+    return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
+
 
 class CoursesCatalog(MetadataCatalog):
 
-	name = COURSES_CATALOG
-	document_interface = ICourseCatalogDocument
+    name = COURSES_CATALOG
+    document_interface = ICourseCatalogDocument
 
-	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
-																	text_fields,
-																	return_fields)
-		if 'mimeType' not in fq:
-			types = self.get_mime_types(self.name)
-			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		return term, fq, params
-	
-	def clear(self, commit=None):
-		types = self.get_mime_types(self.name)
-		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
-	reset = clear
+    def _build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+        if 'mimeType' not in fq:
+            types = self.get_mime_types(self.name)
+            fq.add_or('mimeType', [lucene_escape(x) for x in types])
+        return term, fq, params
+
+    def clear(self, commit=None):
+        types = self.get_mime_types(self.name)
+        q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
+        self.client.delete(
+            q=q, commit=self.auto_commit if commit is None else bool(commit))
+    reset = clear

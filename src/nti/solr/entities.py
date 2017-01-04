@@ -52,163 +52,179 @@ from nti.solr.metadata import MetadataDocument
 from nti.solr.utils import document_creator
 from nti.solr.utils import resolve_content_parts
 
+
 class _BasicAttributeValue(object):
 
-	field = None
-	interface = None
+    field = None
+    interface = None
 
-	def __init__(self, context=None, default=None):
-		self.context = context
+    def __init__(self, context=None, default=None):
+        self.context = context
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		profile = self.interface(context, None)
-		result = getattr(profile, self.field, None)
-		if isinstance(result, six.string_types):
-			result = to_unicode(result)
-		return result
+    def value(self, context=None):
+        context = self.context if context is None else context
+        profile = self.interface(context, None)
+        result = getattr(profile, self.field, None)
+        if isinstance(result, six.string_types):
+            result = to_unicode(result)
+        return result
+
 
 @component.adapter(IEntity)
 @interface.implementer(IUsernameValue)
 class _DefaultUsernameValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		result = getattr(context, 'username', None)
-		return (to_unicode(result),) if result else ()
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = getattr(context, 'username', None)
+        return (to_unicode(result),) if result else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IEmailValue)
 class _DefaultEmailValue(_BasicAttributeValue):
-	field = 'email'
-	interface = IUserProfile
+    field = 'email'
+    interface = IUserProfile
 
-	def value(self, context=None):
-		result = _BasicAttributeValue.value(self, context)
-		return result.lower() if result else None
+    def value(self, context=None):
+        result = _BasicAttributeValue.value(self, context)
+        return result.lower() if result else None
+
 
 @component.adapter(IEntity)
 @interface.implementer(IAliasValue)
 class _DefaultAliasValue(_BasicAttributeValue):
-	field = 'alias'
-	interface = IFriendlyNamed
+    field = 'alias'
+    interface = IFriendlyNamed
+
 
 @component.adapter(IEntity)
 @interface.implementer(IRealnameValue)
 class _DefaultRealnameValue(_BasicAttributeValue):
-	field = 'realname'
-	interface = IFriendlyNamed
+    field = 'realname'
+    interface = IFriendlyNamed
+
 
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalTitleValue)
 class _DefaultProfessionalTitleValue(_BasicAttributeValue):
 
-	field = 'positions'
-	interface = IProfessionalProfile
+    field = 'positions'
+    interface = IProfessionalProfile
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.title) for x in source if x.title) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.title) for x in source if x.title) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalCompanyValue)
 class _DefaultProfessionalCompanyValue(_DefaultProfessionalTitleValue):
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.companyName) for x in source if x.companyName) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.companyName) for x in source if x.companyName) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IProfessionalDescriptionValue)
 class _DefaultProfessionalDescriptionValue(_DefaultProfessionalTitleValue):
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationDegreeValue)
 class _DefaultEducationDegreeValue(_BasicAttributeValue):
 
-	field = 'education'
-	interface = IEducationProfile
+    field = 'education'
+    interface = IEducationProfile
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.degree) for x in source if x.degree) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.degree) for x in source if x.degree) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationSchoolValue)
 class _DefaultEducationSchoolValue(_DefaultEducationDegreeValue):
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.school) for x in source if x.school) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.school) for x in source if x.school) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IEducationDescriptionValue)
 class _DefaultEducationDescriptionValue(_DefaultEducationDegreeValue):
 
-	def value(self, context=None):
-		source = _BasicAttributeValue.value(self, context) or ()
-		return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+    def value(self, context=None):
+        source = _BasicAttributeValue.value(self, context) or ()
+        return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(ISocialURLValue)
 class _DefaultSocialURLValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		profile = ISocialMediaProfile(context, None)
-		if profile is not None:
-			result = {profile.twitter, profile.facebook,
-					  profile.googlePlus, profile.linkedIn}
-			return tuple(to_unicode(x.lower()) for x in result if x)
-		return ()
+    def value(self, context=None):
+        context = self.context if context is None else context
+        profile = ISocialMediaProfile(context, None)
+        if profile is not None:
+            result = {profile.twitter, profile.facebook,
+                      profile.googlePlus, profile.linkedIn}
+            return tuple(to_unicode(x.lower()) for x in result if x)
+        return ()
+
 
 @component.adapter(IEntity)
 @interface.implementer(IAboutValue)
 class _DefaultAboutValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		profile = IAboutProfile(context, None)
-		if profile is not None:
-			return resolve_content_parts(profile.about)
-		return None
+    def value(self, context=None):
+        context = self.context if context is None else context
+        profile = IAboutProfile(context, None)
+        if profile is not None:
+            return resolve_content_parts(profile.about)
+        return None
+
 
 @interface.implementer(IEntityDocument)
 class EntityDocument(MetadataDocument):
-	createDirectFieldProperties(IEntityDocument)
+    createDirectFieldProperties(IEntityDocument)
 
-	mimeType = mime_type = u'application/vnd.nextthought.solr.entitydocument'
+    mimeType = mime_type = u'application/vnd.nextthought.solr.entitydocument'
+
 
 @component.adapter(IEntity)
 @interface.implementer(IEntityDocument)
 def _EntityDocumentCreator(obj, factory=EntityDocument):
-	return document_creator(obj, factory=factory, provided=IEntityDocument)
+    return document_creator(obj, factory=factory, provided=IEntityDocument)
+
 
 @component.adapter(IEntity)
 @interface.implementer(ICoreCatalog)
 def _entity_to_catalog(obj):
-	return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
+    return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
+
 
 class EntitiesCatalog(MetadataCatalog):
 
-	name = ENTITIES_CATALOG
-	document_interface = IEntityDocument
+    name = ENTITIES_CATALOG
+    document_interface = IEntityDocument
 
-	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
-																	text_fields,
-																	return_fields)
-		if 'mimeType' not in fq:
-			types = self.get_mime_types(self.name)
-			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		return term, fq, params
+    def _build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+        if 'mimeType' not in fq:
+            types = self.get_mime_types(self.name)
+            fq.add_or('mimeType', [lucene_escape(x) for x in types])
+        return term, fq, params
 
-	def clear(self, commit=None):
-		types = self.get_mime_types(self.name)
-		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
-	reset = clear
+    def clear(self, commit=None):
+        types = self.get_mime_types(self.name)
+        q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
+        self.client.delete(
+            q=q, commit=self.auto_commit if commit is None else bool(commit))
+    reset = clear

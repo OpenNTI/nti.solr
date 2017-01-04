@@ -434,6 +434,10 @@
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IUserGeneratedData" />
 
+	<adapter factory=".userdata._NoteContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.INote" />
+
 	<adapter factory=".userdata._HighlightContentValue"
 			 provides=".interfaces.IContentValue"
 			 for="nti.dataserver.interfaces.IHighlight" />

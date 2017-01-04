@@ -27,13 +27,13 @@ TRANSCRIPTS_QUEUE = QUEUE_NAME + '++transcripts'
 CONTENT_UNITS_QUEUE = QUEUE_NAME + '++contentunits'
 
 QUEUE_NAMES = (CONTENT_UNITS_QUEUE, TRANSCRIPTS_QUEUE,
-			   USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE,
-			   EVALUATIONS_QUEUE, COURSES_QUEUE)
+               USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE,
+               EVALUATIONS_QUEUE, COURSES_QUEUE)
 
 NTI_CATALOG = 'nti'
-ASSETS_CATALOG  = 'assets'
-COURSES_CATALOG  = 'courses'
-ENTITIES_CATALOG = 'entities'  
+ASSETS_CATALOG = 'assets'
+COURSES_CATALOG = 'courses'
+ENTITIES_CATALOG = 'entities'
 USERDATA_CATALOG = 'userdata'
 EVALUATIONS_CATALOG = 'evaluations'
 TRANSCRIPTS_CATALOG = 'transcripts'
@@ -41,7 +41,11 @@ CONTENT_UNITS_CATALOG = 'contentunits'
 
 primitive_types = six.string_types + (Number,)
 
+_OR_ = u' OR '
+_AND_ = u' AND '
+
 ### from IPython.core.debugger import Tracer; Tracer()()
 
+
 def get_factory():
-	return component.getUtility(ISOLRQueueFactory)
+    return component.getUtility(ISOLRQueueFactory)

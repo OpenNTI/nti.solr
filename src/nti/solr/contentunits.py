@@ -9,7 +9,7 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-import six
+from six import string_types
 
 from zope import component
 from zope import interface
@@ -46,132 +46,143 @@ from nti.solr.utils import document_creator
 
 from nti.traversal.location import lineage
 
+
 class _BasicAttributeValue(object):
 
-	def __init__(self, context=None, default=None):
-		self.context = context
+    def __init__(self, context=None, default=None):
+        self.context = context
+
 
 @component.adapter(IContentUnit)
 class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 
-	@classmethod
-	def createdTime(cls, context):
-		return ZERO_DATETIME
+    @classmethod
+    def createdTime(cls, context):
+        return ZERO_DATETIME
 
-	@classmethod
-	def creator(cls, context):
-		return SYSTEM_USER_NAME
+    @classmethod
+    def creator(cls, context):
+        return SYSTEM_USER_NAME
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return self.prefix(context) + context.ntiid
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return self.prefix(context) + context.ntiid
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(IContainersValue)
 class _DefaultContainerIdValue(_BasicAttributeValue):
 
-	def value(self, context=None):
-		result = list()
-		context = self.context if context is None else context
-		for item in lineage(context):
-			if item is context:
-				continue
-			if IContentUnit.providedBy(item) and item.ntiid:
-				result.append(item.ntiid)
-			if IContentPackage.providedBy(item):
-				break
-		return tuple(result)
+    def value(self, context=None):
+        result = list()
+        context = self.context if context is None else context
+        for item in lineage(context):
+            if item is context:
+                continue
+            if IContentUnit.providedBy(item) and item.ntiid:
+                result.append(item.ntiid)
+            if IContentPackage.providedBy(item):
+                break
+        return tuple(result)
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(ITitleValue)
 class _DefaultTitleValue(_BasicAttributeValue):
 
-	def lang(self, context=None):
-		return 'en'
+    def lang(self, context=None):
+        return 'en'
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return context.title
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return context.title
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(IContentValue)
 class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def get_content(self, context):
-		parent_key = getattr(context.__parent__, 'key', None)
-		if 		parent_key is None \
-			or	parent_key.absolute_path != context.key.absolute_path: # don't index twice
-			return to_unicode(context.read_contents())
-		return None
+    def get_content(self, context):
+        parent_key = getattr(context.__parent__, 'key', None)
+        if 		parent_key is None \
+                or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
+            return to_unicode(context.read_contents())
+        return None
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		return self.get_content(context)
+    def value(self, context=None):
+        context = self.context if context is None else context
+        return self.get_content(context)
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(IKeywordsValue)
 class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 
-	language = 'en'
+    language = 'en'
 
-	def lang(self, context=None):
-		return self.language
+    def lang(self, context=None):
+        return self.language
 
-	def value(self, context=None):
-		context = self.context if context is None else context
-		adapted = IContentValue(context, None)
-		if adapted is not None:
-			self.language = adapted.lang()
-			content = component.getAdapter(adapted.value(),
-										   IPlainTextContentFragment,
-										   name='text')
-			return get_keywords(content, self.language)
-		return ()
+    def value(self, context=None):
+        context = self.context if context is None else context
+        adapted = IContentValue(context, None)
+        if adapted is not None:
+            self.language = adapted.lang()
+            content = component.getAdapter(adapted.value(),
+                                           IPlainTextContentFragment,
+                                           name='text')
+            return get_keywords(content, self.language)
+        return ()
+
 
 @interface.implementer(IContentUnitDocument)
 class ContentUnitDocument(MetadataDocument):
-	createDirectFieldProperties(IContentUnitDocument)
+    createDirectFieldProperties(IContentUnitDocument)
 
-	mimeType = mime_type = u'application/vnd.nextthought.solr.contentunitdocument'
+    mimeType = mime_type = u'application/vnd.nextthought.solr.contentunitdocument'
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(IContentUnitDocument)
 def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
-	return document_creator(obj, factory=factory)
+    return document_creator(obj, factory=factory)
+
 
 @component.adapter(IContentUnit)
 @interface.implementer(ICoreCatalog)
 def _contentunit_to_catalog(obj):
-	return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
+    return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
+
 
 class ContentUnitsCatalog(MetadataCatalog):
 
-	name = CONTENT_UNITS_CATALOG
-	document_interface = IContentUnitDocument
+    name = CONTENT_UNITS_CATALOG
+    document_interface = IContentUnitDocument
 
-	def _build_from_search_query(self, query, text_fields=None, return_fields=None):
-		term, fq, params = MetadataCatalog._build_from_search_query(self, query,
-																	text_fields,
-																	return_fields)
-		packs = getattr(query, 'packages', None) or getattr(query, 'package', None)
-		if 'containerId' not in fq and packs:
-			packs = packs.split() if isinstance(packs, six.string_types) else packs
-			fq['containerId'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in packs)
-		if 'mimeType' not in fq:
-			types = self.get_mime_types(self.name)
-			fq['mimeType'] = "(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		return term, fq, params
+    def _build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog._build_from_search_query(
+            self, query)
+        packs = getattr(query, 'packages', None) \
+            or getattr(query, 'package', None)
+        if 'containerId' not in fq and packs:
+            packs = packs.split() if isinstance(packs, string_types) else packs
+            fq.add_or('containerId', [lucene_escape(x) for x in packs])
+        if 'mimeType' not in fq:
+            types = self.get_mime_types(self.name)
+            fq.add_or('mimeType', [lucene_escape(x) for x in types])
+        return term, fq, params
 
-	def clear(self, commit=None):
-		types = self.get_mime_types(self.name)
-		q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-		self.client.delete(q=q, commit=self.auto_commit if commit is None else bool(commit))
-	reset = clear
+    def clear(self, commit=None):
+        types = self.get_mime_types(self.name)
+        q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
+        self.client.delete(
+            q=q, commit=self.auto_commit if commit is None else bool(commit))
+    reset = clear
 
 # jobs
 
@@ -183,55 +194,65 @@ from nti.solr.common import finder
 from nti.solr.common import get_job_site
 from nti.solr.common import process_asset
 
+
 def process_content_package(obj, index=True):
-	def recur(unit):
-		for child in unit.children or ():
-			recur(child)
-		catalog = ICoreCatalog(unit)
-		operation = catalog.add if index else catalog.remove
-		operation(unit, commit=False) # wait for server to commit
-	recur(obj)
+    def recur(unit):
+        for child in unit.children or ():
+            recur(child)
+        catalog = ICoreCatalog(unit)
+        operation = catalog.add if index else catalog.remove
+        operation(unit, commit=False)  # wait for server to commit
+    recur(obj)
+
 
 def index_content_package(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			logger.info("Content package indexing %s started", obj.ntiid)
-			process_content_package(obj, index=True)
-			logger.info("Content package indexing %s completed", obj.ntiid)
+    job_site = get_job_site(site)
+    with current_site(job_site):
+        obj = finder(source)
+        if IContentPackage.providedBy(obj):
+            logger.info("Content package indexing %s started", obj.ntiid)
+            process_content_package(obj, index=True)
+            logger.info("Content package indexing %s completed", obj.ntiid)
+
 
 def unindex_content_package(source, site=None, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			process_content_package(obj, index=False)
+    job_site = get_job_site(site)
+    with current_site(job_site):
+        obj = finder(source)
+        if IContentPackage.providedBy(obj):
+            process_content_package(obj, index=False)
+
 
 def process_content_package_assets(obj, index=True):
-	collector = set()
-	def recur(unit):
-		container = IPresentationAssetContainer(unit, None)
-		if container:
-			collector.update(container.values())
-		for child in unit.children or ():
-			recur(child)
-	recur(obj)
-	for obj in collector:
-		process_asset(obj, index=index, commit=False)  # wait for server to commit
+    collector = set()
+
+    def recur(unit):
+        container = IPresentationAssetContainer(unit, None)
+        if container:
+            collector.update(container.values())
+        for child in unit.children or ():
+            recur(child)
+    recur(obj)
+    for obj in collector:
+        # wait for server to commit
+        process_asset(obj, index=index, commit=False)
+
 
 def index_content_package_assets(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			logger.info("Content package %s assets indexing started", obj.ntiid)
-			process_content_package_assets(obj, index=True)
-			logger.info("Content package %s assets indexing completed", obj.ntiid)
+    job_site = get_job_site(site)
+    with current_site(job_site):
+        obj = finder(source)
+        if IContentPackage.providedBy(obj):
+            logger.info(
+                "Content package %s assets indexing started", obj.ntiid)
+            process_content_package_assets(obj, index=True)
+            logger.info(
+                "Content package %s assets indexing completed", obj.ntiid)
+
 
 def unindex_content_package_assets(source, site=None, *args, **kwargs):
-	job_site = get_job_site(site)
-	with current_site(job_site):
-		obj = finder(source)
-		if IContentPackage.providedBy(obj):
-			process_content_package_assets(obj, index=False)
+    job_site = get_job_site(site)
+    with current_site(job_site):
+        obj = finder(source)
+        if IContentPackage.providedBy(obj):
+            process_content_package_assets(obj, index=False)
