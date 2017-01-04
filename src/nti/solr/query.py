@@ -147,6 +147,14 @@ def prepare_solr_query(term, fq, params):
         term = "((%s)%s(%s))" % (term, _AND_, fq_query)
     return term, params
 
+def merge_solr_triplets(triplets):
+    term, fq, params = triplets[0]
+    for t_term, t_fq, t_params in triplets[1:]:
+        fq += t_fq
+        term += t_term
+        params += t_params
+    return term, fq, params
+
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)
     context = query.context or {}
