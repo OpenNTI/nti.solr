@@ -717,7 +717,14 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         @param q: The query to execute for deletion
         @param commit: Commit operation
         """
-
+        
+    def build_from_search_query(query):
+        """
+        Return a triplet (:class:`ISOLRQueryTerm`, 
+        :class:`ISOLRFilterQuery`, :class:`ISOLRQueryParams`) from the specified query
+        
+        :param query a :class:`nti.contentsearch.interfaces.ISearcherQuery` object
+        """
 
 class IIndexObjectEvent(IObjectEvent):
     """

@@ -281,8 +281,8 @@ class TranscriptsCatalog(MetadataCatalog):
             return obj
         return None
 
-    def _build_from_search_query(self, query):
-        term, fq, params = MetadataCatalog._build_from_search_query(self, query)
+    def build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog.build_from_search_query(self, query)
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])

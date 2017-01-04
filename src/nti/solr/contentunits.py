@@ -164,8 +164,8 @@ class ContentUnitsCatalog(MetadataCatalog):
     name = CONTENT_UNITS_CATALOG
     document_interface = IContentUnitDocument
 
-    def _build_from_search_query(self, query):
-        term, fq, params = MetadataCatalog._build_from_search_query(
+    def build_from_search_query(self, query):
+        term, fq, params = MetadataCatalog.build_from_search_query(
             self, query)
         packs = getattr(query, 'packages', None) \
             or getattr(query, 'package', None)

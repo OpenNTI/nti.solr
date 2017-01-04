@@ -295,7 +295,7 @@ class CoreCatalog(object):
             qt.default = term
         return qt
 
-    def _build_from_search_query(self, query):
+    def build_from_search_query(self, query):
         term = self._build_term_from_search_query(query)
         # filter query
         fq = self._fq_from_search_query(query)
@@ -313,7 +313,7 @@ class CoreCatalog(object):
         return term, params
 
     def search(self, query, *args, **kwargs):
-        term, fq, params = self._build_from_search_query(query)
+        term, fq, params = self.build_from_search_query(query)
         term, params = self._prepare_solr_query(term, fq, params)
         return self.client.search(term, **params)
 
