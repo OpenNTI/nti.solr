@@ -284,7 +284,7 @@ class UserDataCatalog(MetadataCatalog):
     def build_from_search_query(self, query):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query)
         username = getattr(query, 'username', None)
-        memberships = self.memberships(username)
+        memberships = self.memberships(username) if username else ()
         if 'sharedWith' not in fq and username and memberships:
             fq.add_or('sharedWith', [lucene_escape(x) for x in memberships])
         if 'mimeType' not in fq:
