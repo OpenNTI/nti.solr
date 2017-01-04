@@ -18,6 +18,9 @@ from nti.contentsearch.interfaces import ISearchQuery
 from nti.solr import _OR_
 from nti.solr import _AND_
 
+from nti.solr.interfaces import ISOLRQueryTerm
+from nti.solr.interfaces import ISOLRFilterQuery
+from nti.solr.interfaces import ISOLRQueryParams
 from nti.solr.interfaces import ISOLRQueryValidator
 
 from nti.solr.lucene import is_valid_query
@@ -35,6 +38,7 @@ class _SOLRQueryValidator(object):
             raise AssertionError("Invalid query %s" % query.term)
 
 
+@interface.implementer(ISOLRQueryTerm)
 class QueryTerm(dict):
 
     default = None
@@ -55,6 +59,8 @@ class QueryTerm(dict):
         self.update(other)
         return self
 
+
+@interface.implementer(ISOLRFilterQuery)
 class FilterQuery(dict):
 
     def __init__(self, *args, **kwargs):
@@ -74,21 +80,20 @@ class FilterQuery(dict):
         self._and_list.setdefault(name, set())
         self._and_list[name].update(values)
 
-    def to_solr(self):
+    def to_solr(self, op=_AND_):
         result = dict(self)
         for name, values in self._or_list.items():
             result[name] = "(%s)" % _OR_.join(values)
         for name, values in self._and_list.items():
             result[name] = "(%s)" % _AND_.join(values)
         result = ['%s:%s' % (name, value) for name, value in result.items()]
-        result = _AND_.join(result)
-        return result
+        return op.join(result)
 
     def __contains__(self, *args, **kwargs):
         return dict.__contains__(self, *args, **kwargs) \
             or self._or_list.__contains__(*args, **kwargs) \
             or self._and_list.__contains__(*args, **kwargs)
-            
+
     def __iadd__(self, other):
         self.update(other)
         for name, values in other._or_list.items():
@@ -97,10 +102,12 @@ class FilterQuery(dict):
             self.add_and(name, values)
         return self
 
+
+@interface.implementer(ISOLRQueryParams)
 class QueryParms(dict):
 
     list_fields = ('fl', 'hl.fl')
-    
+
     def __iadd__(self, other):
         temp = {}
         for name in self.list_fields:
@@ -114,16 +121,17 @@ class QueryParms(dict):
         for name, value in other.items():
             if name not in self.list_fields:
                 # destruct previous
-                self[name] = value 
+                self[name] = value
         return self
 
     def to_solr(self):
         result = dict(self)
         for name in self.list_fields:
-            values = result.get(name) 
+            values = result.get(name)
             if values:
                 result[name] = ','.join(values)
         return result
+
 
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)

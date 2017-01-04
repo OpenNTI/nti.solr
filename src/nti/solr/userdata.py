@@ -286,14 +286,14 @@ class UserDataCatalog(MetadataCatalog):
         username = getattr(query, 'username', None)
         memberships = self.memberships(username)
         if 'sharedWith' not in fq and username and memberships:
-            fq.add_or('sharedWith', ('maletas',))#[lucene_escape(x) for x in memberships])
+            fq.add_or('sharedWith', [lucene_escape(x) for x in memberships])
         if 'mimeType' not in fq:
             searchOn = getattr(query, 'searchOn', None)
             if searchOn:
                 types = self.get_mime_types(self.name)  # XXX: Negative list
                 fq.add_or('mimeType', [lucene_escape(x) for x in searchOn if x not in types])
-            #else:
-            #    fq.add_term('isUserGeneratedData', "true")
+            else:
+                fq.add_term('isUserGeneratedData', "true")
         return term, fq, params
 
     def clear(self, username=None, commit=None):

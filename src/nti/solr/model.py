@@ -19,9 +19,10 @@ from nti.schema.schema import SchemaConfigured
 
 from nti.solr.interfaces import ISOLR
 
+
 @interface.implementer(ISOLR)
 class SOLR(SchemaConfigured):
-	createDirectFieldProperties(ISOLR)
+    createDirectFieldProperties(ISOLR)
 
-	url = alias('URL')
-	timeout = alias('Timeout')
+    url = alias('URL')
+    timeout = alias('Timeout')
