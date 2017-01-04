@@ -190,7 +190,7 @@ class MimeTypeRegistry(object):
         self.mime_type_catalog[mimeType] = catalog
         self.catalog_mime_type[catalog].add(mimeType)
         self.catalog_mime_type[USERDATA_CATALOG].add(mimeType)  # Negative list
-    registerMimeType = register_mime_type
+    register = register_mime_type
 
     def get_catalog(self, mimeType, default=None):
         return self.mime_type_catalog.get(mimeType, default)
@@ -226,46 +226,39 @@ FRIEND_LISTS_MIME_TYPE = u'application/vnd.nextthought.friendslist'
 
 def _register():
     # content
-    mimeTypeRegistry.registerMimeType(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        CONTENT_UNIT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        CONTENT_PACKAGE_MIME_TYPE, CONTENT_UNITS_CATALOG)
+    mimeTypeRegistry.register(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+    mimeTypeRegistry.register(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+    mimeTypeRegistry.register(CONTENT_UNIT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+    mimeTypeRegistry.register(CONTENT_PACKAGE_MIME_TYPE, CONTENT_UNITS_CATALOG)
 
     # transcripts
-    mimeTypeRegistry.registerMimeType(
-        NTI_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        AUDIO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        VIDEO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+    mimeTypeRegistry.register(NTI_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+    mimeTypeRegistry.register(AUDIO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
+    mimeTypeRegistry.register(VIDEO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
 
     # courses
-    mimeTypeRegistry.registerMimeType(COURSE_MIME_TYPE, COURSES_CATALOG)
-    mimeTypeRegistry.registerMimeType(CATALOG_ENTRY_MIME_TYPE, COURSES_CATALOG)
-    mimeTypeRegistry.registerMimeType(
-        CATALOG_LEGACY_ENTRY_MIME_TYPE, COURSES_CATALOG)
+    mimeTypeRegistry.register(COURSE_MIME_TYPE, COURSES_CATALOG)
+    mimeTypeRegistry.register(CATALOG_ENTRY_MIME_TYPE, COURSES_CATALOG)
+    mimeTypeRegistry.register(CATALOG_LEGACY_ENTRY_MIME_TYPE, COURSES_CATALOG)
 
     # entities
-    mimeTypeRegistry.registerMimeType(DFL_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.registerMimeType(USER_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.registerMimeType(COMMUNITY_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.registerMimeType(FRIEND_LISTS_MIME_TYPE, ENTITIES_CATALOG)
+    mimeTypeRegistry.register(DFL_MIME_TYPE, ENTITIES_CATALOG)
+    mimeTypeRegistry.register(USER_MIME_TYPE, ENTITIES_CATALOG)
+    mimeTypeRegistry.register(COMMUNITY_MIME_TYPE, ENTITIES_CATALOG)
+    mimeTypeRegistry.register(FRIEND_LISTS_MIME_TYPE, ENTITIES_CATALOG)
 
     # assets
     for m in chain(AUDIO_MIMETYES,
                    VIDEO_MIMETYES,
                    TIMELINE_MIMETYES,
                    RELATED_WORK_REF_MIMETYES):
-        mimeTypeRegistry.registerMimeType(m, ASSETS_CATALOG)
+        mimeTypeRegistry.register(m, ASSETS_CATALOG)
 
     # evaluations
     try:
         from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
         for m in ALL_EVALUATION_MIME_TYPES:
-            mimeTypeRegistry.registerMimeType(m, EVALUATIONS_CATALOG)
+            mimeTypeRegistry.register(m, EVALUATIONS_CATALOG)
     except ImportError:
         pass
 _register()
