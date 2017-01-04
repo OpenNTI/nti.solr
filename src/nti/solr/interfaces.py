@@ -859,6 +859,9 @@ class ISOLRQueryTerm(interface.Interface):
         return a string with SOLR query term
         """
 
+    def __contains__(*args, **kwargs):
+        pass
+
     def __iadd__(other):
         pass
 

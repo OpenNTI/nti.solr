@@ -38,39 +38,46 @@ class _SOLRQueryValidator(object):
             raise AssertionError("Invalid query %s" % query.term)
 
 
-@interface.implementer(ISOLRQueryTerm)
-class QueryTerm(dict):
+class TermMixin(object):
 
-    default = None
+    def __init__(self):
+        self._terms = dict()
 
     def add_term(self, name, value):
-        self[name] = value
-    add = append = add_term
+        self._terms[name] = value
+
+    def __contains__(self, *args, **kwargs):
+        return self._terms.__contains__(*args, **kwargs)
+            
+    def __iadd__(self, other):
+        self._terms.update(other._terms)
+        return self
+
+@interface.implementer(ISOLRQueryTerm)
+class QueryTerm(TermMixin):
+
+    default = None
 
     def to_solr(self, op=_OR_):
         if self.default:
             return self.default
         return "(%s)" % op.join('%s:%s' % (name, value)
-                                for name, value in self.items())
+                                for name, value in self._terms.items())
 
     def __iadd__(self, other):
         if other.default:
             self.default = other.default
-        self.update(other)
+        self._terms.update(other._terms)
         return self
 
 
 @interface.implementer(ISOLRFilterQuery)
-class FilterQuery(dict):
+class FilterQuery(TermMixin):
 
-    def __init__(self, *args, **kwargs):
-        super(FilterQuery, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(FilterQuery, self).__init__()
         self._or_list = dict()
         self._and_list = dict()
-
-    def add_term(self, name, value):
-        self[name] = value
-    add = append = add_term
 
     def add_or(self, name, values):
         self._or_list.setdefault(name, set())
@@ -81,7 +88,7 @@ class FilterQuery(dict):
         self._and_list[name].update(values)
 
     def to_solr(self, op=_AND_):
-        result = dict(self)
+        result = dict(self._terms)
         for name, values in self._or_list.items():
             result[name] = "(%s)" % _OR_.join(values)
         for name, values in self._and_list.items():
@@ -90,12 +97,12 @@ class FilterQuery(dict):
         return op.join(result)
 
     def __contains__(self, *args, **kwargs):
-        return dict.__contains__(self, *args, **kwargs) \
+        return self._terms.__contains__(*args, **kwargs) \
             or self._or_list.__contains__(*args, **kwargs) \
             or self._and_list.__contains__(*args, **kwargs)
 
     def __iadd__(self, other):
-        self.update(other)
+        self._terms.update(other._terms)
         for name, values in other._or_list.items():
             self.add_or(name, values)
         for name, values in other._and_list.items():
