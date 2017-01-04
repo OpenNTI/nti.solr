@@ -315,8 +315,7 @@ class CoreCatalog(object):
     
     def search(self, query, *args, **kwargs):
         term, fq, params = self.build_from_search_query(query)
-        term, params = self._prepare_solr_query(term, fq, params)
-        return self.client.search(term, **params)
+        return self.execute(term, fq, params)
 
     # content search / ISearcher.suggest
 
