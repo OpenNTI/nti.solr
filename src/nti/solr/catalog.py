@@ -52,7 +52,9 @@ from nti.solr.lucene import is_phrase_search
 from nti.solr.query import QueryTerm
 from nti.solr.query import QueryParms
 from nti.solr.query import FilterQuery
+
 from nti.solr.query import hl_snippets 
+from nti.solr.query import prepare_solr_query
 from nti.solr.query import hl_useFastVectorHighlighter
 
 from nti.solr.schema import SolrDatetime
@@ -305,12 +307,7 @@ class CoreCatalog(object):
         return (term, fq, params)
 
     def _prepare_solr_query(self, term, fq, params):
-        term = term.to_solr()
-        fq_query = fq.to_solr()
-        params = params.to_solr()
-        if fq_query:
-            params['fq'] = fq_query
-        return term, params
+        return prepare_solr_query(term, fq, params)
 
     def search(self, query, *args, **kwargs):
         term, fq, params = self.build_from_search_query(query)

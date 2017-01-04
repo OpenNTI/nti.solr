@@ -61,8 +61,8 @@ class QueryTerm(TermMixin):
     def to_solr(self, op=_OR_):
         if self.default:
             return self.default
-        return "(%s)" % op.join('%s:%s' % (name, value)
-                                for name, value in self._terms.items())
+        return op.join('%s:%s' % (name, value)
+                       for name, value in self._terms.items())
 
     def __iadd__(self, other):
         if other.default:
@@ -139,6 +139,13 @@ class QueryParms(dict):
                 result[name] = ','.join(values)
         return result
 
+
+def prepare_solr_query(term, fq, params):
+    term = term.to_solr()
+    fq_query = fq.to_solr()
+    if fq_query:
+        term = "((%s)%s(%s))" % (term, _AND_, fq_query)
+    return term, params
 
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)

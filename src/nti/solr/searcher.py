@@ -119,7 +119,7 @@ class _SOLRSearcher(object):
         clone = self._query_clone(query)
         catalogs = self.query_search_catalogs(query)
         result = SearchResults(Name="Hits", Query=query)
-        # perform searched
+        # perform search
         for catalog in catalogs or ():
             if catalog.skip:
                 continue
