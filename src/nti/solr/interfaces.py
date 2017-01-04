@@ -504,10 +504,11 @@ class IContentUnitDocument(IMetadataDocument):
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
 tagField(IContentUnitDocument['title_en'],
          True, ITitleValue, provided=ITextField)
-tagField(IContentUnitDocument['content_en'], True, IContentValue, provided=(
-    ITextField, ISuggestField))
+tagField(IContentUnitDocument['content_en'], True, IContentValue, 
+         provided=(ITextField, ISuggestField))
 tagField(IContentUnitDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         provided=ITextField)
 
 # user data
 
@@ -633,10 +634,11 @@ class ICourseCatalogDocument(IMetadataDocument):
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
 tagField(ICourseCatalogDocument['title_en'],
          True, ITitleValue, provided=ITextField)
-tagField(ICourseCatalogDocument['content_en'], True, IContentValue, provided=(
-    ITextField, ISuggestField))
+tagField(ICourseCatalogDocument['content_en'], True, IContentValue, 
+         provided=(ITextField, ISuggestField))
 tagField(ICourseCatalogDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         provided=ITextField)
 
 
 class IEvaluationDocument(IMetadataDocument):
@@ -659,7 +661,8 @@ tagField(IEvaluationDocument['title_en'], True,
 tagField(IEvaluationDocument['content_en'], True,
          IContentValue, provided=(ITextField, ISuggestField))
 tagField(IEvaluationDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', provided=ITextField)
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         provided=ITextField)
 
 
 class ICoreCatalog(IInjection, IIndexSearch, IContained):
