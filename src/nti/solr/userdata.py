@@ -22,13 +22,15 @@ from nti.coremetadata.interfaces import IModeledContentBody
 
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlineTopic
 
-from nti.dataserver.interfaces import IUser, INote
+from nti.dataserver.interfaces import INote
+from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IHighlight
 from nti.dataserver.interfaces import IRedaction
 from nti.dataserver.interfaces import ITitledContent
 from nti.dataserver.interfaces import IUserGeneratedData
 from nti.dataserver.interfaces import IUserTaggedContent
 from nti.dataserver.interfaces import IContained as INTIContained
+from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
 from nti.dataserver.users import User
 
@@ -114,7 +116,7 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 @interface.implementer(IContentValue)
 class _NoteContentValue(_DefaultUserDataContentValue):
     pass
-    
+
 @component.adapter(IHighlight)
 @interface.implementer(IContentValue)
 class _HighlightContentValue(_DefaultUserDataContentValue):
@@ -274,9 +276,16 @@ class UserDataCatalog(MetadataCatalog):
     def memberships(self, username):
         user = self.get_entity(username)
         if IUser.providedBy(user):
+            # Memberships
             dynamic_memberships = user.usernames_of_dynamic_memberships or ()
             usernames = itertools.chain((user.username,), dynamic_memberships)
-            return {x.lower() for x in usernames} - {'everyone'}
+            result = {x.lower() for x in usernames}
+            # Groups we created
+            friends_lists = getattr(user, 'friendsLists', None) or ()
+            for friends_list in friends_lists.values():
+                if IDynamicSharingTargetFriendsList.providedBy(friends_list):
+                    result.add( friends_list.NTIID )
+            return result - {'everyone'}
         return ()
 
     # search methods
