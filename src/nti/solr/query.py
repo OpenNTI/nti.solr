@@ -141,24 +141,28 @@ class QueryParms(dict):
         return result
 
 
-def prepare_solr_query(term, fq, params):
+def prepare_solr_query(term, fq, params, cache=False):
     term = term.to_solr()
     fq_query = fq.to_solr()
     if fq_query:
-        term = "((%s)%s(%s))" % (term, _AND_, fq_query)
+        if not cache:
+            term = "((%s)%s(%s))" % (term, _AND_, fq_query)
+        else:
+            params['fq'] = fq_query
     return term, params
 
 
 def prepare_solr_triplets(triplets):
     terms = []
     params = None
+    cache = len(triplets) == 1
     for count, triplet in enumerate(triplets):
         term, fq, t_params = triplet
         if count:
             params += t_params
         else:
             params = t_params
-        term, params = prepare_solr_query(term, fq, params)
+        term, params = prepare_solr_query(term, fq, params, cache)
         terms.append(term)
     term = _OR_.join(terms)
     return term, params

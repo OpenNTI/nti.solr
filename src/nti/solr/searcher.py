@@ -129,9 +129,9 @@ class _SOLRSearcher(object):
             cores[core] = catalog  # store
             queries[core].append(catalog.build_from_search_query(query))
         # perform search
-        for core, triplet in queries.items():
+        for core, triplets in queries.items():
             catalog = cores[core]
-            term, params = prepare_solr_triplets(triplet)
+            term, params = prepare_solr_triplets(triplets)
             for hit in self._do_search(catalog, term, params):
                 result.add(hit)
         return result
