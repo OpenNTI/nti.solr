@@ -284,7 +284,7 @@ class UserDataCatalog(MetadataCatalog):
             friends_lists = getattr(user, 'friendsLists', None) or ()
             for friends_list in friends_lists.values():
                 if IDynamicSharingTargetFriendsList.providedBy(friends_list):
-                    result.add( friends_list.NTIID )
+                    result.add(friends_list.NTIID)
             return result - {'everyone'}
         return ()
 
