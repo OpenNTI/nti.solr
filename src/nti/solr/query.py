@@ -145,7 +145,7 @@ def prepare_solr_query(term, fq, params, cache=False):
     term = term.to_solr()
     fq_query = fq.to_solr()
     if fq_query:
-        if not cache:
+        if not cache or 'fq' in params:
             term = "((%s)%s(%s))" % (term, _AND_, fq_query)
         else:
             params['fq'] = fq_query
