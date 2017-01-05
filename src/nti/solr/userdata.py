@@ -281,10 +281,9 @@ class UserDataCatalog(MetadataCatalog):
             usernames = itertools.chain((user.username,), dynamic_memberships)
             result = {x.lower() for x in usernames}
             # Groups we created
-            if user.friendsLists:
-                for friends_list in user.friendsLists.values():
-                    if IDynamicSharingTargetFriendsList.providedBy(friends_list):
-                        result.add(friends_list.NTIID)
+            for friends_list in user.friendsLists.values():
+                if IDynamicSharingTargetFriendsList.providedBy(friends_list):
+                    result.add(friends_list.NTIID)
             return result - {'everyone'}
         return ()
 
