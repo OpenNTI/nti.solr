@@ -283,7 +283,7 @@ class UserDataCatalog(MetadataCatalog):
             # Groups we created
             for friends_list in user.friendsLists.values():
                 if IDynamicSharingTargetFriendsList.providedBy(friends_list):
-                    result.add(friends_list.NTIID)
+                    result.add(friends_list.NTIID.lower())
             return result - {'everyone'}
         return ()
 
