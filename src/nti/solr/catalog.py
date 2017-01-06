@@ -54,6 +54,7 @@ from nti.solr.query import QueryParms
 from nti.solr.query import FilterQuery
 
 from nti.solr.query import hl_snippets 
+from nti.solr.query import search_fields
 from nti.solr.query import prepare_solr_query
 from nti.solr.query import hl_useFastVectorHighlighter
 
@@ -270,9 +271,10 @@ class CoreCatalog(object):
 
     def _params_from_search_query(self, query):
         params = QueryParms()
-        if self.text_fields and getattr(query, 'applyHighlights', None):
+        text_fields = search_fields(query, self.text_fields)
+        if text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
-            params['hl.fl'] = self.text_fields
+            params['hl.fl'] = text_fields
             if hl_useFastVectorHighlighter(query):
                 params['hl.useFastVectorHighlighter'] = 'true'
             params['hl.snippets'] = hl_snippets(query)
@@ -292,8 +294,9 @@ class CoreCatalog(object):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
         term = lucene_escape(term) if not is_phrase_search(term) else term
-        if self.text_fields:
-            for name in self.text_fields:
+        text_fields = search_fields(query, self.text_fields)
+        if text_fields:
+            for name in text_fields:
                 qt.add_term(name, term)
         else:
             qt.default = term
