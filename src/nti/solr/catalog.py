@@ -167,6 +167,7 @@ class CoreCatalog(object):
         for name, value in query.items():
             if name not in self.document_interface:
                 continue
+            field = self.document_interface[name]
             if isinstance(value, tuple) and len(value) == 2:
                 if value[0] == value[1]:
                     value = {'any_of': (value[0],)}
@@ -185,7 +186,8 @@ class CoreCatalog(object):
                     fq[name] = "(%s)" % self._AND_.join(
                         lucene_escape(x) for x in v)
                 elif k == 'between':
-                    # TODO: Convert to date
+                    if IDatetime.providedBy(field):
+                        v = [SolrDatetime.toUnicode(x) for x in v]
                     fq[name] = "[%s TO %s]" % (
                         lucene_escape(v[0]), lucene_escape(v[1]))
         return fq
