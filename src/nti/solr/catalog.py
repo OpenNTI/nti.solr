@@ -275,6 +275,7 @@ class CoreCatalog(object):
         if text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
             params['hl.fl'] = text_fields
+            params['hl.requireFieldMatch'] = 'true'
             if hl_useFastVectorHighlighter(query):
                 params['hl.useFastVectorHighlighter'] = 'true'
             params['hl.snippets'] = hl_snippets(query)
