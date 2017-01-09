@@ -271,10 +271,9 @@ class CoreCatalog(object):
 
     def _params_from_search_query(self, query):
         params = QueryParms()
-        text_fields = search_fields(query, self.text_fields)
-        if text_fields and getattr(query, 'applyHighlights', None):
+        if self.text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
-            params['hl.fl'] = text_fields
+            params['hl.fl'] = self.text_fields
             params['hl.requireFieldMatch'] = 'true'
             if hl_useFastVectorHighlighter(query):
                 params['hl.useFastVectorHighlighter'] = 'true'
