@@ -191,11 +191,10 @@ def hl_useSimpleEncoder(query):
 
 
 def search_fields(query, all_fields=()):
-	result = ()
+	# result = ()
+	# TODO: Parse fields
 	query = ISearchQuery(query)
-	if query.searchFields:
-		result = [x for x in query.searchFields if x in all_fields]
-	return result or all_fields
+	return all_fields
 
 
 def hl_useHTMLEncoder(query):
