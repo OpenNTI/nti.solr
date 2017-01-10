@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+from six import string_types
+
 from zope import component
 from zope import interface
 
@@ -283,6 +285,11 @@ class TranscriptsCatalog(MetadataCatalog):
 
     def build_from_search_query(self, query):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query)
+        packs = getattr(query, 'packages', None) \
+            or getattr(query, 'package', None)
+        if 'containerId' not in fq and packs:
+            packs = packs.split() if isinstance(packs, string_types) else packs
+            fq.add_or('containerId', [lucene_escape(x) for x in packs])
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
