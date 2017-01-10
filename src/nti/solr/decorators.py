@@ -18,6 +18,8 @@ from zope import component
 
 from nti.common.string import to_unicode
 
+from nti.contentfragments.html import sanitize_user_html
+
 from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ISearchFragment
 from nti.contentsearch.interfaces import ITranscriptSearchHit
@@ -58,7 +60,10 @@ class _SearchFragmentDecorator(object):
                 if element.tag == tag:
                     text.append(start_ele)
                 if element.text is not None:
-                    text.append(element.text)
+                    text.append(sanitize_user_html(element.text))
+                    m = re.search(r'[\s\f\t\v]$', element.text)
+                    if m and m.start() != 0:
+                        text.append(element.text[m.start():])
                 if element.tag == tag:
                     text.append(end_ele)
             raw = ''.join(text)
