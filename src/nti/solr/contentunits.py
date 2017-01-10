@@ -18,6 +18,7 @@ from nti.common.string import to_unicode
 
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
+from nti.contentlibrary.interfaces import INoAutoIndex
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 
@@ -66,7 +67,9 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return self.prefix(context) + context.ntiid
+        if not INoAutoIndex.providedBy(context):
+            return self.prefix(context) + context.ntiid
+        return None
 
 
 @component.adapter(IContentUnit)
