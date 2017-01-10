@@ -14,11 +14,15 @@ from six import string_types
 from zope import component
 from zope import interface
 
+from nti.contenttypes.presentation import RELATED_WORK
+
 from nti.contenttypes.presentation.interfaces import IPointer
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
+
+from nti.ntiids.ntiids import is_ntiid_of_type
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -66,9 +70,14 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        if IUserCreatedAsset.providedBy(context):
-            return super(_DefaultAssetIDValue, self).creator(context)
-        return self.prefix(context) + context.ntiid
+        # Filter out legacy RelatedWork ntiids.
+        if is_ntiid_of_type(context.ntiid, RELATED_WORK):
+            result = None
+        elif IUserCreatedAsset.providedBy(context):
+            result = super(_DefaultAssetIDValue, self).creator(context)
+        else:
+            result = self.prefix(context) + context.ntiid
+        return result
 
 
 @interface.implementer(ITitleValue)

@@ -53,7 +53,7 @@ from nti.solr.query import QueryTerm
 from nti.solr.query import QueryParms
 from nti.solr.query import FilterQuery
 
-from nti.solr.query import hl_snippets 
+from nti.solr.query import hl_snippets
 from nti.solr.query import search_fields
 from nti.solr.query import prepare_solr_query
 from nti.solr.query import hl_useFastVectorHighlighter
@@ -317,7 +317,7 @@ class CoreCatalog(object):
     def execute(self, term, fq, params):
         term, params = self._prepare_solr_query(term, fq, params)
         return self.client.search(term, **params)
-    
+
     def search(self, query, *args, **kwargs):
         term, fq, params = self.build_from_search_query(query)
         return self.execute(term, fq, params)
