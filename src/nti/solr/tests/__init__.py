@@ -17,12 +17,13 @@ from nti.testing.layers import ConfiguringLayerMixin
 
 import zope.testing.cleanup
 
+
 class SOLRTestLayer(ZopeComponentLayer,
-                    GCLayerMixin, 
+                    GCLayerMixin,
                     ConfiguringLayerMixin,
                     DSInjectorMixin):
 
-    set_up_packages = ('nti.dataserver', 'nti.solr',)
+    set_up_packages = ('nti.dataserver', 'nti.solr')
 
     @classmethod
     def setUp(cls):
@@ -40,6 +41,7 @@ class SOLRTestLayer(ZopeComponentLayer,
     @classmethod
     def testTearDown(cls):
         pass
+
 
 class SOLRLayerTest(unittest.TestCase):
     layer = SOLRTestLayer

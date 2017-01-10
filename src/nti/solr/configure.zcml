@@ -12,6 +12,7 @@
 	<include package="zope.security" />
 
 	<include package="nti.contentindexing" />
+	<include package="nti.contentfragments" />
 	<include package="nti.contentprocessing" />
 
 	<include package="." file="meta.zcml" />
