@@ -47,7 +47,6 @@ from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
 
 from nti.solr.lucene import lucene_escape
-from nti.solr.lucene import is_phrase_search
 
 from nti.solr.query import QueryTerm
 from nti.solr.query import QueryParms
@@ -293,7 +292,6 @@ class CoreCatalog(object):
     def _build_term_from_search_query(self, query):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
-        term = lucene_escape(term) if not is_phrase_search(term) else term
         text_fields = search_fields(query, self.text_fields)
         if text_fields:
             for name in text_fields:
