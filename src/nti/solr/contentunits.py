@@ -16,6 +16,7 @@ from zope import interface
 
 from nti.common.string import to_unicode
 
+from nti.contentfragments.html import sanitize_user_html
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.contentlibrary.interfaces import INoAutoIndex
@@ -111,7 +112,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
         parent_key = getattr(context.__parent__, 'key', None)
         if 		parent_key is None \
                 or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
-            return to_unicode(context.read_contents())
+            return sanitize_user_html(to_unicode(context.read_contents()))
         return None
 
     def lang(self, context=None):
