@@ -79,6 +79,9 @@ class _SearchFragmentDecorator(object):
         start_ele = '<%s>' % tag
         # clean raw string and make it unicode
         raw = re.sub(r'\\/', '/', to_unicode(raw))
+        # clean anything that may come from a valid <html> tag
+        m = re.match(r"(.*)(<html>.*)", raw)
+        raw = m.groups()[1] if m else raw
         # split by enclosing element
         for split in re.split(r'(%s)' % start_ele, raw):
             if split != start_ele:
