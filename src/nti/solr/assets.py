@@ -74,7 +74,7 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
         if is_ntiid_of_type(context.ntiid, RELATED_WORK):
             result = None
         elif IUserCreatedAsset.providedBy(context):
-            result = super(_DefaultAssetIDValue, self).creator(context)
+            result = super(_DefaultAssetIDValue, self).value(context)
         else:
             result = self.prefix(context) + context.ntiid
         return result
@@ -89,7 +89,7 @@ class _DefaultAssetTitleValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return 		getattr(context, 'title', None) \
+        return 	getattr(context, 'title', None) \
             or getattr(context, 'label', None)
 
 
