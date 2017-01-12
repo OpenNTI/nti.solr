@@ -11,10 +11,11 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import component
 
-from zope.intid.interfaces import IIntIdAddedEvent
 from zope.intid.interfaces import IIntIdRemovedEvent
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
+
+from zc.intid.interfaces import IAfterIdAddedEvent
 
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
@@ -43,7 +44,7 @@ def _index_transcript(obj, event):
 def _unindex_transcript(obj, event):
 	queue_add(TRANSCRIPTS_QUEUE, single_unindex_job, obj)
 
-@component.adapter(IPresentationAsset, IIntIdAddedEvent)
+@component.adapter(IPresentationAsset, IAfterIdAddedEvent)
 def _asset_added(obj, event=None):
 	if 		INTIMedia.providedBy(obj) \
 		or	INTIDocketAsset.providedBy(obj) \

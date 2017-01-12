@@ -54,7 +54,7 @@
 	<!-- Assets -->
 	<subscriber handler=".assets._asset_added"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
-					 zope.intid.interfaces.IIntIdAddedEvent"/>
+					 zc.intid.interfaces.IAfterIdAddedEvent"/>
 
 	<subscriber handler=".assets._asset_removed"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
