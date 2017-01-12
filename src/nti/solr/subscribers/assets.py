@@ -20,7 +20,6 @@ from zc.intid.interfaces import IAfterIdAddedEvent
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
-from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAssetMovedEvent
 
@@ -47,8 +46,7 @@ def _unindex_transcript(obj, event):
 @component.adapter(IPresentationAsset, IAfterIdAddedEvent)
 def _asset_added(obj, event=None):
 	if 		INTIMedia.providedBy(obj) \
-		or	INTIDocketAsset.providedBy(obj) \
-		or	IUserCreatedAsset.providedBy(obj):
+		or	INTIDocketAsset.providedBy(obj):
 		queue_add(ASSETS_QUEUE, single_index_job, obj)
 	if INTIMedia.providedBy(obj):
 		for transcript in getattr(obj, 'transcripts', None) or ():
@@ -57,8 +55,7 @@ def _asset_added(obj, event=None):
 @component.adapter(IPresentationAsset, IObjectModifiedEvent)
 def _asset_modified(obj, event):
 	if 		INTIMedia.providedBy(obj) \
-		or	INTIDocketAsset.providedBy(obj) \
-		or	IUserCreatedAsset.providedBy(obj):
+		or	INTIDocketAsset.providedBy(obj):
 		queue_modified(ASSETS_QUEUE, single_index_job, obj)
 	if INTIMedia.providedBy(obj):
 		for transcript in getattr(obj, 'transcripts', None) or ():
@@ -67,8 +64,7 @@ def _asset_modified(obj, event):
 @component.adapter(IPresentationAsset, IIntIdRemovedEvent)
 def _asset_removed(obj, event):
 	if 		INTIMedia.providedBy(obj) \
-		or	INTIDocketAsset.providedBy(obj) \
-		or	IUserCreatedAsset.providedBy(obj):
+		or	INTIDocketAsset.providedBy(obj):
 		queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
 	if INTIMedia.providedBy(obj):
 		for transcript in getattr(obj, 'transcripts', None) or ():
