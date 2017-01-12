@@ -17,6 +17,7 @@ from zope import interface
 from nti.contenttypes.presentation import RELATED_WORK
 
 from nti.contenttypes.presentation.interfaces import IPointer
+from nti.contenttypes.presentation.interfaces import IAssetRef
 from nti.contenttypes.presentation.interfaces import IUserCreatedAsset
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
@@ -70,8 +71,9 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        # Filter out legacy RelatedWork ntiids.
-        if is_ntiid_of_type(context.ntiid, RELATED_WORK):
+        # Filter out legacy RelatedWork ntiid and asset refs.
+        if     IAssetRef.providedBy(context) \
+            or is_ntiid_of_type(context.ntiid, RELATED_WORK):
             result = None
         elif IUserCreatedAsset.providedBy(context):
             result = super(_DefaultAssetIDValue, self).value(context)
