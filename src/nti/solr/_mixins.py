@@ -38,18 +38,26 @@ class _AssetContainerIdValue(object):
         self.context = context
 
     @classmethod
+    def _get_ntiid(cls, context):
+        try:
+            return context.ntiid
+        except AttributeError:
+            return None
+
+    @classmethod
     def _container_lineage(cls, context, break_interface):
-        result = list()
+        result = None
+        ntiids = list()
         for item in lineage(context):
-            try:
-                ntiid = item.ntiid
-                if ntiid:
-                    result.append(ntiid)
-            except AttributeError:
-                pass
+            if item is context:
+                continue
+            ntiid = cls._get_ntiid(item)
+            if ntiid:
+                ntiids.append(ntiid)
             if break_interface.providedBy(item):
-                return result, item
-        return result, None
+                result = item
+                break
+        return ntiids, result
 
     @classmethod
     def _course_containers(cls, context):
@@ -69,7 +77,7 @@ class _AssetContainerIdValue(object):
     def value(self, context=None):
         context = self.context if context is None else context
         containers, _ = self._container_lineage(context, IContentPackage)
-        if not containers:  # check for courses
+        if not containers: # check for courses
             containers = self._course_containers(context)
         return tuple(containers)
 
