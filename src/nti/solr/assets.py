@@ -104,8 +104,8 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        result =  getattr(context, 'byline', None) \
-            or getattr(context, 'creator', None)
+        result =  getattr(context, 'creator', None) \
+            or getattr(context, 'byline', None)
         result = getattr(result, 'username', result)
         return result.lower() if result else None
 
