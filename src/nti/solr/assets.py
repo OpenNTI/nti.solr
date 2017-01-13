@@ -196,8 +196,12 @@ class AssetsCatalog(MetadataCatalog):
             packs = packs.split() if isinstance(packs, string_types) else packs
             fq.add_or('containerId', [lucene_escape(x) for x in packs])
         if 'mimeType' not in fq:
-            types = self.get_mime_types(self.name)
-            fq.add_or('mimeType', [lucene_escape(x) for x in types])
+            searchOn = getattr(query, 'searchOn', None)
+            if searchOn:
+                fq.add_or('mimeType', [lucene_escape(x) for x in searchOn])
+            else:
+                types = self.get_mime_types(self.name)
+                fq.add_or('mimeType', [lucene_escape(x) for x in types])
         return term, fq, params
 
     def clear(self, commit=None):
