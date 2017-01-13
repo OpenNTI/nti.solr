@@ -114,7 +114,7 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
             result = to_external_ntiid_oid( result )
         else:
             result = getattr(result, 'username', result)
-            result.lower() if result else None
+            result = result.lower() if result else None
         return result
 
 
