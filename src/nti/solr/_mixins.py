@@ -114,6 +114,5 @@ class _TranscriptContainerIdValue(_AssetContainerIdValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        containers, _ = self._container_lineage(
-            context.__parent__, IContentPackage)
+        containers, _ = self._container_lineage(context, IContentPackage)
         return tuple(containers)
