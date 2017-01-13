@@ -16,6 +16,8 @@ from zope import interface
 
 from nti.common.string import to_unicode
 
+from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
+
 from nti.dataserver.interfaces import IEntity
 
 from nti.dataserver.users.interfaces import IUserProfile
@@ -24,6 +26,8 @@ from nti.dataserver.users.interfaces import IFriendlyNamed
 from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
+
+from nti.externalization.externalization import to_external_ntiid_oid
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
@@ -76,7 +80,11 @@ class _DefaultUsernameValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        result = getattr(context, 'username', None)
+        if IUseNTIIDAsExternalUsername.providedBy(context):
+            result = to_external_ntiid_oid(context)
+        else:
+            result = getattr(context, 'username', None)
+            result = result.lower() if result else None
         return (to_unicode(result),) if result else ()
 
 

@@ -117,6 +117,7 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 class _NoteContentValue(_DefaultUserDataContentValue):
     pass
 
+
 @component.adapter(IHighlight)
 @interface.implementer(IContentValue)
 class _HighlightContentValue(_DefaultUserDataContentValue):
@@ -299,7 +300,8 @@ class UserDataCatalog(MetadataCatalog):
             searchOn = getattr(query, 'searchOn', None)
             if searchOn:
                 types = self.get_mime_types(self.name)  # XXX: Negative list
-                fq.add_or('mimeType', [lucene_escape(x) for x in searchOn if x not in types])
+                fq.add_or('mimeType', [lucene_escape(x)
+                                       for x in searchOn if x not in types])
             else:
                 fq.add_term('isUserGeneratedData', "true")
         return term, fq, params
