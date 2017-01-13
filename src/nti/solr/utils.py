@@ -29,6 +29,8 @@ from nti.common.string import to_unicode
 
 from nti.contentprocessing.content_utils import tokenize_content
 
+from nti.contentprocessing.interfaces import IStopWords
+
 from nti.contentprocessing.keyword import extract_key_words
 
 from nti.contenttypes.presentation import AUDIO_MIMETYES
@@ -82,6 +84,10 @@ def get_keywords(content, lang='en'):
     keywords = extract_key_words(content, lang='en')
     if not keywords:
         keywords = term_extract_key_words(content, lang=lang)
+    utility = component.queryUtility(IStopWords)
+    if utility is not None:
+        stopwords = utility.stopwords(lang)
+        keywords = tuple(x for x in keywords if x and x.lower() in stopwords)
     return keywords
 
 # documents
