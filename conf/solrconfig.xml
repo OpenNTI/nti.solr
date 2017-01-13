@@ -758,7 +758,10 @@
 		-->
 		<lst name="defaults">
 			<str name="echoParams">explicit</str>
-			<int name="rows">10</int>
+			<int name="rows">50</int>
+			<str name="qf">content_en^1.5 title_en^1.0 keywords_en^1.2 tags^0.5</str>
+			<str name="q.alt">*:*</str>
+			<str name="mlt.qf">content_en^1.5 title_en^1.0 keywords_en^1.2 tags^0.5</str>
 			<!-- Controls the distribution of a query to shards other than itself.
 			Consider making 'preferLocalShards' true when:
 			  1) maxShardsPerNode > 1
