@@ -23,6 +23,10 @@ from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
+from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
+
+from nti.externalization.externalization import to_external_ntiid_oid
+
 from nti.ntiids.ntiids import is_ntiid_of_type
 
 from nti.schema.fieldproperty import createDirectFieldProperties
@@ -106,7 +110,10 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
         context = self.context if context is None else context
         result =  getattr(context, 'creator', None) \
             or getattr(context, 'byline', None)
-        result = getattr(result, 'username', result)
+        if IUseNTIIDAsExternalUsername.providedBy( result ):
+            result = to_external_ntiid_oid( result )
+        else:
+            result = getattr(result, 'username', result)
         return result.lower() if result else None
 
 

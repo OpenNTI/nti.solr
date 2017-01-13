@@ -30,6 +30,8 @@ from nti.common.string import to_unicode
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
+from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
+
 from nti.dataserver.contenttypes.forums.interfaces import ICommentPost
 from nti.dataserver.contenttypes.forums.interfaces import IHeadlinePost
 from nti.dataserver.contenttypes.forums.interfaces import IPersonalBlogEntryPost
@@ -46,6 +48,8 @@ from nti.dataserver.interfaces import IDeletedObjectPlaceholder
 from nti.dataserver.interfaces import IInspectableWeakThreadable
 from nti.dataserver.interfaces import IContained as INTIContained
 from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
+
+from nti.externalization.externalization import to_external_ntiid_oid
 
 from nti.ntiids.ntiids import TYPE_OID
 from nti.ntiids.ntiids import TYPE_UUID
@@ -113,7 +117,10 @@ class _DefaultCreatorValue(_BasicAttributeValue):
     def _get_creator(self, context, name='creator'):
         try:
             creator = getattr(context, name, None)
-            creator = getattr(creator, 'username', creator)
+            if IUseNTIIDAsExternalUsername.providedBy( creator ):
+                creator = to_external_ntiid_oid( creator )
+            else:
+                creator = getattr(creator, 'username', creator)
             if isinstance(creator, six.string_types):
                 return to_unicode(creator.lower())
         except (TypeError):
