@@ -81,13 +81,15 @@ def get_content(text=None, lang="en"):
 
 
 def get_keywords(content, lang='en'):
-    keywords = extract_key_words(content, lang='en')
-    if not keywords:
-        keywords = term_extract_key_words(content, lang=lang)
+    stopwords = ()
     utility = component.queryUtility(IStopWords)
     if utility is not None:
-        stopwords = utility.stopwords(lang)
-        keywords = tuple(x for x in keywords if x and x.lower() not in stopwords)
+        stopwords = utility.stopwords(lang) or ()
+    keywords = extract_key_words(content, lang=lang)
+    if not keywords:
+        keywords = term_extract_key_words(content, 
+                                          lang=lang,
+                                          blacklist=stopwords)
     return keywords
 
 # documents
