@@ -117,12 +117,13 @@ class _DefaultCreatorValue(_BasicAttributeValue):
     def _get_creator(self, context, name='creator'):
         try:
             creator = getattr(context, name, None)
-            if IUseNTIIDAsExternalUsername.providedBy( creator ):
-                creator = to_external_ntiid_oid( creator )
+            if IUseNTIIDAsExternalUsername.providedBy(creator):
+                creator = to_external_ntiid_oid(creator)
             else:
                 creator = getattr(creator, 'username', creator)
+                creator = creator.lower() if creator else None
             if isinstance(creator, six.string_types):
-                return to_unicode(creator.lower())
+                return to_unicode(creator)
         except (TypeError):
             pass
         return None

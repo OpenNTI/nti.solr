@@ -114,7 +114,8 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
             result = to_external_ntiid_oid( result )
         else:
             result = getattr(result, 'username', result)
-        return result.lower() if result else None
+            result.lower() if result else None
+        return result
 
 
 @interface.implementer(IContentValue)
