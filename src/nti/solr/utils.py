@@ -87,7 +87,7 @@ def get_keywords(content, lang='en'):
     utility = component.queryUtility(IStopWords)
     if utility is not None:
         stopwords = utility.stopwords(lang)
-        keywords = tuple(x for x in keywords if x and x.lower() in stopwords)
+        keywords = tuple(x for x in keywords if x and x.lower() not in stopwords)
     return keywords
 
 # documents
