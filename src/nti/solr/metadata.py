@@ -121,10 +121,11 @@ class _DefaultCreatorValue(_BasicAttributeValue):
                 creator = to_external_ntiid_oid(creator)
             else:
                 creator = getattr(creator, 'username', creator)
+                creator = getattr(creator, 'id', creator)
                 creator = creator.lower() if creator else None
             if isinstance(creator, six.string_types):
                 return to_unicode(creator)
-        except (TypeError):
+        except TypeError:
             pass
         return None
 
@@ -259,7 +260,7 @@ class _DefaultContainersValue(_BasicAttributeValue):
         contained = INTIContained(context, None)
         if contained is not None:
             cid = contained.containerId
-            if		is_ntiid_of_types(cid, self._IGNORED_TYPES) \
+            if        is_ntiid_of_types(cid, self._IGNORED_TYPES) \
                     and not ICommentPost.providedBy(context):
                 return None
             else:
