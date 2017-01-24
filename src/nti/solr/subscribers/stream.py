@@ -27,24 +27,25 @@ from nti.solr.subscribers.userdata import index_userdata
 
 _changeType_events = (SC_CREATED, SC_SHARED, SC_MODIFIED)
 
+
 @component.adapter(ITargetedStreamChangeEvent)
 def onChange(event):
-	change = event.object
-	target = event.target
-	changeType, changeObject = change.type, change.object
-	if not IEntity.providedBy(target):
-		entity = Entity.get_entity(str(target))
-	else:
-		entity = target
+    change = event.object
+    target = event.target
+    changeType, changeObject = change.type, change.object
+    if not IEntity.providedBy(target):
+        entity = Entity.get_entity(str(target))
+    else:
+        entity = target
 
-	should_process = IUser.providedBy(entity)
-	if should_process:
-		if 		changeType in _changeType_events \
-			and IReadableShared.providedBy(changeObject):
-			should_process = changeObject.isSharedDirectlyWith(entity)
+    should_process = IUser.providedBy(entity)
+    if should_process:
+        if      changeType in _changeType_events \
+            and IReadableShared.providedBy(changeObject):
+            should_process = changeObject.isSharedDirectlyWith(entity)
 
-	if should_process:
-		if changeType != SC_DELETED:
-			index_userdata(changeObject, None)
+    if should_process:
+        if changeType != SC_DELETED:
+            index_userdata(changeObject, None)
 
-	return should_process
+    return should_process

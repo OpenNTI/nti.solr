@@ -41,7 +41,7 @@ expression = Forward()
 
 valid_word = Regex(r'([a-zA-Z0-9*_+.-]|\\[!(){}\[\]^"~*?\\:])+').setName("word")
 valid_word.setParseAction(
-	lambda t : t[0].replace('\\\\', chr(127)).replace('\\', '').replace(chr(127), '\\')
+    lambda t : t[0].replace('\\\\', chr(127)).replace('\\', '').replace(chr(127), '\\')
 )
 
 q_string = QuotedString('"')
@@ -63,14 +63,14 @@ boost = (CARAT + number("boost"))
 string_expr = Group(q_string + proximity_modifier) | q_string
 word_expr = Group(valid_word + fuzzy_modifier) | valid_word
 term << ( Optional(field_name("field") + COLON) +
-		  (word_expr | string_expr | range_search | Group(LPAR + expression + RPAR)) +
-		  Optional(boost))
+          (word_expr | string_expr | range_search | Group(LPAR + expression + RPAR)) +
+          Optional(boost))
 term.setParseAction(lambda t:[t] if 'field' in t or 'boost' in t else None)
 
 expression << infixNotation(term,
-	[
+    [
         (required_modifier | prohibit_modifier, 1, opAssoc.RIGHT),
         ((not_ | '!').setParseAction(lambda: "NOT"), 1, opAssoc.RIGHT),
         ((and_ | '&&').setParseAction(lambda: "AND"), 2, opAssoc.LEFT),
         (Optional(or_ | '||').setParseAction(lambda: "OR"), 2, opAssoc.LEFT),
-	])
+    ])

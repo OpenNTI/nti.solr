@@ -32,32 +32,39 @@ from nti.solr.common import single_unindex_job
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
+
 @component.adapter(IQEvaluation, IIntIdAddedEvent)
 def _evaluation_added(obj, event):
-	if obj.isPublished():
-		queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+    if obj.isPublished():
+        queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+
 
 @component.adapter(IQEvaluation, IObjectModifiedEvent)
 def _evaluation_modified(obj, event):
-	if obj.isPublished():
-		queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+    if obj.isPublished():
+        queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+
 
 @component.adapter(IQEvaluation, IObjectPublishedEvent)
 def _evaluation_published(obj, event):
-	queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+    queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
+
 
 @component.adapter(IQEvaluation, IObjectUnpublishedEvent)
 def _evaluation_unpublished(obj, event):
-	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+    queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+
 
 @component.adapter(IQEvaluation, IIntIdRemovedEvent)
 def _evaluation_removed(obj, event):
-	queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+    queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
+
 
 @component.adapter(IQEvaluation, IIndexObjectEvent)
 def _index_evaluation(obj, event):
-	queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+    queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
+
 
 @component.adapter(IQEvaluation, IUnindexObjectEvent)
 def _unindex_evaluation(obj, event):
-	_evaluation_removed(obj, None)
+    _evaluation_removed(obj, None)

@@ -29,22 +29,27 @@ from nti.solr.common import single_unindex_job
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
+
 @component.adapter(ICourseInstance, IIntIdAddedEvent)
 def _course_added(obj, event):
-	queue_add(COURSES_QUEUE, single_index_job, obj)
+    queue_add(COURSES_QUEUE, single_index_job, obj)
+
 
 @component.adapter(ICourseInstance, IObjectModifiedEvent)
 def _course_modified(obj, event):
-	queue_modified(COURSES_QUEUE, single_index_job, obj)
+    queue_modified(COURSES_QUEUE, single_index_job, obj)
+
 
 @component.adapter(ICourseInstance, IIntIdRemovedEvent)
 def _course_removed(obj, event):
-	queue_remove(COURSES_QUEUE, single_unindex_job, obj=obj)
+    queue_remove(COURSES_QUEUE, single_unindex_job, obj=obj)
+
 
 @component.adapter(ICourseInstance, IIndexObjectEvent)
 def _index_course(obj, event):
-	_course_added(obj, None)
+    _course_added(obj, None)
+
 
 @component.adapter(ICourseInstance, IUnindexObjectEvent)
 def _unindex_course(obj, event):
-	queue_remove(obj, None)
+    queue_remove(obj, None)

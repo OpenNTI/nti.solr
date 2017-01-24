@@ -19,40 +19,43 @@ from nti.dataserver.utils.base_script import create_context
 
 from nti.solr import QUEUE_NAMES
 
+
 class PluginPoint(Contained):
 
-	def __init__(self, name):
-		self.__name__ = name
+    def __init__(self, name):
+        self.__name__ = name
 
 PP_SOLR = PluginPoint('nti.solr')
 
+
 class Constructor(Processor):
 
-	def set_log_formatter(self, args):
-		super(Constructor, self).set_log_formatter(args)
+    def set_log_formatter(self, args):
+        super(Constructor, self).set_log_formatter(args)
 
-	def extend_context(self, context):
-		includePluginsDirective(context, PP_SOLR)
+    def extend_context(self, context):
+        includePluginsDirective(context, PP_SOLR)
 
-	def create_context(self, env_dir):
-		context = create_context(env_dir, with_library=True, 
-								 plugins=False, 
-								 slugs=True,
-								 slugs_files=("*solr.zcml", "*features.zcml"))
-		self.extend_context(context)
-		return context
-	
-	def conf_packages(self):
-		return (self.conf_package, 'nti.app.solr', 'nti.async')
-	
-	def process_args(self, args):
-		setattr(args, 'redis', True)
-		setattr(args, 'library', True)  # load library
-		setattr(args, 'queue_names', QUEUE_NAMES)
-		super(Constructor, self).process_args(args)
+    def create_context(self, env_dir):
+        context = create_context(env_dir, with_library=True,
+                                 plugins=False,
+                                 slugs=True,
+                                 slugs_files=("*solr.zcml", "*features.zcml"))
+        self.extend_context(context)
+        return context
+
+    def conf_packages(self):
+        return (self.conf_package, 'nti.app.solr', 'nti.async')
+
+    def process_args(self, args):
+        setattr(args, 'redis', True)
+        setattr(args, 'library', True)  # load library
+        setattr(args, 'queue_names', QUEUE_NAMES)
+        super(Constructor, self).process_args(args)
+
 
 def main():
-	return Constructor()()
+    return Constructor()()
 
 if __name__ == '__main__':
-	main()
+    main()

@@ -14,22 +14,26 @@ import six
 
 from nti.solr.lucene.grammar import expression
 
+
 def lucene_escape(s):
-	s = s if isinstance(s, six.string_types) else str(s)
-	return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
+    s = s if isinstance(s, six.string_types) else str(s)
+    return re.sub(r'([\+\-\!\(\)\{\}\[\]\^\"\~\*\?\:])', r'\\\g<1>', s)
 escape = lucene_escape
 
 phrase_search = re.compile(r'"(?P<text>.*?)"')
 prefix_search = re.compile(r'(?P<text>[^ \t\r\n*]+)[*](?= |$|\\)')
 
+
 def is_phrase_search(term):
-	return phrase_search.match(term) is not None if term else False
+    return phrase_search.match(term) is not None if term else False
+
 
 def is_prefix_search(term):
-	return prefix_search.match(term) is not None if term else False
+    return prefix_search.match(term) is not None if term else False
+
 
 def is_valid_query(term):
-	try:
-		return expression.parseString(term, parseAll=True)
-	except Exception:
-		return False
+    try:
+        return expression.parseString(term, parseAll=True)
+    except Exception:
+        return False

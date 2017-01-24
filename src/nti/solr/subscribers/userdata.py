@@ -30,27 +30,32 @@ from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 
+
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
 def _userdata_added(obj, event=None):
-	queue_add(USERDATA_QUEUE, single_index_job, obj)
+    queue_add(USERDATA_QUEUE, single_index_job, obj)
 userdata_added = _userdata_added
+
 
 @component.adapter(IUserGeneratedData, IObjectModifiedEvent)
 def _userdata_modified(obj, event=None):
-	if IDeletedObjectPlaceholder.providedBy(obj):
-		queue_remove(USERDATA_QUEUE, single_unindex_job, obj)
-	else:
-		queue_modified(USERDATA_QUEUE, single_index_job, obj)
+    if IDeletedObjectPlaceholder.providedBy(obj):
+        queue_remove(USERDATA_QUEUE, single_unindex_job, obj)
+    else:
+        queue_modified(USERDATA_QUEUE, single_index_job, obj)
+
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
 def _userdata_removed(obj, event):
-	queue_remove(USERDATA_QUEUE, single_unindex_job, obj=obj)
+    queue_remove(USERDATA_QUEUE, single_unindex_job, obj=obj)
+
 
 @component.adapter(IUserGeneratedData, IIndexObjectEvent)
 def _index_userdata(obj, event=None):
-	_userdata_added(obj, None)
+    _userdata_added(obj, None)
 index_userdata = _index_userdata
+
 
 @component.adapter(IUserGeneratedData, IUnindexObjectEvent)
 def _unindex_userdata(obj, event):
-	_userdata_removed(obj, None)
+    _userdata_removed(obj, None)
