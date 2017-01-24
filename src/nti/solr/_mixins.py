@@ -9,8 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-import six
-from StringIO import StringIO
+from six import StringIO
+from six import string_types
 
 from zope import component
 from zope import interface
@@ -96,9 +96,9 @@ class _TranscriptSource(object):
         src = context.src
         raw_content = None
         # is in content pkg ?
-        if 		isinstance(src, six.string_types) \
-                and not src.startswith('/')  \
-                and '://' not in src:  # e.g. resources/...
+        if 		isinstance(src, string_types) \
+            and not src.startswith('/')  \
+            and '://' not in src:  # e.g. resources/...
             package = find_interface(context, IContentPackage, strict=False)
             if package is not None:
                 try:
