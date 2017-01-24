@@ -38,9 +38,11 @@ from nti.solr.contentunits import unindex_content_package
 from nti.solr.contentunits import index_content_package_assets
 from nti.solr.contentunits import unindex_content_package_assets
 
+
 def is_published(obj):
     return not IPublishable.providedBy(obj) or obj.is_published()
 isPublished = is_published
+
 
 @component.adapter(IContentUnit, IIntIdAddedEvent)
 def _contentunit_added(obj, event=None):
@@ -74,10 +76,13 @@ def _unindex_contentunit(obj, event):
 @component.adapter(IContentPackage, IIndexObjectEvent)
 def _index_contentpackage(obj, event):
     if is_published(obj):
-        add_to_queue(CONTENT_UNITS_QUEUE, index_content_package, obj, jid='added')
-        add_to_queue(ASSETS_QUEUE, 
-                     index_content_package_assets, 
+        add_to_queue(CONTENT_UNITS_QUEUE,
+                     index_content_package,
                      obj, 
+                     jid='added')
+        add_to_queue(ASSETS_QUEUE,
+                     index_content_package_assets,
+                     obj,
                      jid='assets_added')
 
 
@@ -85,10 +90,10 @@ def _index_contentpackage(obj, event):
 def _unindex_contentpackage(obj, event):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
-                     unindex_content_package, 
-                     obj, 
+                     unindex_content_package,
+                     obj,
                      jid='removed')
-        add_to_queue(ASSETS_QUEUE, 
-                     unindex_content_package_assets, 
-                     obj, 
+        add_to_queue(ASSETS_QUEUE,
+                     unindex_content_package_assets,
+                     obj,
                      jid='assets_removed')
