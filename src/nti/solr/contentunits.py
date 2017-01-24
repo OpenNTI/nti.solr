@@ -110,7 +110,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
     def get_content(self, context):
         parent_key = getattr(context.__parent__, 'key', None)
-        if 		parent_key is None \
+        if         parent_key is None \
                 or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
             return sanitize_user_html(to_unicode(context.read_contents()))
         return None
@@ -247,11 +247,11 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
     with current_site(job_site):
         obj = finder(source)
         if IContentPackage.providedBy(obj):
-            logger.info(
-                "Content package %s assets indexing started", obj.ntiid)
+            logger.info("Content package %s assets indexing started", 
+                        obj.ntiid)
             process_content_package_assets(obj, index=True)
-            logger.info(
-                "Content package %s assets indexing completed", obj.ntiid)
+            logger.info("Content package %s assets indexing completed", 
+                        obj.ntiid)
 
 
 def unindex_content_package_assets(source, site=None, *args, **kwargs):

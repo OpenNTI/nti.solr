@@ -106,9 +106,9 @@ class _SearchFragmentDecorator(object):
     def decorateExternalObject(self, original, external):
         hit = original.__parent__
         # trascript hits are plain text
-        if 		hit is not None \
-                and	not ITranscriptSearchHit.providedBy(hit) \
-                and hl_removeEncodedHTML(hit.Query):
+        if      hit is not None \
+            and not ITranscriptSearchHit.providedBy(hit) \
+            and hl_removeEncodedHTML(hit.Query):
             for idx, match in enumerate(original.Matches or ()):
                 match = self.split_and_sanitize(match)
                 external['Matches'][idx] = match

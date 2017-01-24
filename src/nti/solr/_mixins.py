@@ -96,7 +96,7 @@ class _TranscriptSource(object):
         src = context.src
         raw_content = None
         # is in content pkg ?
-        if 		isinstance(src, string_types) \
+        if      isinstance(src, string_types) \
             and not src.startswith('/')  \
             and '://' not in src:  # e.g. resources/...
             package = find_interface(context, IContentPackage, strict=False)

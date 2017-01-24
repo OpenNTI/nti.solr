@@ -695,27 +695,27 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         """
         Add a document to the index.
 
-        @param value: the object to be indexed
-        @param commit: Commit operation
-        @param event: Notification event
+        :param value: the object to be indexed
+        :param commit: Commit operation
+        :param event: Notification event
         """
 
     def remove(value, commit=True, event=True):
         """
         Remove a document from the index
 
-        @param value: The object/id to remove
-        @param commit: Commit operation
-        @param event: Notification event
+        :param value: The object/id to remove
+        :param commit: Commit operation
+        :param event: Notification event
         """
 
     def delete(uid=None, q=None, commit=True):
         """
         Delete by the specified query or id
 
-        @param uid: The object/id to remove
-        @param q: The query to execute for deletion
-        @param commit: Commit operation
+        :param uid: The object/id to remove
+        :param q: The query to execute for deletion
+        :param commit: Commit operation
         """
         
     def build_from_search_query(query):
@@ -854,8 +854,9 @@ class ISOLRFilterQuery(interface.Interface):
 
 class ISOLRQueryTerm(interface.Interface):
 
-    default = ValidTextLine(
-        title="Default search term", required=False, default=None)
+    default = ValidTextLine(title="Default search term", 
+                            required=False, 
+                            default=None)
 
     def add_term(name, value):
         """

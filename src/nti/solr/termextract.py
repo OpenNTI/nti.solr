@@ -30,8 +30,8 @@ class _DefaultKeyWordFilter(object):
         self.single_strength_min_occur = single_strength_min_occur
 
     def __call__(self, word, occur, strength):
-        result =  (strength == 1 and occur >= self.single_strength_min_occur) \
-            or (strength <= self.max_limit_strength)
+        result = (strength == 1 and occur >= self.single_strength_min_occur) \
+              or (strength <= self.max_limit_strength)
         return bool(result and len(word) > 1)
 
 

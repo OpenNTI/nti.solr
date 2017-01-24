@@ -77,7 +77,7 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
         context = self.context if context is None else context
         # Filter out legacy RelatedWork ntiid and asset refs.
         if     IAssetRef.providedBy(context) \
-                or is_ntiid_of_type(context.ntiid, RELATED_WORK):
+            or is_ntiid_of_type(context.ntiid, RELATED_WORK):
             result = None
         elif IUserCreatedAsset.providedBy(context):
             result = super(_DefaultAssetIDValue, self).value(context)
@@ -95,7 +95,7 @@ class _DefaultAssetTitleValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return 	getattr(context, 'title', None) \
+        return     getattr(context, 'title', None) \
             or getattr(context, 'label', None)
 
 
