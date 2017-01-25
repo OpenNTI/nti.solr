@@ -81,8 +81,6 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
         result = list()
         context = self.context if context is None else context
         for item in lineage(context):
-            if item is context:
-                continue
             if IContentUnit.providedBy(item) and item.ntiid:
                 result.append(item.ntiid)
             if IContentPackage.providedBy(item):
@@ -110,8 +108,8 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
 
     def get_content(self, context):
         parent_key = getattr(context.__parent__, 'key', None)
-        if         parent_key is None \
-                or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
+        if     parent_key is None \
+            or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
             return sanitize_user_html(to_unicode(context.read_contents()))
         return None
 
@@ -172,7 +170,7 @@ class ContentUnitsCatalog(MetadataCatalog):
         term, fq, params = MetadataCatalog.build_from_search_query(
             self, query)
         packs = getattr(query, 'packages', None) \
-            or getattr(query, 'package', None)
+             or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:
             packs = packs.split() if isinstance(packs, string_types) else packs
             fq.add_or('containerId', [lucene_escape(x) for x in packs])
