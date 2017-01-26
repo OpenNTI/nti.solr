@@ -89,7 +89,11 @@
 	<configure zcml:condition="installed nti.contenttypes.courses">
 		<subscriber handler=".courses._course_added"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
-						 zope.intid.interfaces.IIntIdAddedEvent"/>
+						 zope.intid.interfaces.IIntIdAddedEvent" />
+						 
+		<subscriber handler=".courses._course_imported"
+					for="nti.contenttypes.courses.interfaces.ICourseInstance
+						 nti.contenttypes.courses.interfaces.ICourseInstanceImportedEvent" />
 
 		<subscriber handler=".courses._course_removed"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
@@ -97,15 +101,15 @@
 
 		<subscriber handler=".courses._course_modified"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
-						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
 
 		<subscriber handler=".courses._index_course"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	 ..interfaces.IIndexObjectEvent"/>
+					 	 ..interfaces.IIndexObjectEvent" />
 
 		<subscriber handler=".courses._unindex_course"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
-					 	..interfaces.IUnindexObjectEvent"/>
+					 	..interfaces.IUnindexObjectEvent" />
 	</configure>
 
 	<!-- Assessments / Evaluations -->
