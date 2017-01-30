@@ -215,8 +215,6 @@ mimeTypeRegistry = MimeTypeRegistry()
 # Known mimeTypes used to map to their corresponding  search catalogs
 CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
-CONTENT_UNIT_MIME_TYPE = u'application/vnd.nextthought.contentunit'
-CONTENT_PACKAGE_MIME_TYPE = u'application/vnd.nextthought.contentpackage'
 
 NTI_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.ntitranscript'
 AUDIO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.audiotranscript'
@@ -233,12 +231,6 @@ FRIEND_LISTS_MIME_TYPE = u'application/vnd.nextthought.friendslist'
 
 
 def _register():
-    # content
-    mimeTypeRegistry.register(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.register(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.register(CONTENT_UNIT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    mimeTypeRegistry.register(CONTENT_PACKAGE_MIME_TYPE, CONTENT_UNITS_CATALOG)
-
     # transcripts
     mimeTypeRegistry.register(NTI_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
     mimeTypeRegistry.register(AUDIO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
@@ -267,6 +259,16 @@ def _register():
         from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
         for m in ALL_EVALUATION_MIME_TYPES:
             mimeTypeRegistry.register(m, EVALUATIONS_CATALOG)
+    except ImportError:
+        pass
+    
+    # content
+    try:
+        from nti.contentlibrary import ALL_CONTENT_MIMETYPES
+        for m in ALL_CONTENT_MIMETYPES:
+            mimeTypeRegistry.register(m, CONTENT_UNITS_CATALOG)
+        mimeTypeRegistry.register(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
+        mimeTypeRegistry.register(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
     except ImportError:
         pass
 _register()
