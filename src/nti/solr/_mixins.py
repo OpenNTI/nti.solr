@@ -77,7 +77,7 @@ class _AssetContainerIdValue(object):
     def value(self, context=None):
         context = self.context if context is None else context
         containers, _ = self._container_lineage(context, IContentPackage)
-        if not containers: # check for courses
+        if not containers:  # check for courses
             containers = self._course_containers(context)
         return tuple(containers)
 

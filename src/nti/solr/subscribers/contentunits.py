@@ -78,7 +78,7 @@ def _index_contentpackage(obj, event):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
                      index_content_package,
-                     obj, 
+                     obj,
                      jid='added')
         add_to_queue(ASSETS_QUEUE,
                      index_content_package_assets,
