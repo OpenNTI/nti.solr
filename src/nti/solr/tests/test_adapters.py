@@ -19,8 +19,8 @@ from zope import interface
 from zope.mimetype.interfaces import IContentTypeAware
 
 from nti.base.interfaces import ICreated
-from nti.base.interfaces import ICreatedTime 
-from nti.base.interfaces import ILastModified 
+from nti.base.interfaces import ICreatedTime
+from nti.base.interfaces import ILastModified
 
 from nti.dataserver.users import User
 
@@ -46,99 +46,100 @@ from nti.solr.interfaces import IProfessionalDescriptionValue
 
 from nti.solr.tests import SOLRTestLayer
 
+
 class TestAdpaters(unittest.TestCase):
 
-	layer = SOLRTestLayer
+    layer = SOLRTestLayer
 
-	def test_creator(self):
+    def test_creator(self):
 
-		@interface.implementer(ICreated)
-		class Created(object):
-			creator = 'ichigo'
+        @interface.implementer(ICreated)
+        class Created(object):
+            creator = 'ichigo'
 
-		value = ICreatorValue(Created()).value()
-		assert_that(value, is_('ichigo'))
+        value = ICreatorValue(Created()).value()
+        assert_that(value, is_('ichigo'))
 
-	def test_mimetype(self):
+    def test_mimetype(self):
 
-		@interface.implementer(IContentTypeAware)
-		class Created(object):
-			mimeType = 'text/x-python'
+        @interface.implementer(IContentTypeAware)
+        class Created(object):
+            mimeType = 'text/x-python'
 
-		value = IMimeTypeValue(Created()).value()
-		assert_that(value, is_('text/x-python'))
-		
-	def test_ntiid(self):
+        value = IMimeTypeValue(Created()).value()
+        assert_that(value, is_('text/x-python'))
 
-		@interface.implementer(IContentTypeAware)
-		class Created(object):
-			ntiid = 'foo'
+    def test_ntiid(self):
 
-		value = INTIIDValue(Created()).value()
-		assert_that(value, is_('foo'))
+        @interface.implementer(IContentTypeAware)
+        class Created(object):
+            ntiid = 'foo'
 
-	def test_created_last_mod_times(self):
+        value = INTIIDValue(Created()).value()
+        assert_that(value, is_('foo'))
 
-		@interface.implementer(ICreatedTime, ILastModified)
-		class Created(object):
-			lastModified = createdTime = 1475604175.0
+    def test_created_last_mod_times(self):
 
-		obj = Created()
-		for iface in (ICreatedTimeValue, ILastModifiedValue):
-			value = iface(obj).value()
-			assert_that(value, is_('2016-10-04T18:02:55Z'))
-			
-	def test_sharedWith(self):
+        @interface.implementer(ICreatedTime, ILastModified)
+        class Created(object):
+            lastModified = createdTime = 1475604175.0
 
-		class Created(object):
-			sharedWith = ("ichigo", 'Aizen')
+        obj = Created()
+        for iface in (ICreatedTimeValue, ILastModifiedValue):
+            value = iface(obj).value()
+            assert_that(value, is_('2016-10-04T18:02:55Z'))
 
-		value = ISharedWithValue(Created()).value()
-		assert_that(value, is_(('ichigo', 'aizen')))
-		
-	def test_inReplyTo(self):
+    def test_sharedWith(self):
 
-		class Created(object):
-			inReplyTo = "Aizen"
+        class Created(object):
+            sharedWith = ("ichigo", 'Aizen')
 
-		value = IInReplyToValue(Created()).value()
-		assert_that(value, is_('aizen'))
-		
-	def test_entities(self):
-		user = User("ichigo@bleach.org")
-		prof = ICompleteUserProfile(user)
-		prof.alias = 'Ichigo'
-		prof.realname = 'Ichigo Kurosaki'
-		
-		prof.twitter = str('https://twitter.com/ichigo')
-		prof.positions = [ProfessionalPosition(	startYear=1998,
-												endYear=2009,
-												companyName='RMG',
-												title='Developer',
-												description='Software Developer')]
-		prof.education = [Education(startYear=1994,
-									endYear=1997,
-									school='OU',
-									degree='Master',
-									description='Computer Science')]
-	
-		value = ISocialURLValue(user).value()
-		assert_that(value, is_(('https://twitter.com/ichigo',)))
-		
-		value = IProfessionalTitleValue(user).value()
-		assert_that(value, is_(('Developer',)))
+        value = ISharedWithValue(Created()).value()
+        assert_that(value, is_(('ichigo', 'aizen')))
 
-		value = IProfessionalCompanyValue(user).value()
-		assert_that(value, is_(('RMG',)))
-		
-		value = IProfessionalDescriptionValue(user).value()
-		assert_that(value, is_(('Software Developer',)))
-		
-		value = IEducationDegreeValue(user).value()
-		assert_that(value, is_(('Master',)))
+    def test_inReplyTo(self):
 
-		value = IEducationSchoolValue(user).value()
-		assert_that(value, is_(('OU',)))
-		
-		value = IEducationDescriptionValue(user).value()
-		assert_that(value, is_(('Computer Science',)))
+        class Created(object):
+            inReplyTo = "Aizen"
+
+        value = IInReplyToValue(Created()).value()
+        assert_that(value, is_('aizen'))
+
+    def test_entities(self):
+        user = User("ichigo@bleach.org")
+        prof = ICompleteUserProfile(user)
+        prof.alias = 'Ichigo'
+        prof.realname = 'Ichigo Kurosaki'
+
+        prof.twitter = str('https://twitter.com/ichigo')
+        prof.positions = [ProfessionalPosition(startYear=1998,
+                                               endYear=2009,
+                                               companyName='RMG',
+                                               title='Developer',
+                                               description='Software Developer')]
+        prof.education = [Education(startYear=1994,
+                                    endYear=1997,
+                                    school='OU',
+                                    degree='Master',
+                                    description='Computer Science')]
+
+        value = ISocialURLValue(user).value()
+        assert_that(value, is_(('https://twitter.com/ichigo',)))
+
+        value = IProfessionalTitleValue(user).value()
+        assert_that(value, is_(('Developer',)))
+
+        value = IProfessionalCompanyValue(user).value()
+        assert_that(value, is_(('RMG',)))
+
+        value = IProfessionalDescriptionValue(user).value()
+        assert_that(value, is_(('Software Developer',)))
+
+        value = IEducationDegreeValue(user).value()
+        assert_that(value, is_(('Master',)))
+
+        value = IEducationSchoolValue(user).value()
+        assert_that(value, is_(('OU',)))
+
+        value = IEducationDescriptionValue(user).value()
+        assert_that(value, is_(('Computer Science',)))

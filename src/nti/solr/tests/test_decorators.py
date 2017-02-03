@@ -35,7 +35,7 @@ class TestDecorators(unittest.TestCase):
         s = u'the protein-digesting enzyme <em>pepsin.&lt;/span>&lt;/div>\'</em>'
         assert_that(_SearchFragmentDecorator.split_and_sanitize(s),
                     is_(u"the protein-digesting enzyme <em>pepsin.'</em>"))
-        
+
     def test_fragment_4(self):
         s = u'//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head>      </head><body>The Adaptive Immune Response: T <em>Lymphocytes</em> and Their Functional'
         assert_that(_SearchFragmentDecorator.split_and_sanitize(s),
