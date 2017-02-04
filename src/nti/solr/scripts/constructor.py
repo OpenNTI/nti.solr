@@ -9,7 +9,9 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-from zope.container.contained import Contained
+from zope import interface
+
+from zope.location.interfaces import ILocation
 
 from z3c.autoinclude.zcml import includePluginsDirective
 
@@ -20,7 +22,9 @@ from nti.dataserver.utils.base_script import create_context
 from nti.solr import QUEUE_NAMES
 
 
-class PluginPoint(Contained):
+@interface.implementer(ILocation)
+class PluginPoint(object):
+    __parent__ = None
 
     def __init__(self, name):
         self.__name__ = name

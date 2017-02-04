@@ -5,7 +5,6 @@
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-from nti.dataserver.interfaces import IPublishable
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -19,6 +18,8 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+
+from nti.coremetadata.interfaces import IPublishable
 
 from nti.solr import ASSETS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE
