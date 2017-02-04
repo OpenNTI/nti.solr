@@ -48,7 +48,7 @@ setup(
     tests_require=TESTS_REQUIRE,
     install_requires=[
         'setuptools',
-        'BTree',
+        'BTrees',
         'nti.async',
         'nti.base',
         'nti.contentindexing',
