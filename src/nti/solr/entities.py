@@ -14,7 +14,7 @@ import six
 from zope import component
 from zope import interface
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
 

@@ -16,7 +16,7 @@ from html5lib import treebuilders
 
 from zope import component
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 

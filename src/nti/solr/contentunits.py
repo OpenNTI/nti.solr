@@ -14,7 +14,7 @@ from six import string_types
 from zope import component
 from zope import interface
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.contentfragments.html import sanitize_user_html
 from nti.contentfragments.interfaces import IPlainTextContentFragment

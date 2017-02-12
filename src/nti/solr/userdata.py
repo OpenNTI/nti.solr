@@ -16,7 +16,7 @@ from zope import interface
 
 from nti.chatserver.interfaces import IMessageInfo
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.coremetadata.interfaces import IModeledContentBody
 

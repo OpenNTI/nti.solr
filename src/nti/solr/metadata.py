@@ -23,10 +23,10 @@ from zope.intid.interfaces import IIntIds
 
 from zope.mimetype.interfaces import IContentTypeAware
 
+from nti.base._compat import to_unicode
+
 from nti.base.interfaces import ICreatedTime
 from nti.base.interfaces import ILastModified
-
-from nti.common.string import to_unicode
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 

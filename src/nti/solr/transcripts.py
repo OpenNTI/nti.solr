@@ -16,7 +16,7 @@ from zope import interface
 
 from zope.event import notify
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.contentindexing.media.interfaces import IMediaTranscriptEntry
 from nti.contentindexing.media.interfaces import IAudioTranscriptParser

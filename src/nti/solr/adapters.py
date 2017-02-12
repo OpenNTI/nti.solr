@@ -14,7 +14,7 @@ from dolmen.builtins.interfaces import IDict
 from zope import component
 from zope import interface
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ITranscriptSearchHit

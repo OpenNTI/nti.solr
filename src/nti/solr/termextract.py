@@ -13,7 +13,7 @@ import six
 
 from zope import interface
 
-from nti.common.string import to_unicode
+from nti.base._compat import to_unicode
 
 from nti.contentprocessing.content_utils import tokenize_content
 
