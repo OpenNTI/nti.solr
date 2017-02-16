@@ -45,6 +45,7 @@ _OR_ = u' OR '
 _AND_ = u' AND '
 
 ### from IPython.core.debugger import Tracer; Tracer()()
+### from IPython.terminal.debugger import set_trace;set_trace()
 
 
 def get_factory():
