@@ -54,6 +54,7 @@ class Constructor(Processor):
     def process_args(self, args):
         setattr(args, 'redis', True)
         setattr(args, 'library', True)  # load library
+        setattr(args, 'max_sleep_time', 30)
         setattr(args, 'queue_names', QUEUE_NAMES)
         super(Constructor, self).process_args(args)
 
