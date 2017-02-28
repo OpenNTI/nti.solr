@@ -18,6 +18,8 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+from nti.contentlibrary.interfaces import IRenderableContentUnit
+from nti.contentlibrary.interfaces import IContentPackageRenderedEvent
 
 from nti.coremetadata.interfaces import IPublishable
 
@@ -47,14 +49,20 @@ isPublished = is_published
 
 @component.adapter(IContentUnit, IIntIdAddedEvent)
 def _contentunit_added(obj, event=None):
-    if is_published(obj):
+    if not IRenderableContentUnit.providedBy(obj):
         queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IContentUnit, IObjectModifiedEvent)
 def _contentunit_modified(obj, event):
-    if is_published(obj):
+    if not IRenderableContentUnit.providedBy(obj):
         queue_modified(CONTENT_UNITS_QUEUE, single_index_job, obj)
+
+
+@component.adapter(IRenderableContentUnit, IContentPackageRenderedEvent)
+def _contentunit_rendered(obj, event):
+    if is_published(obj):
+        queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IContentUnit, IIntIdRemovedEvent)

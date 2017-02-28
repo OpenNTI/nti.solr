@@ -24,31 +24,35 @@
 	<configure zcml:condition="installed nti.contentlibrary">
 		<subscriber handler=".contentunits._contentunit_added"
 					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.intid.interfaces.IIntIdAddedEvent"/>
+						 zope.intid.interfaces.IIntIdAddedEvent" />
 	
 		<subscriber handler=".contentunits._contentunit_removed"
 					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.intid.interfaces.IIntIdRemovedEvent"/>
+						 zope.intid.interfaces.IIntIdRemovedEvent" />
 	
 		<subscriber handler=".contentunits._contentunit_modified"
 					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
 	
+		<subscriber handler=".contentunits._contentunit_rendered"
+					for="nti.contentlibrary.interfaces.IRenderableContentUnit
+						 nti.contentlibrary.interfaces.IContentPackageRenderedEvent" />
+						 
 		<subscriber handler=".contentunits._index_contentunit"
 					for="nti.contentlibrary.interfaces.IContentUnit
-						 ..interfaces.IIndexObjectEvent"/>
+						 ..interfaces.IIndexObjectEvent" />
 	
 		<subscriber handler=".contentunits._unindex_contentunit"
 					for="nti.contentlibrary.interfaces.IContentUnit
-						 ..interfaces.IUnindexObjectEvent"/>
+						 ..interfaces.IUnindexObjectEvent" />
 	
 		<subscriber handler=".contentunits._index_contentpackage"
 					for="nti.contentlibrary.interfaces.IContentPackage
-						 ..interfaces.IIndexObjectEvent"/>
+						 ..interfaces.IIndexObjectEvent" />
 	
 		<subscriber handler=".contentunits._unindex_contentpackage"
 					for="nti.contentlibrary.interfaces.IContentPackage
-						 ..interfaces.IUnindexObjectEvent"/>
+						 ..interfaces.IUnindexObjectEvent" />
 	</configure>
 
 	<!-- Assets -->
