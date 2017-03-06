@@ -34,6 +34,6 @@ def is_prefix_search(term):
 
 def is_valid_query(term):
     try:
-        return expression.parseString(term, parseAll=True)
+        return bool(expression.parseString(term, parseAll=True))
     except Exception:
         return False

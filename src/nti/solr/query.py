@@ -34,7 +34,7 @@ class _SOLRQueryValidator(object):
 
     def validate(self, query):
         query = ISearchQuery(query)
-        if not bool(is_valid_query(query.term)):
+        if not is_valid_query(query.term):
             raise AssertionError("Invalid query %s" % query.term)
 
 
