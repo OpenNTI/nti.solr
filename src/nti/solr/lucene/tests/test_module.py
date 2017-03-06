@@ -15,6 +15,7 @@ does_not = is_not
 import unittest
 
 from nti.solr.lucene import is_valid_query
+from nti.solr.lucene import is_phrase_search
 
 from nti.solr.tests import SOLRTestLayer
 
@@ -26,3 +27,7 @@ class TestLucer(unittest.TestCase):
     def test_is_valid_query(self):
         assert_that(is_valid_query('ichigo'), is_(True))
         assert_that(is_valid_query('&*E%#'), is_(False))
+        
+    def test_is_phrase_search(self):
+        assert_that(is_phrase_search('ichigo'), is_(False))
+        assert_that(is_phrase_search('"Aizen"'), is_(True))
