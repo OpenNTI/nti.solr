@@ -182,7 +182,7 @@ class ContentUnitsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(q=q, 
+        self.client.delete(q=q,
                            commit=self.auto_commit if commit is None else bool(commit))
     reset = clear
 
@@ -245,10 +245,10 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
     with current_site(job_site):
         obj = finder(source)
         if IContentPackage.providedBy(obj):
-            logger.info("Content package %s assets indexing started", 
+            logger.info("Content package %s assets indexing started",
                         obj.ntiid)
             process_content_package_assets(obj, index=True)
-            logger.info("Content package %s assets indexing completed", 
+            logger.info("Content package %s assets indexing completed",
                         obj.ntiid)
 
 
