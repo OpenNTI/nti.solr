@@ -16,7 +16,7 @@ from zope import interface
 
 from zope.event import notify
 
-from nti.base._compat import to_unicode
+from nti.base._compat import unicode_
 
 from nti.contentindexing.media.interfaces import IMediaTranscriptEntry
 from nti.contentindexing.media.interfaces import IAudioTranscriptParser
@@ -138,7 +138,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
     def parse_content(cls, context, raw_content):
         transcript = cls.transcript(context, raw_content)
         if transcript is not None:
-            return to_unicode(transcript.text)
+            return unicode_(transcript.text)
         return None
 
     @classmethod
@@ -298,6 +298,6 @@ class TranscriptsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(
-            q=q, commit=self.auto_commit if commit is None else bool(commit))
+        self.client.delete(q=q, 
+                           commit=self.auto_commit if commit is None else bool(commit))
     reset = clear
