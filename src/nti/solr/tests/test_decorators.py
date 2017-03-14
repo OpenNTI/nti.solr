@@ -31,12 +31,6 @@ class TestDecorators(unittest.TestCase):
         s = "The function of one type of parathyroid <em>cells</em> and other <em>cells</em> in the body"
         assert_that(_SearchFragmentDecorator.sanitize(s), is_(s))
 
-    def test_fragment_3(self):
-        # XXX: Is this a valid test case?
-        s = u'the protein-digesting enzyme <em>pepsin.&lt;/span>&lt;/div>\'</em>'
-        assert_that(_SearchFragmentDecorator.sanitize(s),
-                    is_(u"the protein-digesting enzyme <em>pepsin.'</em>"))
-
     def test_fragment_4(self):
         s = u'//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head>      </head><body>The Adaptive Immune Response: T <em>Lymphocytes</em> and Their Functional'
         assert_that(_SearchFragmentDecorator.sanitize(s),
