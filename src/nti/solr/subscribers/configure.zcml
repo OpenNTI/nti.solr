@@ -30,6 +30,10 @@
 					for="nti.contentlibrary.interfaces.IContentUnit
 						 zope.intid.interfaces.IIntIdRemovedEvent" />
 	
+		<subscriber handler=".contentunits._contentpacakge_removed"
+					for="nti.contentlibrary.interfaces.IContentPackage
+						 nti.contentlibrary.interfaces.IContentPackageRemovedEvent" />
+
 		<subscriber handler=".contentunits._contentunit_modified"
 					for="nti.contentlibrary.interfaces.IContentUnit
 						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />

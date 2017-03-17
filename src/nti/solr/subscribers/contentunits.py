@@ -19,6 +19,7 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 from nti.contentlibrary.interfaces import IRenderableContentUnit
+from nti.contentlibrary.interfaces import IContentPackageRemovedEvent
 from nti.contentlibrary.interfaces import IContentPackageRenderedEvent
 
 from nti.coremetadata.interfaces import IPublishable
@@ -67,6 +68,11 @@ def _contentunit_rendered(obj, event):
 
 @component.adapter(IContentUnit, IIntIdRemovedEvent)
 def _contentunit_removed(obj, event):
+    queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
+
+
+@component.adapter(IContentPackage, IContentPackageRemovedEvent)
+def _contentpacakge_removed(obj, event):
     queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
 
 
