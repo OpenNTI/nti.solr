@@ -283,8 +283,8 @@ class TranscriptsCatalog(MetadataCatalog):
             return obj
         return None
 
-    def build_from_search_query(self, query):
-        term, fq, params = MetadataCatalog.build_from_search_query(self, query)
+    def build_from_search_query(self, query, **kwargs):
+        term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         packs = getattr(query, 'packages', None) \
             or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:
@@ -298,6 +298,6 @@ class TranscriptsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(q=q, 
+        self.client.delete(q=q,
                            commit=self.auto_commit if commit is None else bool(commit))
     reset = clear

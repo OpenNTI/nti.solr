@@ -22,9 +22,6 @@ from nti.contentsearch.interfaces import ISearchQuery
 
 from nti.contentsearch.search_fragments import SearchFragment
 
-from nti.contentsearch.search_results import SearchResults
-from nti.contentsearch.search_results import SuggestResults
-
 from nti.dataserver.interfaces import IUser
 
 from nti.property.property import Lazy
@@ -105,7 +102,7 @@ class _SOLRSearcher(object):
             logger.debug('Could not create hit for %s. %s', result, e)
         return None
 
-    def _do_search(self, catalog, term, params):
+    def _execute_search(self, catalog, term, params):
         try:
             events = catalog.client.search(term, **params)
             for event in events or ():
@@ -115,26 +112,28 @@ class _SOLRSearcher(object):
         except Exception:
             logger.exception("Error while executing query %s", term)
 
-    def search(self, query, *args, **kwargs):
+    def search(self, query, batch_start=None, batch_size=None, *args, **kwargs):
         cores = {}
         queries = defaultdict(list)
         query = ISearchQuery(query)
         catalogs = self.query_search_catalogs(query)
-        result = SearchResults(Name="Hits", Query=query)
         # collect catalogs by core and build query triplets
         for catalog in catalogs or ():
             if catalog.skip:
                 continue
             core = catalog.core
             cores[core] = catalog  # store
-            queries[core].append(catalog.build_from_search_query(query))
+            query_vals = catalog.build_from_search_query(query,
+                                                         batch_start=batch_start,
+                                                         batch_size=batch_size )
+            queries[core].append(query_vals)
         # perform search
         for core, triplets in queries.items():
             catalog = cores[core]
+            # Combine terms and query
             term, params = prepare_solr_triplets(triplets)
-            for hit in self._do_search(catalog, term, params):
-                result.add(hit)
-        return result
+            for hit in self._execute_search(catalog, term, params):
+                yield hit
 
     def _get_suggestions(self, catalog, events):
         result = set()
@@ -142,16 +141,18 @@ class _SOLRSearcher(object):
             result.update(x for x, _ in hits)
         return result
 
-    def suggest(self, query, *args, **kwargs):
+    def suggest(self, query, batch_start=None, batch_size=None, *args, **kwargs):
         query = ISearchQuery(query)
         clone = self._query_clone(query)
-        result = SuggestResults(Name="Suggestions", Query=query)
+        results = ()
         for catalog in self.query_search_catalogs(query):
             try:
-                events = catalog.suggest(clone)
+                events = catalog.suggest(clone,
+                                         batch_start=batch_start,
+                                         batch_size=batch_size)
                 if events:  # may be None
-                    result.extend(self._get_suggestions(catalog, events))
+                    results = self._get_suggestions(catalog, events)
             except Exception:
                 logger.exception(
                     "Error while executing query %s on %s", query, catalog)
-        return result
+        return results

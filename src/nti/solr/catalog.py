@@ -268,7 +268,7 @@ class CoreCatalog(object):
                 fq.add_term(name, lucene_escape(str(value)))
         return fq
 
-    def _params_from_search_query(self, query):
+    def _params_from_search_query(self, query, batch_start=None, batch_size=None):
         params = QueryParms()
         if self.text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
@@ -280,11 +280,9 @@ class CoreCatalog(object):
         # return fields
         params['fl'] = self.return_fields
         # batching
-        batchSize = getattr(query, 'batchSize', None)
-        batchStart = getattr(query, 'batchStart', None)
-        if batchStart is not None and batchSize:
-            params['start'] = str(batchStart)
-            params['rows'] = str(batchSize)
+        if batch_start is not None and batch_size:
+            params['start'] = str(batch_start)
+            params['rows'] = str(batch_size)
         else:
             params['rows'] = str(self.max_rows)  # default number of rows
         return params
@@ -300,12 +298,14 @@ class CoreCatalog(object):
             qt.default = term
         return qt
 
-    def build_from_search_query(self, query):
+    def build_from_search_query(self, query, batch_start=None, batch_size=None):
         term = self._build_term_from_search_query(query)
         # filter query
         fq = self._fq_from_search_query(query)
         # parameters
-        params = self._params_from_search_query(query)
+        params = self._params_from_search_query(query,
+                                                batch_start=batch_start,
+                                                batch_size=batch_size)
         # query-term, filter-query, params
         return (term, fq, params)
 
@@ -317,7 +317,7 @@ class CoreCatalog(object):
         return self.client.search(term, **params)
 
     def search(self, query, *args, **kwargs):
-        term, fq, params = self.build_from_search_query(query)
+        term, fq, params = self.build_from_search_query(query, **kwargs)
         return self.execute(term, fq, params)
 
     # content search / ISearcher.suggest
@@ -334,16 +334,21 @@ class CoreCatalog(object):
                 result.append(name)
         return result
 
-    def _prepare_solr_suggest(self, query):
+    def _prepare_solr_suggest(self, query, batch_start=None, batch_size=None):
         params = {}
         limit = getattr(query, 'limit', None)
         if limit:
             params['terms.limit'] = limit
+        if batch_start is not None and batch_size:
+            params['start'] = str(batch_start)
+            params['rows'] = str(batch_size)
         return params
 
-    def suggest(self, query, fields=None, *args, **kwargs):
+    def suggest(self, query, fields=None, batch_start=None, batch_size=None, *args, **kwargs):
         suggest_fields = fields or self.suggest_fields
-        params = self._prepare_solr_suggest(query)
+        params = self._prepare_solr_suggest(query,
+                                            batch_start=batch_start,
+                                            batch_size=batch_size)
         if suggest_fields:
             return self.client.suggest_terms(suggest_fields, query.term, **params)
 

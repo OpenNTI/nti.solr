@@ -223,8 +223,8 @@ class EntitiesCatalog(MetadataCatalog):
     name = ENTITIES_CATALOG
     document_interface = IEntityDocument
 
-    def build_from_search_query(self, query):
-        term, fq, params = MetadataCatalog.build_from_search_query(self, query)
+    def build_from_search_query(self, query, **kwargs):
+        term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])

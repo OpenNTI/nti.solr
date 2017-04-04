@@ -445,13 +445,13 @@ class IMediaNTIIDValue(IAttributeValue):
 
 class ITranscriptCueStartTimeValue(IAttributeValue):
     """
-    Adapter interface to get the transcript cue start time 
+    Adapter interface to get the transcript cue start time
     """
 
 
 class ITranscriptCueEndTimeValue(IAttributeValue):
     """
-    Adapter interface to get the transcript cue end time 
+    Adapter interface to get the transcript cue end time
     """
 
 
@@ -504,10 +504,10 @@ class IContentUnitDocument(IMetadataDocument):
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
 tagField(IContentUnitDocument['title_en'],
          True, ITitleValue, provided=ITextField)
-tagField(IContentUnitDocument['content_en'], True, IContentValue, 
+tagField(IContentUnitDocument['content_en'], True, IContentValue,
          provided=(ITextField, ISuggestField))
 tagField(IContentUnitDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
          provided=ITextField)
 
 # user data
@@ -634,10 +634,10 @@ class ICourseCatalogDocument(IMetadataDocument):
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
 tagField(ICourseCatalogDocument['title_en'],
          True, ITitleValue, provided=ITextField)
-tagField(ICourseCatalogDocument['content_en'], True, IContentValue, 
+tagField(ICourseCatalogDocument['content_en'], True, IContentValue,
          provided=(ITextField, ISuggestField))
 tagField(ICourseCatalogDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
          provided=ITextField)
 
 
@@ -661,7 +661,7 @@ tagField(IEvaluationDocument['title_en'], True,
 tagField(IEvaluationDocument['content_en'], True,
          IContentValue, provided=(ITextField, ISuggestField))
 tagField(IEvaluationDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower', 
+         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
          provided=ITextField)
 
 
@@ -717,26 +717,28 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         :param q: The query to execute for deletion
         :param commit: Commit operation
         """
-        
-    def build_from_search_query(query):
+
+    def build_from_search_query(query, batch_start=None, batch_size=None):
         """
-        Return a triplet 
-        (:class:`ISOLRQueryTerm`, 
-         :class:`ISOLRFilterQuery`, 
+        Return a triplet
+        (:class:`ISOLRQueryTerm`,
+         :class:`ISOLRFilterQuery`,
          :class:`ISOLRQueryParams`) from the specified query
-        
+
         :param query a :class:`nti.contentsearch.interfaces.ISearcherQuery` object
+        :param batch_start the starting item to fetch from the searcher
+        :param batch_size the number of items needed from the searcher
         """
 
     def execute(term, fq, params):
         """
         Execute a solr search
-        
+
         :param term a :class:`ISOLRQueryTerm` object
         :param fq a :class:`ISOLRFilterQuery` object
         :param params a :class:`ISOLRQueryParams` object
         """
-        
+
 class IIndexObjectEvent(IObjectEvent):
     """
     Event to signal object must be indexed
@@ -806,7 +808,7 @@ class ISOLR(interface.Interface):
 
 class ISOLRSearcher(ISearcher):
 
-    def suggest(query, fields=None, *args, **kwargs):
+    def suggest(query, fields=None, batch_start=None, batch_size=None, *args, **kwargs):
         pass
 
 
@@ -854,8 +856,8 @@ class ISOLRFilterQuery(interface.Interface):
 
 class ISOLRQueryTerm(interface.Interface):
 
-    default = ValidTextLine(title="Default search term", 
-                            required=False, 
+    default = ValidTextLine(title="Default search term",
+                            required=False,
                             default=None)
 
     def add_term(name, value):

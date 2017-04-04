@@ -166,9 +166,9 @@ class ContentUnitsCatalog(MetadataCatalog):
     name = CONTENT_UNITS_CATALOG
     document_interface = IContentUnitDocument
 
-    def build_from_search_query(self, query):
+    def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(
-            self, query)
+            self, query, **kwargs)
         packs = getattr(query, 'packages', None) \
              or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:

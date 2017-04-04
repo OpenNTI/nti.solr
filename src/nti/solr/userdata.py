@@ -290,8 +290,8 @@ class UserDataCatalog(MetadataCatalog):
 
     # search methods
 
-    def build_from_search_query(self, query):
-        term, fq, params = MetadataCatalog.build_from_search_query(self, query)
+    def build_from_search_query(self, query, **kwargs):
+        term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         username = getattr(query, 'username', None)
         memberships = self.memberships(username) if username else ()
         if 'sharedWith' not in fq and username and memberships:
