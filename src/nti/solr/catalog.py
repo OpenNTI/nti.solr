@@ -268,7 +268,7 @@ class CoreCatalog(object):
                 fq.add_term(name, lucene_escape(str(value)))
         return fq
 
-    def _params_from_search_query(self, query, batch_start=None, batch_size=None):
+    def _params_from_search_query(self, query):
         params = QueryParms()
         if self.text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
@@ -279,12 +279,6 @@ class CoreCatalog(object):
             params['hl.snippets'] = hl_snippets(query)
         # return fields
         params['fl'] = self.return_fields
-        # batching
-        if batch_start is not None and batch_size:
-            params['start'] = str(batch_start)
-            params['rows'] = str(batch_size)
-        else:
-            params['rows'] = str(self.max_rows)  # default number of rows
         return params
 
     def _build_term_from_search_query(self, query):
@@ -303,9 +297,13 @@ class CoreCatalog(object):
         # filter query
         fq = self._fq_from_search_query(query)
         # parameters
-        params = self._params_from_search_query(query,
-                                                batch_start=batch_start,
-                                                batch_size=batch_size)
+        params = self._params_from_search_query(query)
+        # batching
+        if batch_start is not None and batch_size:
+            params['start'] = str(batch_start)
+            params['rows'] = str(batch_size)
+        else:
+            params['rows'] = str(self.max_rows)  # default number of rows
         # query-term, filter-query, params
         return (term, fq, params)
 
