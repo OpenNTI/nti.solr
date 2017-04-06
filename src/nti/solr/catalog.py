@@ -176,20 +176,20 @@ class CoreCatalog(object):
             elif isinstance(value, primitive_types):
                 value = {'any_of': (value,)}
             __traceback_info__ = name, value
-            assert isinstance(value, Mapping) and len(
-                value) == 1, 'Invalid field query'
+            assert isinstance(value, Mapping) and len(value) == 1, \
+                   'Invalid field query'
             for k, v in value.items():
                 if k == 'any_of':
                     fq[name] = "(%s)" % self._OR_.join(lucene_escape(x)
                                                        for x in v)
                 elif k == 'all_of':
-                    fq[name] = "(%s)" % self._AND_.join(
-                        lucene_escape(x) for x in v)
+                    fq[name] = "(%s)" % self._AND_.join(lucene_escape(x) 
+                                                        for x in v)
                 elif k == 'between':
                     if IDatetime.providedBy(field):
                         v = [SolrDatetime.toUnicode(x) for x in v]
-                    fq[name] = "[%s TO %s]" % (
-                        lucene_escape(v[0]), lucene_escape(v[1]))
+                    fq[name] = "[%s TO %s]" % (lucene_escape(v[0]), 
+                                               lucene_escape(v[1]))
         return fq
 
     def _bulild_from_catalog_query(self, query):
@@ -273,6 +273,8 @@ class CoreCatalog(object):
         if self.text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
             params['hl.fl'] = self.text_fields
+            params['hl.tag.pre'] = '<hit>'
+            params['hl.tag.post'] = '</hit>'
             params['hl.requireFieldMatch'] = 'true'
             if hl_useFastVectorHighlighter(query):
                 params['hl.useFastVectorHighlighter'] = 'true'

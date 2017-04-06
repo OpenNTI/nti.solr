@@ -41,7 +41,7 @@ class _SearchFragmentDecorator(object):
     __metaclass__ = SingletonDecorator
 
     @classmethod
-    def sanitize(cls, raw, tag='em'):
+    def sanitize(cls, raw, tag='hit'):
         """
         Transform to plain text, and then make sure the items already
         wrapped in `tag` remain wrapped in `tag`.

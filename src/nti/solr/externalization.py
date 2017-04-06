@@ -28,6 +28,7 @@ from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import IContentUnitDocument
 from nti.solr.interfaces import ICourseCatalogDocument
 
+CTA_MIMETYPE = StandardExternalFields.CTA_MIMETYPE
 ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 
 
@@ -37,13 +38,11 @@ class _CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
     _ext_iface_upper_bound = ICoreDocument
 
-    _fields_to_remove = set(
-        ALL_EXTERNAL_FIELDS) - {StandardExternalFields.CTA_MIMETYPE}
+    _fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {CTA_MIMETYPE}
 
     def toExternalObject(self, *args, **kwargs):
         kwargs['decorate'] = False
-        result = super(_CoreDocumentSOLRExternalizer, self).toExternalObject(
-            *args, **kwargs)
+        result = super(_CoreDocumentSOLRExternalizer, self).toExternalObject(*args, **kwargs)
         for name in self._fields_to_remove:
             result.pop(name, None)
         for name, value in list(result.items()):

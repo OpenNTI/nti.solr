@@ -131,9 +131,9 @@ class _DefaultCreatorValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        result =  self._get_creator(context, 'creator') \
-            or self._get_creator(context, 'Creator') \
-            or SYSTEM_USER_NAME
+        result = self._get_creator(context, 'creator') \
+              or self._get_creator(context, 'Creator') \
+              or SYSTEM_USER_NAME
         return result
 
 
@@ -153,8 +153,8 @@ class _DefaultMimeTypeValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         context = IContentTypeAware(context, context)
-        result = getattr(context, 'mimeType', None) or getattr(
-            context, 'mime_type', None)
+        result = getattr(context, 'mimeType', None) \
+              or getattr(context, 'mime_type', None)
         return to_unicode(result) if result else None
 DefaultObjectMimeTypeValue = _DefaultMimeTypeValue  # export
 
@@ -231,8 +231,7 @@ class _DefaultIDValue(_BasicAttributeValue):
         context = self.context if context is None else context
         try:
             uid = component.getUtility(IIntIds).queryId(context)
-            uid = "%s%s" % (
-                self.prefix(context), uid) if uid is not None else None
+            uid = "%s%s" % (self.prefix(context), uid) if uid is not None else None
             return to_unicode(uid) if uid is not None else None
         except (LookupError, KeyError):
             pass
@@ -260,8 +259,8 @@ class _DefaultContainersValue(_BasicAttributeValue):
         contained = INTIContained(context, None)
         if contained is not None:
             cid = contained.containerId
-            if        is_ntiid_of_types(cid, self._IGNORED_TYPES) \
-                    and not ICommentPost.providedBy(context):
+            if      is_ntiid_of_types(cid, self._IGNORED_TYPES) \
+                and not ICommentPost.providedBy(context):
                 return None
             else:
                 return (to_unicode(cid),)
