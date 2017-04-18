@@ -116,7 +116,7 @@ def document_creator(obj, factory, provided=None):
 # document ids. The prefix is anything that comes before the first '#' and
 # may be use as split.key for sharding. The postfix is anything after '='
 # in this application ids CANNOT have an '='
-_key_pattern = re.compile(r'([a-zA-Z0-9_.+-:,@]+\#)?([a-zA-Z0-9_.+-:,@]+)(=.*)?$',
+_key_pattern = re.compile(r'([a-zA-Z0-9_.+-:,@]+\#)?([a-zA-Z0-9_.+-:,@\(\)]+)(=.*)?$',
                           re.UNICODE | re.IGNORECASE)
 
 

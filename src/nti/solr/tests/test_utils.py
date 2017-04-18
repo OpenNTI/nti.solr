@@ -31,3 +31,7 @@ class TestUtils(unittest.TestCase):
         key = '19701S-system-video#tag:nextthought.com,2011-10:sjohnson@nextthought.com-HTML-4950716093280901324.0=transcript-postfix'
         result = normalize_key(key)
         assert_that(result, is_('tag:nextthought.com,2011-10:sjohnson@nextthought.com-HTML-4950716093280901324.0'))
+
+        key = u'19701S-system-contentunit#tag:nextthought.com,2011-10:SYMMYS-HTML-Symmys_Text_Book.SecFiNTeaf_copy(1)'
+        result = normalize_key(key)
+        assert_that(result, is_('tag:nextthought.com,2011-10:SYMMYS-HTML-Symmys_Text_Book.SecFiNTeaf_copy(1)'))
