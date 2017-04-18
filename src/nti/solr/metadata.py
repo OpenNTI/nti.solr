@@ -142,8 +142,8 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        result = getattr(context, 'ntiid', None) or getattr(
-            context, 'NTIID', None)
+        result = getattr(context, 'ntiid', None) \
+              or getattr(context, 'NTIID', None)
         return to_unicode(result) if result else None
 
 
