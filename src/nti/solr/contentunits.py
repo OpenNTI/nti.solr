@@ -166,6 +166,13 @@ class ContentUnitsCatalog(MetadataCatalog):
     name = CONTENT_UNITS_CATALOG
     document_interface = IContentUnitDocument
 
+    def index_doc(self, doc_id, value, *args, **kwargs):
+        super(ContentUnitsCatalog, self).index_doc(doc_id, value, *args, **kwargs)
+        path = getattr(value.key, 'absolute_path', '')
+        contents = value.read_contents()
+        logger.info("Indexed content (%s) (%s) (length=%s)",
+                    value.ntiid, path, len(contents or ''))
+
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(
             self, query, **kwargs)
