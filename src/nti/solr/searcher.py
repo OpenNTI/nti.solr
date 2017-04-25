@@ -15,6 +15,8 @@ from collections import defaultdict
 from zope import component
 from zope import interface
 
+from zope.cachedescriptors.property import Lazy
+
 from zope.intid.interfaces import IIntIds
 
 from nti.contentsearch.interfaces import ISearchHit
@@ -23,8 +25,6 @@ from nti.contentsearch.interfaces import ISearchQuery
 from nti.contentsearch.search_fragments import SearchFragment
 
 from nti.dataserver.interfaces import IUser
-
-from nti.property.property import Lazy
 
 from nti.solr import USERDATA_CATALOG
 

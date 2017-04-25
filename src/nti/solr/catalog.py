@@ -17,6 +17,8 @@ import pysolr
 from zope import component
 from zope import interface
 
+from zope.cachedescriptors.property import Lazy
+
 from zope.event import notify
 
 from zope.intid.interfaces import IIntIds
@@ -27,7 +29,6 @@ import BTrees
 
 from nti.externalization.externalization import to_external_object
 
-from nti.property.property import Lazy
 from nti.property.property import alias
 from nti.property.property import readproperty
 
@@ -183,12 +184,12 @@ class CoreCatalog(object):
                     fq[name] = "(%s)" % self._OR_.join(lucene_escape(x)
                                                        for x in v)
                 elif k == 'all_of':
-                    fq[name] = "(%s)" % self._AND_.join(lucene_escape(x) 
+                    fq[name] = "(%s)" % self._AND_.join(lucene_escape(x)
                                                         for x in v)
                 elif k == 'between':
                     if IDatetime.providedBy(field):
                         v = [SolrDatetime.toUnicode(x) for x in v]
-                    fq[name] = "[%s TO %s]" % (lucene_escape(v[0]), 
+                    fq[name] = "[%s TO %s]" % (lucene_escape(v[0]),
                                                lucene_escape(v[1]))
         return fq
 
