@@ -18,6 +18,7 @@ from zope import component
 from zope import interface
 
 from zope.cachedescriptors.property import Lazy
+from zope.cachedescriptors.property import readproperty
 
 from zope.event import notify
 
@@ -30,7 +31,6 @@ import BTrees
 from nti.externalization.externalization import to_external_object
 
 from nti.property.property import alias
-from nti.property.property import readproperty
 
 from nti.solr import _OR_
 from nti.solr import _AND_
