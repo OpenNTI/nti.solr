@@ -22,7 +22,7 @@ from nti.contentlibrary.interfaces import IRenderableContentUnit
 from nti.contentlibrary.interfaces import IContentPackageRemovedEvent
 from nti.contentlibrary.interfaces import IContentPackageRenderedEvent
 
-from nti.coremetadata.interfaces import IPublishable
+from nti.publishing.interfaces import IPublishable
 
 from nti.solr import ASSETS_QUEUE
 from nti.solr import CONTENT_UNITS_QUEUE

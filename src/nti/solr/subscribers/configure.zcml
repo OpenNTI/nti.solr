@@ -136,11 +136,11 @@
 
 		<subscriber handler=".evaluations._evaluation_published"
 					for="nti.assessment.interfaces.IQEvaluation
-						 nti.coremetadata.interfaces.IObjectPublishedEvent"/>
+						 nti.publishing.interfaces.IObjectPublishedEvent"/>
 
  		<subscriber handler=".evaluations._evaluation_unpublished"
 					for="nti.assessment.interfaces.IQEvaluation
-						 nti.coremetadata.interfaces.IObjectUnpublishedEvent"/>
+						 nti.publishing.interfaces.IObjectUnpublishedEvent"/>
 
 		<subscriber handler=".evaluations._index_evaluation"
 					for="nti.assessment.interfaces.IQEvaluation

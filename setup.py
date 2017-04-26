@@ -56,6 +56,7 @@ setup(
         'nti.contenttypes.presentation',
         'nti.coremetadata',
         'nti.externalization',
+        'nti.publishing',
         'pyparsing',
         'pysolr',
         'six',
