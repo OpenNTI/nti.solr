@@ -18,8 +18,8 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.assessment.interfaces import IQEvaluation
 
-from nti.coremetadata.interfaces import IObjectPublishedEvent
-from nti.coremetadata.interfaces import IObjectUnpublishedEvent
+from nti.publishing.interfaces import IObjectPublishedEvent
+from nti.publishing.interfaces import IObjectUnpublishedEvent
 
 from nti.solr import EVALUATIONS_QUEUE
 
