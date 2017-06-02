@@ -14,7 +14,7 @@ from six import string_types
 from zope import component
 from zope import interface
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.contentfragments.html import sanitize_user_html
 
@@ -112,7 +112,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
         parent_key = getattr(context.__parent__, 'key', None)
         if     parent_key is None \
             or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
-            return sanitize_user_html(to_unicode(context.read_contents()))
+            return sanitize_user_html(text_(context.read_contents()))
         return None
 
     def lang(self, context=None):
