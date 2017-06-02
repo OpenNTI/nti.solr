@@ -22,7 +22,7 @@ from nti.contentfragments.interfaces import IPlainTextContentFragment
 from nti.contentlibrary.interfaces import INoAutoIndex
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
-from nti.contentlibrary.interfaces import IRenderableContentPackage
+from nti.contentlibrary.interfaces import IRenderableContentUnit
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
@@ -122,12 +122,11 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
         return self.get_content(context)
 
 
-@component.adapter(IRenderableContentPackage)
-class _RenderableContentPackageContentValue(_DefaultContentUnitContentValue):
+@component.adapter(IRenderableContentUnit)
+class _RenderableContentUnitContentValue(_DefaultContentUnitContentValue):
 
     def get_content(self, context):
-        value = super(
-            _RenderableContentPackageContentValue, self).get_content(context)
+        value = super(_RenderableContentUnitContentValue, self).get_content(context)
         if value is not None:
             value = IPlainTextContentFragment(value)
         return value
@@ -179,16 +178,14 @@ class ContentUnitsCatalog(MetadataCatalog):
     document_interface = IContentUnitDocument
 
     def index_doc(self, doc_id, value, *args, **kwargs):
-        super(ContentUnitsCatalog, self).index_doc(
-            doc_id, value, *args, **kwargs)
+        super(ContentUnitsCatalog, self).index_doc(doc_id, value, *args, **kwargs)
         path = getattr(value.key, 'absolute_path', '')
         contents = value.read_contents()
         logger.info("Indexed content (%s) (%s) (length=%s)",
                     value.ntiid, path, len(contents or ''))
 
     def build_from_search_query(self, query, **kwargs):
-        term, fq, params = MetadataCatalog.build_from_search_query(
-            self, query, **kwargs)
+        term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         packs = getattr(query, 'packages', None) \
             or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:

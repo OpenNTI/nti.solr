@@ -211,9 +211,9 @@
 				 provides=".interfaces.IContentValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
 				 
-		<adapter factory=".contentunits._RenderableContentPackageContentValue"
+		<adapter factory=".contentunits._RenderableContentUnitContentValue"
                  provides=".interfaces.IContentValue"
-                 for="nti.contentlibrary.interfaces.IRenderableContentPackage" />
+                 for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
 
 		<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
 				 provides=".interfaces.IKeywordsValue"
