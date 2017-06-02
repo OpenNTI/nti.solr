@@ -17,6 +17,7 @@ from zope import interface
 from nti.base._compat import to_unicode
 
 from nti.contentfragments.html import sanitize_user_html
+
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.contentlibrary.interfaces import INoAutoIndex
@@ -110,7 +111,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
     def get_content(self, context):
         parent_key = getattr(context.__parent__, 'key', None)
         if     parent_key is None \
-                or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
+            or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
             return sanitize_user_html(to_unicode(context.read_contents()))
         return None
 
@@ -187,7 +188,7 @@ class ContentUnitsCatalog(MetadataCatalog):
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         packs = getattr(query, 'packages', None) \
-            or getattr(query, 'package', None)
+             or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:
             packs = packs.split() if isinstance(packs, string_types) else packs
             fq.add_or('containerId', [lucene_escape(x) for x in packs])
@@ -203,7 +204,9 @@ class ContentUnitsCatalog(MetadataCatalog):
                            commit=self.auto_commit if commit is None else bool(commit))
     reset = clear
 
+
 # jobs
+
 
 from zope.component.hooks import site as current_site
 
