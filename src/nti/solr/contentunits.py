@@ -22,6 +22,7 @@ from nti.contentfragments.interfaces import IPlainTextContentFragment
 from nti.contentlibrary.interfaces import INoAutoIndex
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+from nti.contentlibrary.interfaces import IRenderableContentPackage
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
@@ -109,7 +110,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
     def get_content(self, context):
         parent_key = getattr(context.__parent__, 'key', None)
         if     parent_key is None \
-            or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
+                or parent_key.absolute_path != context.key.absolute_path:  # don't index twice
             return sanitize_user_html(to_unicode(context.read_contents()))
         return None
 
@@ -119,6 +120,17 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         return self.get_content(context)
+
+
+@component.adapter(IRenderableContentPackage)
+class _RenderableContentPackageContentValue(_DefaultContentUnitContentValue):
+
+    def get_content(self, context):
+        value = super(
+            _RenderableContentPackageContentValue, self).get_content(context)
+        if value is not None:
+            value = IPlainTextContentFragment(value)
+        return value
 
 
 @component.adapter(IContentUnit)
@@ -167,7 +179,8 @@ class ContentUnitsCatalog(MetadataCatalog):
     document_interface = IContentUnitDocument
 
     def index_doc(self, doc_id, value, *args, **kwargs):
-        super(ContentUnitsCatalog, self).index_doc(doc_id, value, *args, **kwargs)
+        super(ContentUnitsCatalog, self).index_doc(
+            doc_id, value, *args, **kwargs)
         path = getattr(value.key, 'absolute_path', '')
         contents = value.read_contents()
         logger.info("Indexed content (%s) (%s) (length=%s)",
@@ -177,7 +190,7 @@ class ContentUnitsCatalog(MetadataCatalog):
         term, fq, params = MetadataCatalog.build_from_search_query(
             self, query, **kwargs)
         packs = getattr(query, 'packages', None) \
-             or getattr(query, 'package', None)
+            or getattr(query, 'package', None)
         if 'containerId' not in fq and packs:
             packs = packs.split() if isinstance(packs, string_types) else packs
             fq.add_or('containerId', [lucene_escape(x) for x in packs])

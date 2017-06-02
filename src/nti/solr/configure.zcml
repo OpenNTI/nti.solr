@@ -210,6 +210,10 @@
 		<adapter factory=".contentunits._DefaultContentUnitContentValue"
 				 provides=".interfaces.IContentValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
+				 
+		<adapter factory=".contentunits._RenderableContentPackageContentValue"
+                 provides=".interfaces.IContentValue"
+                 for="nti.contentlibrary.interfaces.IRenderableContentPackage" />
 
 		<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
 				 provides=".interfaces.IKeywordsValue"
