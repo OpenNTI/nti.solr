@@ -33,10 +33,10 @@ from nti.contentprocessing.interfaces import IStopWords
 
 from nti.contentprocessing.keyword import extract_key_words
 
-from nti.contenttypes.presentation import AUDIO_MIMETYES
-from nti.contenttypes.presentation import VIDEO_MIMETYES
-from nti.contenttypes.presentation import TIMELINE_MIMETYES
-from nti.contenttypes.presentation import RELATED_WORK_REF_MIMETYES
+from nti.contenttypes.presentation import AUDIO_MIME_TYPES
+from nti.contenttypes.presentation import VIDEO_MIME_TYPES
+from nti.contenttypes.presentation import TIMELINE_MIME_TYPES
+from nti.contenttypes.presentation import RELATED_WORK_REF_MIME_TYPES
 
 from nti.ntiids.ntiids import is_valid_ntiid_string
 from nti.ntiids.ntiids import find_object_with_ntiid
@@ -248,10 +248,10 @@ def _register():
     mimeTypeRegistry.register(FRIEND_LISTS_MIME_TYPE, ENTITIES_CATALOG)
 
     # assets
-    for m in chain(AUDIO_MIMETYES,
-                   VIDEO_MIMETYES,
-                   TIMELINE_MIMETYES,
-                   RELATED_WORK_REF_MIMETYES):
+    for m in chain(AUDIO_MIME_TYPES,
+                   VIDEO_MIME_TYPES,
+                   TIMELINE_MIME_TYPES,
+                   RELATED_WORK_REF_MIME_TYPES):
         mimeTypeRegistry.register(m, ASSETS_CATALOG)
 
     # evaluations
