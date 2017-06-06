@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -14,6 +14,8 @@ from six import string_types
 
 from zope import component
 from zope import interface
+
+from nti.base.interfaces import IFile
 
 from nti.contentlibrary.interfaces import IContentPackage
 
@@ -26,6 +28,7 @@ from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ITranscriptSourceValue
 
 from nti.traversal.location import lineage
+
 
 # assets
 
@@ -81,6 +84,7 @@ class _AssetContainerIdValue(object):
             containers = self._course_containers(context)
         return tuple(containers)
 
+
 # transcripts
 
 
@@ -91,21 +95,31 @@ class _TranscriptSource(object):
     def __init__(self, context, default=None):
         self.context = context
 
-    def value(self, context=None):
-        context = self.context if context is None else context
-        src = context.src
+    def library_source(self, context, source):
         raw_content = None
         # is in content pkg ?
-        if      isinstance(src, string_types) \
-            and not src.startswith('/')  \
-            and '://' not in src:  # e.g. resources/...
+        if      not source.startswith('/')  \
+            and '://' not in source:  # e.g. resources/...
             package = find_interface(context, IContentPackage, strict=False)
             if package is not None:
                 try:
-                    raw_content = package.read_contents_of_sibling_entry(src)
+                    raw_content = package.read_contents_of_sibling_entry(source)
                 except Exception:
-                    logger.exception("Cannot read contents for %s", src)
+                    logger.exception("Cannot read contents for %s", source)
         return StringIO(raw_content) if raw_content else None
+
+    def attached_source(self, context, source):
+        raw_content = source.data
+        return StringIO(raw_content) if raw_content else None
+     
+    def value(self, context=None):
+        context = self.context if context is None else context
+        source = context.src
+        if isinstance(source, string_types):
+            return self.library_source(context, source)
+        elif IFile.providedBy(source):
+            return self.attached_source(context, source)
+        return None
 
 
 @component.adapter(INTITranscript)
