@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import unicode_literals, print_function, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -28,7 +28,6 @@ from nti.solr.interfaces import ITranscriptDocument
 from nti.solr.interfaces import IContentUnitDocument
 from nti.solr.interfaces import ICourseCatalogDocument
 
-CTA_MIMETYPE = StandardExternalFields.CTA_MIMETYPE
 ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
 
 
@@ -38,7 +37,7 @@ class _CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
     _ext_iface_upper_bound = ICoreDocument
 
-    _fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {CTA_MIMETYPE}
+    _fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {'mimeType'}
 
     def toExternalObject(self, *args, **kwargs):
         kwargs['decorate'] = False
