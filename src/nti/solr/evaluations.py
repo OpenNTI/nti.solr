@@ -158,7 +158,7 @@ def _evaluation_to_catalog(_):
 
 class EvaluationsCatalog(MetadataCatalog):
 
-    skip = True
+    skip = False
     name = EVALUATIONS_CATALOG
     document_interface = IEvaluationDocument
 
