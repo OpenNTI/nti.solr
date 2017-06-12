@@ -30,9 +30,7 @@
 						 .interfaces.IEntityDocument
 						 .interfaces.IMetadataDocument
 						 .interfaces.ITranscriptDocument
-						 .interfaces.IContentUnitDocument
-						 .interfaces.ICourseCatalogDocument"
-		modules=".metadata .transcripts .entities .contentunits .assets .courses" />
+		modules=".metadata .transcripts .entities .assets" />
 
 	<!-- Adapters -->
 	<adapter factory=".adapters._StringValue"
@@ -195,6 +193,11 @@
 
 	<!-- Content Units -->
 	<configure zcml:condition="installed nti.contentlibrary">
+	
+		<ext:registerAutoPackageIO
+			root_interfaces=".interfaces.IContentUnitDocument"
+			modules=".contentunits" />
+	
 		<adapter factory=".contentunits._DefaultContentUnitIDValue"
 				 provides=".interfaces.IIDValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
@@ -293,6 +296,11 @@
 
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
+
+		<ext:registerAutoPackageIO
+			root_interfaces=".interfaces.ICourseCatalogDocument"
+			modules=".courses" />
+
 		<adapter factory=".courses._DefaultCourseCatalogTitleValue"
 				 provides=".interfaces.ITitleValue"
 				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />

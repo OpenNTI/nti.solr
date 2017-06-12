@@ -21,6 +21,8 @@ from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
+from nti.publishing.interfaces import IPublishable
+
 from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import EVALUATIONS_CATALOG
@@ -67,7 +69,11 @@ class _DefaultEvaluationIDValue(DefaultObjectIDValue):
     def value(self, context=None):
         context = self.context if context is None else context
         if IQEditableEvaluation.providedBy(context):
-            return super(_DefaultEvaluationIDValue, self).creator(context)
+            if     not IPublishable.providedBy(context) \
+                or context.is_published():
+                return super(_DefaultEvaluationIDValue, self).creator(context)
+            else:
+                return None
         return self.prefix(context) + context.ntiid
 
 
