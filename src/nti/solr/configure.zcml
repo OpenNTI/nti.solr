@@ -29,7 +29,7 @@
 		root_interfaces=".interfaces.IAssetDocument
 						 .interfaces.IEntityDocument
 						 .interfaces.IMetadataDocument
-						 .interfaces.ITranscriptDocument
+						 .interfaces.ITranscriptDocument"
 		modules=".metadata .transcripts .entities .assets" />
 
 	<!-- Adapters -->
@@ -333,10 +333,16 @@
 				 for=".interfaces.ICourseCatalogDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
+
 	</configure>
 
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
+	
+		<ext:registerAutoPackageIO
+			root_interfaces=".interfaces.IEvaluationDocument"
+			modules=".evaluations" />
+	
 		<adapter factory=".evaluations._DefaultEvaluationIDValue"
 			 	 provides=".interfaces.IIDValue"
 				 for="nti.assessment.interfaces.IQEvaluation" />

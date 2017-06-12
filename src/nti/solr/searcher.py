@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -63,11 +63,11 @@ class _SOLRSearcher(object):
                 # look for a mimeType catalog utility
                 catalog = component.queryUtility(ICoreCatalog, name=mimeType)
                 if catalog is None:  # use mapper
-                    name = mimeTypeRegistry.getCatalog(mimeType, u'')
+                    name = mimeTypeRegistry.getCatalog(mimeType, '')
                     catalog = component.queryUtility(ICoreCatalog, name=name)
                 if catalog is None:  # defaults to userdata
-                    catalog = component.queryUtility(
-                        ICoreCatalog, name=USERDATA_CATALOG)
+                    catalog = component.queryUtility(ICoreCatalog,
+                                                     name=USERDATA_CATALOG)
                 catalogs.add(catalog)
             catalogs.discard(None)
         else:
@@ -125,7 +125,7 @@ class _SOLRSearcher(object):
             cores[core] = catalog  # store
             query_vals = catalog.build_from_search_query(query,
                                                          batch_start=batch_start,
-                                                         batch_size=batch_size )
+                                                         batch_size=batch_size)
             queries[core].append(query_vals)
         # perform search
         for core, triplets in queries.items():
