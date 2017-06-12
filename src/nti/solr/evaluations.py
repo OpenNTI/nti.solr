@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -135,7 +135,7 @@ class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
 class EvaluationDocument(MetadataDocument):
     createDirectFieldProperties(IEvaluationDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.evaluationdocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.evaluationdocument'
 
 
 @component.adapter(IQEvaluation)
@@ -146,7 +146,7 @@ def _EvaluationDocumentCreator(obj, factory=EvaluationDocument):
 
 @component.adapter(IQEvaluation)
 @interface.implementer(ICoreCatalog)
-def _evaluation_to_catalog(obj):
+def _evaluation_to_catalog(_):
     return component.getUtility(ICoreCatalog, name=EVALUATIONS_CATALOG)
 
 
@@ -166,6 +166,6 @@ class EvaluationsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(
-            q=q, commit=self.auto_commit if commit is None else bool(commit))
+        self.client.delete(q=q,
+                           commit=self.auto_commit if commit is None else bool(commit))
     reset = clear
