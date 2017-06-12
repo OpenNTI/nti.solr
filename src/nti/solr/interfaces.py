@@ -190,54 +190,52 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 
 
 class ICoreDocument(interface.Interface):
-    id = ValidTextLine(title='The id', required=True)
+    id = ValidTextLine(title=u'The id', required=True)
 tagField(ICoreDocument['id'], True, IIDValue)
 
 
 class IMetadataDocument(ICoreDocument):
 
-    ace = IndexedIterable(title='The ACL aces',
+    ace = IndexedIterable(title=u'The ACL aces',
                           required=False,
-                          value_type=ValidTextLine(title="The ace"),
+                          value_type=ValidTextLine(title=u"The ace"),
                           min_length=0)
 
-    site = ValidTextLine(title='The site', required=False)
+    site = ValidTextLine(title=u'The site', required=False)
 
-    creator = ValidTextLine(title='The creator', required=False)
+    creator = ValidTextLine(title=u'The creator', required=False)
 
-    mimeType = ValidTextLine(title='The mime type', required=False)
+    mimeType = ValidTextLine(title=u'The mime type', required=False)
 
-    taggedTo = IndexedIterable(title='The entities identifiers',
+    taggedTo = IndexedIterable(title=u'The entities identifiers',
                                required=False,
-                               value_type=ValidTextLine(
-                                   title="The entiy identifier"),
+                               value_type=ValidTextLine(title=u"The entiy identifier"),
                                min_length=0)
 
-    inReplyTo = ValidTextLine(title='The replied to NTIID', required=False)
+    inReplyTo = ValidTextLine(title=u'The replied to NTIID', required=False)
 
-    containerId = IndexedIterable(title='The container identifiers',
+    containerId = IndexedIterable(title=u'The container identifiers',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The container identifier"),
+                                  value_type=ValidTextLine(title=u"The container identifier"),
                                   min_length=0)
 
-    sharedWith = IndexedIterable(title='The entities shared with',
+    sharedWith = IndexedIterable(title=u'The entities shared with',
                                  required=False,
-                                 value_type=ValidTextLine(title="The entiy"),
+                                 value_type=ValidTextLine(title=u"The entiy"),
                                  min_length=0)
 
     containerContext = ValidTextLine(
-        title='The container context', required=False)
+        title=u'The container context', required=False)
 
-    createdTime = SolrDatetime(title='The created date', required=False)
+    createdTime = SolrDatetime(title=u'The created date', required=False)
 
-    lastModified = SolrDatetime(title='The last modified date', required=False)
+    lastModified = SolrDatetime(title=u'The last modified date', required=False)
 
-    isDeletedObject = Bool(title='Is deleted object flag', required=False)
+    isDeletedObject = Bool(title=u'Is deleted object flag', required=False)
 
-    isTopLevelContent = Bool(title='Is top level object flag', required=False)
+    isTopLevelContent = Bool(title=u'Is top level object flag', required=False)
 
-    isUserGeneratedData = Bool(title='Is UGD object flag', required=False)
+    isUserGeneratedData = Bool(title=u'Is UGD object flag', required=False)
 
 tagField(IMetadataDocument['ace'], True, IACEValue,
          multiValued=True, indexed=False)
@@ -363,78 +361,74 @@ class IAboutValue(IStringValue):
 
 class IEntityDocument(IMetadataDocument):
 
-    username = IndexedIterable(title='The username identifiers',
+    username = IndexedIterable(title=u'The username identifiers',
                                required=False,
-                               value_type=ValidTextLine(title="The username"),
+                               value_type=ValidTextLine(title=u"The username"),
                                min_length=1)
 
-    alias = ValidTextLine(title='The alias', required=False)
+    alias = ValidTextLine(title=u'The alias', required=False)
 
-    email = ValidTextLine(title='The username', required=False)
+    email = ValidTextLine(title=u'The username', required=False)
 
-    realname = ValidTextLine(title='The realname', required=False)
+    realname = ValidTextLine(title=u'The realname', required=False)
 
-    about_en = ValidText(title='The about statement', required=False)
+    about_en = ValidText(title=u'The about statement', required=False)
 
-    education_school = IndexedIterable(title='The school names',
+    education_school = IndexedIterable(title=u'The school names',
                                        required=False,
                                        value_type=ValidTextLine(
-                                           title="The school name"),
+                                           title=u"The school name"),
                                        min_length=0)
 
-    education_degree = IndexedIterable(title='The school degrees',
+    education_degree = IndexedIterable(title=u'The school degrees',
                                        required=False,
-                                       value_type=ValidTextLine(
-                                           title="The school degree"),
+                                       value_type=ValidTextLine(title=u"The school degree"),
                                        min_length=0)
 
-    education_description = IndexedIterable(title='The education descriptions',
+    education_description = IndexedIterable(title=u'The education descriptions',
                                             required=False,
                                             value_type=ValidText(
-                                                title="The description"),
+                                                title=u"The description"),
                                             min_length=0)
 
-    professional_description = IndexedIterable(title='The professional company descriptions',
+    professional_description = IndexedIterable(title=u'The professional company descriptions',
                                                required=False,
-                                               value_type=ValidText(
-                                                   title="The description"),
+                                               value_type=ValidText(title=u"The description"),
                                                min_length=0)
 
-    professional_title = IndexedIterable(title='The company names',
+    professional_title = IndexedIterable(title=u'The company names',
                                          required=False,
-                                         value_type=ValidTextLine(
-                                             title="The company name"),
+                                         value_type=ValidTextLine(title=u"The company name"),
                                          min_length=0)
 
-    professional_company = IndexedIterable(title='The company names',
+    professional_company = IndexedIterable(title=u'The company names',
                                            required=False,
-                                           value_type=ValidTextLine(
-                                               title="The company name"),
+                                           value_type=ValidTextLine(title=u"The company name"),
                                            min_length=0)
 
-    social_url = IndexedIterable(title='The social URLS',
+    social_url = IndexedIterable(title=u'The social URLS',
                                  required=False,
-                                 value_type=ValidTextLine(title="The url"),
+                                 value_type=ValidTextLine(title=u"The url"),
                                  min_length=0)
 
 tagField(IEntityDocument['email'], True, IEmailValue)
-tagField(IEntityDocument['alias'], True, IAliasValue, type_='text_lower')
-tagField(IEntityDocument['realname'], True, IRealnameValue, type_='text_lower')
+tagField(IEntityDocument['alias'], True, IAliasValue, type_=u'text_lower')
+tagField(IEntityDocument['realname'], True, IRealnameValue, type_=u'text_lower')
 tagField(IEntityDocument['username'], True, IUsernameValue, True)
 tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
 tagField(IEntityDocument['about_en'], False, IAboutValue, provided=ITextField)
 tagField(IEntityDocument['education_school'], True,
-         IEducationSchoolValue, True, type_='text_lower', provided=ITextField)
+         IEducationSchoolValue, True, type_=u'text_lower', provided=ITextField)
 tagField(IEntityDocument['education_degree'], True,
-         IEducationDegreeValue, True, type_='text_lower', provided=ITextField)
+         IEducationDegreeValue, True, type_=u'text_lower', provided=ITextField)
 tagField(IEntityDocument['education_description'], True,
-         IEducationDescriptionValue, True, type_='text_lower', provided=ITextField)
+         IEducationDescriptionValue, True, type_=u'text_lower', provided=ITextField)
 tagField(IEntityDocument['professional_title'], True,
-         IProfessionalTitleValue, True, type_='text_lower', provided=ITextField)
+         IProfessionalTitleValue, True, type_=u'text_lower', provided=ITextField)
 tagField(IEntityDocument['professional_company'], True,
-         IProfessionalCompanyValue, True, type_='text_lower', provided=ITextField)
+         IProfessionalCompanyValue, True, type_=u'text_lower', provided=ITextField)
 tagField(IEntityDocument['professional_description'], True,
-         IProfessionalDescriptionValue, True, type_='text_lower', provided=ITextField)
+         IProfessionalDescriptionValue, True, type_=u'text_lower', provided=ITextField)
 
 
 class IMediaNTIIDValue(IAttributeValue):
@@ -463,12 +457,12 @@ class ITranscriptSourceValue(IAttributeValue):
 
 class ITranscriptDocument(IMetadataDocument):
 
-    media = ValidText(title='The media ntiid', required=False)
+    media = ValidText(title=u'The media ntiid', required=False)
 
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    cue_end_time = Number(title='Cue end time', required=False)
-    cue_start_time = Number(title='Cue start time', required=False)
+    cue_end_time = Number(title=u'Cue end time', required=False)
+    cue_start_time = Number(title=u'Cue start time', required=False)
 
 tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
 tagField(ITranscriptDocument['cue_end_time'],
@@ -489,16 +483,15 @@ class ITitleValue(IStringValue):
 
 class IContentUnitDocument(IMetadataDocument):
 
-    ntiid = ValidTextLine(title='Content unit ntiid', required=False)
+    ntiid = ValidTextLine(title=u'Content unit ntiid', required=False)
 
-    title_en = ValidTextLine(title='Title to index', required=False)
+    title_en = ValidTextLine(title=u'Title to index', required=False)
 
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    keywords_en = IndexedIterable(title='The keywords',
+    keywords_en = IndexedIterable(title=u'The keywords',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The keyword"),
+                                  value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
 
 tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
@@ -547,29 +540,28 @@ class IUserDataDocument(IMetadataDocument):
     """
     User generated data document
     """
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    title_en = ValidTextLine(title='Title to index', required=False)
+    title_en = ValidTextLine(title=u'Title to index', required=False)
 
-    redaction_explanation_en = ValidText(title='Text to index', required=False)
-    replacement_content_en = ValidText(title='Text to index', required=False)
+    redaction_explanation_en = ValidText(title=u'Text to index', required=False)
+    replacement_content_en = ValidText(title=u'Text to index', required=False)
 
-    recipients = IndexedIterable(title='The recipient entities',
+    recipients = IndexedIterable(title=u'The recipient entities',
                                  required=False,
-                                 value_type=ValidTextLine(title="The entiy"),
+                                 value_type=ValidTextLine(title=u"The entiy"),
                                  min_length=0)
 
-    channel = ValidTextLine(title='channel value', required=False)
+    channel = ValidTextLine(title=u'channel value', required=False)
 
-    tags = IndexedIterable(title='The tags',
+    tags = IndexedIterable(title=u'The tags',
                            required=False,
-                           value_type=ValidTextLine(title="The tag"),
+                           value_type=ValidTextLine(title=u"The tag"),
                            min_length=0)
 
-    keywords_en = IndexedIterable(title='The keywords',
+    keywords_en = IndexedIterable(title=u'The keywords',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The keyword"),
+                                  value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
 
 tagField(IUserDataDocument['channel'], False, IChannelValue)
@@ -594,18 +586,17 @@ class ITargetValue(IStringValue):
 
 class IAssetDocument(IMetadataDocument):
 
-    ntiid = ValidTextLine(title='Asset ntiid', required=False)
+    ntiid = ValidTextLine(title=u'Asset ntiid', required=False)
 
-    target = ValidTextLine(title='Asset target ntiid', required=False)
+    target = ValidTextLine(title=u'Asset target ntiid', required=False)
 
-    title_en = ValidTextLine(title='Title to index', required=False)
+    title_en = ValidTextLine(title=u'Title to index', required=False)
 
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    keywords_en = IndexedIterable(title='The keywords',
+    keywords_en = IndexedIterable(title=u'The keywords',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The keyword"),
+                                  value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
 
 tagField(IAssetDocument['ntiid'], True, INTIIDValue)
@@ -619,16 +610,15 @@ tagField(IAssetDocument['keywords_en'], False,
 
 class ICourseCatalogDocument(IMetadataDocument):
 
-    ntiid = ValidTextLine(title='Course catalog ntiid', required=False)
+    ntiid = ValidTextLine(title=u'Course catalog ntiid', required=False)
 
-    title_en = ValidTextLine(title='Title to index', required=False)
+    title_en = ValidTextLine(title=u'Title to index', required=False)
 
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    keywords_en = IndexedIterable(title='The keywords',
+    keywords_en = IndexedIterable(title=u'The keywords',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The keyword"),
+                                  value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
 
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
@@ -643,16 +633,15 @@ tagField(ICourseCatalogDocument[
 
 class IEvaluationDocument(IMetadataDocument):
 
-    ntiid = ValidTextLine(title='Evaluation ntiid', required=False)
+    ntiid = ValidTextLine(title=u'Evaluation ntiid', required=False)
 
-    title_en = ValidTextLine(title='Title to index', required=False)
+    title_en = ValidTextLine(title=u'Title to index', required=False)
 
-    content_en = ValidText(title='Text to index', required=False)
+    content_en = ValidText(title=u'Text to index', required=False)
 
-    keywords_en = IndexedIterable(title='The keywords',
+    keywords_en = IndexedIterable(title=u'The keywords',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The keyword"),
+                                  value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
 
 tagField(IEvaluationDocument['ntiid'], True, INTIIDValue)
@@ -667,27 +656,24 @@ tagField(IEvaluationDocument[
 
 class ICoreCatalog(IInjection, IIndexSearch, IContained):
 
-    name = ValidTextLine(title="Catalog name", required=True)
-    core = ValidTextLine(title="Core/Collection name", required=True)
+    name = ValidTextLine(title=u"Catalog name", required=True)
+    core = ValidTextLine(title=u"Core/Collection name", required=True)
 
-    text_fields = IndexedIterable(title='The text fields',
+    text_fields = IndexedIterable(title=u'The text fields',
                                   required=False,
-                                  value_type=ValidTextLine(
-                                      title="The field name"),
+                                  value_type=ValidTextLine(title=u"The field name"),
                                   min_length=0,
                                   readonly=True)
 
-    suggest_fields = IndexedIterable(title='The text fields',
+    suggest_fields = IndexedIterable(title=u'The text fields',
                                      required=False,
-                                     value_type=ValidTextLine(
-                                         title="The field name"),
+                                     value_type=ValidTextLine(title=u"The field name"),
                                      min_length=0,
                                      readonly=True)
 
-    return_fields = IndexedIterable(title='The fields to return',
+    return_fields = IndexedIterable(title=u'The fields to return',
                                     required=False,
-                                    value_type=ValidTextLine(
-                                        title="The field name"),
+                                    value_type=ValidTextLine(title=u"The field name"),
                                     min_length=0,
                                     readonly=True)
 
@@ -765,7 +751,7 @@ class IObjectIndexedEvent(IObjectEvent):
     """
     Event to signal an object has been indexed
     """
-    doc_id = ValidTextLine(title='Document id')
+    doc_id = ValidTextLine(title=u'Document id')
 
 
 @interface.implementer(IObjectIndexedEvent)
@@ -780,7 +766,7 @@ class IObjectUnindexedEvent(IObjectEvent):
     """
     Event to signal an object has been unindexed
     """
-    doc_id = ValidTextLine(title='Document id')
+    doc_id = ValidTextLine(title=u'Document id')
 
 
 @interface.implementer(IObjectUnindexedEvent)
@@ -800,8 +786,8 @@ class ISOLRQueueFactory(interface.Interface):
 
 
 class ISOLR(interface.Interface):
-    URL = ValidTextLine(title="LDAP URL", required=True)
-    Timeout = ValidTextLine(title="Timeout", required=False)
+    URL = ValidTextLine(title=u"LDAP URL", required=True)
+    Timeout = ValidTextLine(title=u"Timeout", required=False)
 
 # searcher
 
@@ -856,7 +842,7 @@ class ISOLRFilterQuery(interface.Interface):
 
 class ISOLRQueryTerm(interface.Interface):
 
-    default = ValidTextLine(title="Default search term",
+    default = ValidTextLine(title=u"Default search term",
                             required=False,
                             default=None)
 
