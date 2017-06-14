@@ -9,12 +9,12 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-from dolmen.builtins.interfaces import IDict
-
 from zope import component
 from zope import interface
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
+
+from nti.base.interfaces import IDict
 
 from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ITranscriptSearchHit
@@ -51,7 +51,7 @@ class _StringValue(object):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return to_unicode(context) if context else None
+        return text_(context) if context else None
 
 HIT_FIELDS = ((INTIIDValue, 'NTIID'),
               (ICreatorValue, 'Creator'),

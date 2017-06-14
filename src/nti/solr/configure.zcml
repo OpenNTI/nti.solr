@@ -39,17 +39,17 @@
 
 	<adapter factory=".adapters._default_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.ISearchHit"
-			 for="* dolmen.builtins.interfaces.IDict" />
+			 for="* nti.base.interfaces.IDict" />
 
 	<adapter factory=".adapters._transcript_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.ITranscriptSearchHit"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript
-			 	  dolmen.builtins.interfaces.IDict" />
+			 	  nti.base.interfaces.IDict" />
 
 	<adapter factory=".adapters.ugd_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.IUserGeneratedDataSearchHit"
 			 for="nti.dataserver.interfaces.IUserGeneratedData
-			 	  dolmen.builtins.interfaces.IDict" />
+			 	  nti.base.interfaces.IDict" />
 
 	<!-- Metadata -->
 	<adapter factory=".metadata._DefaultSiteValue"
@@ -242,7 +242,7 @@
 		<adapter factory=".adapters._contentunit_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.IContentUnitSearchHit"
 			 for="nti.contentlibrary.interfaces.IContentUnit
-			 	  dolmen.builtins.interfaces.IDict" />
+			 	  nti.base.interfaces.IDict" />
 
 	</configure>
 
