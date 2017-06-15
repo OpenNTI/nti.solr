@@ -9,8 +9,6 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
-from dolmen.builtins.interfaces import IDict
-
 from zope import interface
 
 from zope.index.interfaces import IInjection
@@ -20,6 +18,8 @@ from zope.interface.interfaces import ObjectEvent
 from zope.interface.interfaces import IObjectEvent
 
 from zope.location.interfaces import IContained
+
+from nti.base.interfaces import IDict
 
 from nti.contentsearch.interfaces import ISearcher
 from nti.contentsearch.interfaces import ISearchQueryValidator
@@ -224,8 +224,8 @@ class IMetadataDocument(ICoreDocument):
                                  value_type=ValidTextLine(title=u"The entiy"),
                                  min_length=0)
 
-    containerContext = ValidTextLine(
-        title=u'The container context', required=False)
+    containerContext = ValidTextLine(title=u'The container context', 
+                                     required=False)
 
     createdTime = SolrDatetime(title=u'The created date', required=False)
 
