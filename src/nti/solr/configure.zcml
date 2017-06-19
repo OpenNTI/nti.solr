@@ -550,12 +550,6 @@
 			 	 provides=".interfaces.ISOLRSearcher" />
 	</configure>
 
-	<configure zcml:condition="have devmode">
-		<configure zcml:condition="not-have testmode">
-			<solr:registerSOLR url="http://localhost:8983/solr" />
-		</configure>
-	</configure>
-
 	<!-- Queues -->
 	<solr:registerProcessingQueue />
 
