@@ -16,7 +16,7 @@ from zope import interface
 
 from nti.chatserver.interfaces import IMessageInfo
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
@@ -194,7 +194,7 @@ class _UserGeneratedDataContainersValue(_BasicAttributeValue):
         contained = INTIContained(context, context)
         try:
             cid = contained.containerId
-            return (to_unicode(cid),)
+            return (text_(cid),)
         except AttributeError:
             return None
 
