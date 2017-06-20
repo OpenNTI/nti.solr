@@ -25,7 +25,7 @@ from zope.interface.interfaces import IMethod
 
 from zope.intid.interfaces import IIntIds
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.contentprocessing.content_utils import tokenize_content
 
@@ -74,9 +74,9 @@ def get_content(text=None, lang="en"):
     if not text or not isinstance(text, six.string_types):
         result = u''
     else:
-        text = to_unicode(text)
+        text = text_(text)
         result = tokenize_content(text, lang)
-        result = ' '.join(result) if result else text
+        result = u' '.join(result) if result else text
     return result
 
 
