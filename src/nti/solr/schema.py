@@ -4,13 +4,14 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
 import six
 import pytz
+import numbers
 from datetime import datetime
 from dateutil.parser import parse
 
@@ -30,6 +31,7 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 class SolrDatetime(Orderable, Field):
 
     __doc__ = IDatetime.__doc__
+
     _type = datetime
 
     def __init__(self, *args, **kw):
@@ -39,7 +41,7 @@ class SolrDatetime(Orderable, Field):
     def convert(value):
         if isinstance(value, six.string_types):
             return SolrDatetime.fromUnicode(value)
-        elif isinstance(value, (float, int)):
+        elif isinstance(value, numbers.Number):
             return datetime.fromtimestamp(value, pytz.utc)
         elif isinstance(value, datetime):
             return value
@@ -53,13 +55,13 @@ class SolrDatetime(Orderable, Field):
         Field._validate(self, converted)
 
     def get(self, obj):
-        value = getattr(object, self.__name__)
+        value = getattr(obj, self.__name__)
         if value is not None:
             return self.toUnicode(value)
         return None
 
     def query(self, obj, default=None):
-        value = getattr(object, self.__name__, default)
+        value = getattr(obj, self.__name__, default)
         if value is not None:
             return self.toUnicode(value)
         return None
