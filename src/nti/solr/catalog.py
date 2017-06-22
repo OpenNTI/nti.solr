@@ -154,11 +154,9 @@ class CoreCatalog(object):
     def get_object(self, doc_id, intids=None):
         result = object_finder(doc_id, intids)
         if result is None:
+            # Since our search doesn't filter on site, we need to make
+            # sure we do not unindex objects that we cannot find.
             logger.debug('Could not find object with id %r' % doc_id)
-            try:
-                self._do_unindex(doc_id, False)
-            except Exception:
-                pass
         return result
 
     # zope catalog
