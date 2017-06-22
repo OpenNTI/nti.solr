@@ -107,8 +107,12 @@ class _SOLRSearcher(object):
             events = catalog.client.search(term, **params)
             for event in events or ():
                 hit = self._get_search_hit(catalog, event, events.highlighting)
-                if hit is not None:
-                    yield hit
+                # Always yield hit, even if None; it lets the caller batch
+                # properly. Not sure the best way to handle this; seems like
+                # we want to always return what SOLR gives us, even if None.
+                # Thus, the caller can keep calling us, with incrementing
+                # batches until SOLR runs out of results or the batch is filled.
+                yield hit
         except Exception:
             logger.exception("Error while executing query %s", term)
 
