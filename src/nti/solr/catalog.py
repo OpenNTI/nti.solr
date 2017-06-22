@@ -154,8 +154,7 @@ class CoreCatalog(object):
     def get_object(self, doc_id, intids=None):
         result = object_finder(doc_id, intids)
         if result is None:
-            # Since our search doesn't filter on site, we need to make
-            # sure we do not unindex objects that we cannot find.
+            # This really shouldn't happen anymore now that we query by site.
             logger.debug('Could not find object with id %r' % doc_id)
         return result
 
@@ -191,17 +190,17 @@ class CoreCatalog(object):
                                                lucene_escape(v[1]))
         return fq
 
-    def _bulild_from_catalog_query(self, query):
+    def _build_from_catalog_query(self, query):
         fq = self._fq_from_catalog_query(query)
         return ('*:*', fq, {'fl': ','.join(self.return_fields)})
 
     def apply(self, query):
         if isinstance(query, primitive_types):
-            query = str(query) if isinstance(
-                query, six.string_types) else query
+            if isinstance(query, six.string_types):
+                query = str(query)
             term, fq, params = query, {}, {'fl': ','.join(self.return_fields)}
         else:
-            term, fq, params = self._bulild_from_catalog_query(query)
+            term, fq, params = self._build_from_catalog_query(query)
         # prepare solr params
         fq_query = ['%s:%s' % (name, value) for name, value in fq.items()]
         if fq_query:
