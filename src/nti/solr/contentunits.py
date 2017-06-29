@@ -4,12 +4,10 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
-
-from six import string_types
 
 from zope import component
 from zope import interface
@@ -158,7 +156,7 @@ class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 class ContentUnitDocument(MetadataDocument):
     createDirectFieldProperties(IContentUnitDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.contentunitdocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.contentunitdocument'
 
 
 @component.adapter(IContentUnit)
@@ -187,11 +185,6 @@ class ContentUnitsCatalog(MetadataCatalog):
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
-        packs = getattr(query, 'packages', None) \
-             or getattr(query, 'package', None)
-        if 'containerId' not in fq and packs:
-            packs = packs.split() if isinstance(packs, string_types) else packs
-            fq.add_or('containerId', [lucene_escape(x) for x in packs])
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
@@ -200,8 +193,8 @@ class ContentUnitsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(q=q,
-                           commit=self.auto_commit if commit is None else bool(commit))
+        commit = self.auto_commit if commit is None else bool(commit)
+        self.client.delete(q=q, commit=commit)
     reset = clear
 
 
