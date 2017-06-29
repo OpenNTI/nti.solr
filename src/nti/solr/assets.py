@@ -4,12 +4,10 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
-
-from six import string_types
 
 from zope import component
 from zope import interface
@@ -95,7 +93,7 @@ class _DefaultAssetTitleValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return     getattr(context, 'title', None) \
+        return getattr(context, 'title', None) \
             or getattr(context, 'label', None)
 
 
@@ -108,8 +106,8 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        result =  getattr(context, 'creator', None) \
-            or getattr(context, 'byline', None)
+        result = getattr(context, 'creator', None) \
+              or getattr(context, 'byline', None)
         if IUseNTIIDAsExternalUsername.providedBy(result):
             result = to_external_ntiid_oid(result)
         else:
@@ -168,7 +166,7 @@ class _DefaultTargetValue(_BasicAttributeValue):
 class AssetDocument(MetadataDocument):
     createDirectFieldProperties(IAssetDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.assetdocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.assetdocument'
 
 
 @component.adapter(IPresentationAsset)
@@ -190,11 +188,6 @@ class AssetsCatalog(MetadataCatalog):
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
-        packs = getattr(query, 'packages', None) \
-            or getattr(query, 'package', None)
-        if 'containerId' not in fq and packs:
-            packs = packs.split() if isinstance(packs, string_types) else packs
-            fq.add_or('containerId', [lucene_escape(x) for x in packs])
         if 'mimeType' not in fq:
             searchOn = getattr(query, 'searchOn', None)
             if searchOn:
@@ -207,6 +200,6 @@ class AssetsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(q=q,
-                           commit=self.auto_commit if commit is None else bool(commit))
+        commit = commit=self.auto_commit if commit is None else bool(commit)
+        self.client.delete(q=q, commit=commit)
     reset = clear
