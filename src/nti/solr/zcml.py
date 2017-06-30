@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -36,9 +36,13 @@ from nti.solr.model import SOLR
 
 
 class IRegisterSOLR(interface.Interface):
-    url = fields.TextLine(title="SOLR url", required=True)
-    name = fields.TextLine(title="optional registration name", required=False)
-    timeout = Int(title="timeout", required=False)
+
+    url = fields.TextLine(title=u"SOLR url", required=True)
+    
+    name = fields.TextLine(title=u"optional registration name", 
+                           required=False)
+
+    timeout = Int(title=u"timeout", required=False)
 
 
 def registerSOLR(_context, url, timeout=None, name=u''):
@@ -73,8 +77,8 @@ class _AbstractProcessingQueueFactory(object):
     def get_queue(self, name):
         queue = async_queue(name, self.queue_interface)
         if queue is None:
-            raise ValueError(
-                "No queue exists for solr processing queue (%s)." % name)
+            msg = "No queue exists for solr processing queue (%s)." % name
+            raise ValueError(msg)
         return queue
 
 
