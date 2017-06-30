@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -56,6 +56,7 @@ from nti.solr.interfaces import ICoreDocument
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
 
+
 # content
 
 
@@ -91,6 +92,7 @@ def get_keywords(content, lang='en'):
                                           lang=lang,
                                           blacklist=stopwords)
     return keywords
+
 
 # documents
 
@@ -138,7 +140,8 @@ def object_finder(doc_id, intids=None):
         except (ValueError, TypeError):
             logger.error("Cannot get object with id %s", doc_id)
 
-_f_pattern = re.compile('(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
+
+_f_pattern = re.compile(r'(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
 
 
 def normalize_field(name):
@@ -146,6 +149,7 @@ def normalize_field(name):
     if m is not None:
         return m.groups()[0]
     return name
+
 
 # searcher
 
@@ -172,6 +176,7 @@ def transacted_func(func=None, **kwargs):
 def gevent_spawn(func=None, **kwargs):
     greenlet = gevent.spawn(transacted_func(func, **kwargs))
     return greenlet
+
 
 # MimeType / Catalog registry
 
@@ -213,21 +218,21 @@ class MimeTypeRegistry(object):
 mimeTypeRegistry = MimeTypeRegistry()
 
 # Known mimeTypes used to map to their corresponding  search catalogs
-CONTENT_MIME_TYPE = u'application/vnd.nextthought.content'
-BOOK_CONTENT_MIME_TYPE = u'application/vnd.nextthought.bookcontent'
+CONTENT_MIME_TYPE = 'application/vnd.nextthought.content'
+BOOK_CONTENT_MIME_TYPE = 'application/vnd.nextthought.bookcontent'
 
-NTI_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.ntitranscript'
-AUDIO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.audiotranscript'
-VIDEO_TRANSCRIPT_MIME_TYPE = u'application/vnd.nextthought.videotranscript'
+NTI_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.ntitranscript'
+AUDIO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.audiotranscript'
+VIDEO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.videotranscript'
 
-COURSE_MIME_TYPE = u'application/vnd.nextthought.courses.courseinstance'
-CATALOG_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecatalogentry'
-CATALOG_LEGACY_ENTRY_MIME_TYPE = u'application/vnd.nextthought.courses.coursecataloglegacyentry'
+COURSE_MIME_TYPE = 'application/vnd.nextthought.courses.courseinstance'
+CATALOG_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecatalogentry'
+CATALOG_LEGACY_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecataloglegacyentry'
 
-USER_MIME_TYPE = u'application/vnd.nextthought.user'
-COMMUNITY_MIME_TYPE = u'application/vnd.nextthought.community'
-DFL_MIME_TYPE = u'application/vnd.nextthought.dynamicfriendslist'
-FRIEND_LISTS_MIME_TYPE = u'application/vnd.nextthought.friendslist'
+USER_MIME_TYPE = 'application/vnd.nextthought.user'
+COMMUNITY_MIME_TYPE = 'application/vnd.nextthought.community'
+DFL_MIME_TYPE = 'application/vnd.nextthought.dynamicfriendslist'
+FRIEND_LISTS_MIME_TYPE = 'application/vnd.nextthought.friendslist'
 
 
 def _register():
@@ -271,5 +276,6 @@ def _register():
         mimeTypeRegistry.register(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
     except ImportError:
         pass
+
 _register()
 del _register
