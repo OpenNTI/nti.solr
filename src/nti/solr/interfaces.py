@@ -703,7 +703,7 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         :param batch_size the number of items needed from the searcher
         """
 
-    def execute(term, fq, params):
+    def execute(term, fq, params, query=None):
         """
         Execute a solr search
 

@@ -32,6 +32,8 @@ from nti.externalization.externalization import to_external_object
 
 from nti.property.property import alias
 
+from nti.schema.eqhash import EqHash
+
 from nti.solr import _OR_
 from nti.solr import _AND_
 from nti.solr import NTI_CATALOG
@@ -67,6 +69,7 @@ from nti.solr.utils import mimeTypeRegistry
 from nti.zope_catalog.catalog import ResultSet
 
 
+@EqHash('name')
 @interface.implementer(ICoreCatalog)
 class CoreCatalog(object):
 
@@ -78,7 +81,7 @@ class CoreCatalog(object):
     auto_commit = True
     return_fields = ('id', 'score')
 
-    name = u'Objects'
+    name = 'Objects'
     document_interface = ICoreDocument
 
     family = BTrees.family64
@@ -310,13 +313,13 @@ class CoreCatalog(object):
     def _prepare_solr_query(self, term, fq, params):
         return prepare_solr_query(term, fq, params)
 
-    def execute(self, term, fq, params):
+    def execute(self, term, fq, params, unused_query=None):
         term, params = self._prepare_solr_query(term, fq, params)
         return self.client.search(term, **params)
 
     def search(self, query, *args, **kwargs):
         term, fq, params = self.build_from_search_query(query, *args, **kwargs)
-        return self.execute(term, fq, params)
+        return self.execute(term, fq, params, query)
 
     # content search / ISearcher.suggest
 

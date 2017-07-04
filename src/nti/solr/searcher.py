@@ -10,7 +10,6 @@ __docformat__ = "restructuredtext en"
 logger = __import__('logging').getLogger(__name__)
 
 import copy
-from collections import defaultdict
 
 from zope import component
 from zope import interface
@@ -30,8 +29,6 @@ from nti.solr import USERDATA_CATALOG
 
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ISOLRSearcher
-
-from nti.solr.query import prepare_solr_triplets
 
 from nti.solr.utils import normalize_field
 from nti.solr.utils import mimeTypeRegistry
@@ -102,9 +99,9 @@ class _SOLRSearcher(object):
             logger.debug('Could not create hit for %s. %s', result, e)
         return None
 
-    def _execute_search(self, catalog, term, params):
+    def _execute_search(self, catalog, term, fq, params, query=None):
         try:
-            events = catalog.client.search(term, **params)
+            events = catalog.execute(term, fq, params, query)
             for event in events or ():
                 hit = self._get_search_hit(catalog, event, events.highlighting)
                 # Always yield hit, even if None; it lets the caller batch
@@ -117,29 +114,24 @@ class _SOLRSearcher(object):
             logger.exception("Error while executing query %s", term)
 
     def search(self, query, batch_start=None, batch_size=None, *args, **kwargs):
-        cores = {}
-        queries = defaultdict(list)
+        queries = {}
         query = ISearchQuery(query)
         catalogs = self.query_search_catalogs(query)
         # collect catalogs by core and build query triplets
         for catalog in catalogs or ():
             if catalog.skip:
                 continue
-            core = catalog.core
-            cores[core] = catalog  # store
             query_vals = catalog.build_from_search_query(query,
                                                          batch_start=batch_start,
                                                          batch_size=batch_size)
-            queries[core].append(query_vals)
+            queries[catalog] = query_vals
         # perform search
-        for core, triplets in queries.items():
-            catalog = cores[core]
-            # Combine terms and query
-            term, params = prepare_solr_triplets(triplets)
-            for hit in self._execute_search(catalog, term, params):
+        for catalog, triplets in queries.items():
+            term, fq, params = triplets
+            for hit in self._execute_search(catalog, term, fq, params, query):
                 yield hit
 
-    def _get_suggestions(self, catalog, events):
+    def _get_suggestions(self, unused_catalog, events):
         result = set()
         for hits in events.values():
             result.update(x for x, _ in hits)
