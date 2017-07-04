@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -14,11 +14,10 @@ import six
 from zope import component
 from zope import interface
 
-from nti.base._compat import to_unicode
-
-from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
+from nti.base._compat import text_
 
 from nti.dataserver.interfaces import IEntity
+from nti.dataserver.interfaces import IUseNTIIDAsExternalUsername
 
 from nti.dataserver.users.interfaces import IUserProfile
 from nti.dataserver.users.interfaces import IAboutProfile
@@ -62,7 +61,7 @@ class _BasicAttributeValue(object):
     field = None
     interface = None
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, _=None):
         self.context = context
 
     def value(self, context=None):
@@ -70,7 +69,7 @@ class _BasicAttributeValue(object):
         profile = self.interface(context, None)
         result = getattr(profile, self.field, None)
         if isinstance(result, six.string_types):
-            result = to_unicode(result)
+            result = text_(result)
         return result
 
 
@@ -85,12 +84,13 @@ class _DefaultUsernameValue(_BasicAttributeValue):
         else:
             result = getattr(context, 'username', None)
             result = result.lower() if result else None
-        return (to_unicode(result),) if result else ()
+        return (text_(result),) if result else ()
 
 
 @component.adapter(IEntity)
 @interface.implementer(IEmailValue)
 class _DefaultEmailValue(_BasicAttributeValue):
+
     field = 'email'
     interface = IUserProfile
 
@@ -122,7 +122,7 @@ class _DefaultProfessionalTitleValue(_BasicAttributeValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.title) for x in source if x.title) if source else ()
+        return tuple(text_(x.title) for x in source if x.title) if source else ()
 
 
 @component.adapter(IEntity)
@@ -131,7 +131,7 @@ class _DefaultProfessionalCompanyValue(_DefaultProfessionalTitleValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.companyName) for x in source if x.companyName) if source else ()
+        return tuple(text_(x.companyName) for x in source if x.companyName) if source else ()
 
 
 @component.adapter(IEntity)
@@ -140,7 +140,7 @@ class _DefaultProfessionalDescriptionValue(_DefaultProfessionalTitleValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+        return tuple(text_(x.description) for x in source if x.description) if source else ()
 
 
 @component.adapter(IEntity)
@@ -152,7 +152,7 @@ class _DefaultEducationDegreeValue(_BasicAttributeValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.degree) for x in source if x.degree) if source else ()
+        return tuple(text_(x.degree) for x in source if x.degree) if source else ()
 
 
 @component.adapter(IEntity)
@@ -161,7 +161,7 @@ class _DefaultEducationSchoolValue(_DefaultEducationDegreeValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.school) for x in source if x.school) if source else ()
+        return tuple(text_(x.school) for x in source if x.school) if source else ()
 
 
 @component.adapter(IEntity)
@@ -170,7 +170,7 @@ class _DefaultEducationDescriptionValue(_DefaultEducationDegreeValue):
 
     def value(self, context=None):
         source = _BasicAttributeValue.value(self, context) or ()
-        return tuple(to_unicode(x.description) for x in source if x.description) if source else ()
+        return tuple(text_(x.description) for x in source if x.description) if source else ()
 
 
 @component.adapter(IEntity)
@@ -183,7 +183,7 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
         if profile is not None:
             result = {profile.twitter, profile.facebook,
                       profile.googlePlus, profile.linkedIn}
-            return tuple(to_unicode(x.lower()) for x in result if x)
+            return tuple(text_(x.lower()) for x in result if x)
         return ()
 
 
@@ -203,7 +203,7 @@ class _DefaultAboutValue(_BasicAttributeValue):
 class EntityDocument(MetadataDocument):
     createDirectFieldProperties(IEntityDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.entitydocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.entitydocument'
 
 
 @component.adapter(IEntity)
@@ -214,7 +214,7 @@ def _EntityDocumentCreator(obj, factory=EntityDocument):
 
 @component.adapter(IEntity)
 @interface.implementer(ICoreCatalog)
-def _entity_to_catalog(obj):
+def _entity_to_catalog(_):
     return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
 
 
@@ -233,6 +233,6 @@ class EntitiesCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(
-            q=q, commit=self.auto_commit if commit is None else bool(commit))
+        commit = self.auto_commit if commit is None else bool(commit)
+        self.client.delete(q=q, commit=commit)
     reset = clear

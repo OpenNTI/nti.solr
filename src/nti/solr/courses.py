@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -12,7 +12,7 @@ logger = __import__('logging').getLogger(__name__)
 from zope import component
 from zope import interface
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseKeywords
@@ -39,7 +39,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, _=None):
         self.context = context
 
     def entry(self, context):
@@ -52,19 +52,19 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return to_unicode(getattr(self.entry(context), 'ntiid', None))
+        return text_(getattr(self.entry(context), 'ntiid', None))
 
 
 @interface.implementer(ITitleValue)
 @component.adapter(ICourseInstance)
 class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, _):
         return 'en'
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return to_unicode(getattr(self.entry(context), 'title', None))
+        return text_(getattr(self.entry(context), 'title', None))
 
 
 @component.adapter(ICourseInstance)
@@ -73,11 +73,11 @@ class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, _=None):
         return self.language
 
     def get_content(self, context):
-        return to_unicode(getattr(context, 'description', None))
+        return text_(getattr(context, 'description', None))
 
     def value(self, context=None):
         context = self.context if context is None else context
@@ -90,7 +90,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, _=None):
         return self.language
 
     def value(self, context=None):
@@ -107,7 +107,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 class CourseCatalogDocument(MetadataDocument):
     createDirectFieldProperties(ICourseCatalogDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.coursecatalogdocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.coursecatalogdocument'
 
 
 @component.adapter(ICourseInstance)
@@ -118,7 +118,7 @@ def _CourseCatalogDocumentCreator(obj, factory=CourseCatalogDocument):
 
 @component.adapter(ICourseInstance)
 @interface.implementer(ICoreCatalog)
-def _course_to_catalog(obj):
+def _course_to_catalog(_):
     return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
 
 
@@ -138,6 +138,6 @@ class CoursesCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        self.client.delete(
-            q=q, commit=self.auto_commit if commit is None else bool(commit))
+        commit=self.auto_commit if commit is None else bool(commit)
+        self.client.delete(q=q, commit=commit)
     reset = clear
