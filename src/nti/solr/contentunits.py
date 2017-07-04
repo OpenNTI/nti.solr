@@ -203,8 +203,8 @@ class ContentUnitsCatalog(MetadataCatalog):
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
         return term, fq, params
 
-    def clear(self, commit=None):
-        types = self.get_mime_types(self.name)
+    def clear(self, commit=None, mimeTypes=()):
+        types = mimeTypes or self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
         commit = self.auto_commit if commit is None else bool(commit)
         self.client.delete(q=q, commit=commit)
