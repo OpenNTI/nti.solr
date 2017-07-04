@@ -202,6 +202,10 @@
 				 provides=".interfaces.IIDValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />
 
+		<adapter factory=".contentunits._RenderableContentUnitIDValue"
+				 provides=".interfaces.IIDValue"
+				 for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
+
 		<adapter factory=".contentunits._DefaultContainerIdValue"
 				 provides=".interfaces.IContainersValue"
 				 for="nti.contentlibrary.interfaces.IContentUnit" />

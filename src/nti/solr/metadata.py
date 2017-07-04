@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -23,7 +23,7 @@ from zope.intid.interfaces import IIntIds
 
 from zope.mimetype.interfaces import IContentTypeAware
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.base.interfaces import ICreatedTime
 from nti.base.interfaces import ILastModified
@@ -124,7 +124,7 @@ class _DefaultCreatorValue(_BasicAttributeValue):
                 creator = getattr(creator, 'id', creator)
                 creator = creator.lower() if creator else None
             if isinstance(creator, six.string_types):
-                return to_unicode(creator)
+                return text_(creator)
         except TypeError:
             pass
         return None
@@ -144,7 +144,7 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
         context = self.context if context is None else context
         result = getattr(context, 'ntiid', None) \
               or getattr(context, 'NTIID', None)
-        return to_unicode(result) if result else None
+        return text_(result) if result else None
 
 
 @interface.implementer(IMimeTypeValue)
@@ -155,7 +155,7 @@ class _DefaultMimeTypeValue(_BasicAttributeValue):
         context = IContentTypeAware(context, context)
         result = getattr(context, 'mimeType', None) \
               or getattr(context, 'mime_type', None)
-        return to_unicode(result) if result else None
+        return text_(result) if result else None
 DefaultObjectMimeTypeValue = _DefaultMimeTypeValue  # export
 
 
@@ -197,7 +197,7 @@ class _DefaultIDValue(_BasicAttributeValue):
     @classmethod
     def _semt(cls, x):
         dt = SolrDatetime.convert(x)
-        return "%s%sS" % (dt.year, int(ceil(dt.month / 6.0)))
+        return u"%s%sS" % (dt.year, int(ceil(dt.month / 6.0)))
 
     @classmethod
     def createdTime(self, context):
@@ -225,14 +225,14 @@ class _DefaultIDValue(_BasicAttributeValue):
                                 (cls.mimeType, cls._type)):
             value = convert(source(context))
             result.append(value)
-        return '%s%s' % ('-'.join(result), cls.PREFIX_SEP)
+        return u'%s%s' % ('-'.join(result), cls.PREFIX_SEP)
 
     def value(self, context=None):
         context = self.context if context is None else context
         try:
             uid = component.getUtility(IIntIds).queryId(context)
-            uid = "%s%s" % (self.prefix(context), uid) if uid is not None else None
-            return to_unicode(uid) if uid is not None else None
+            uid = u"%s%s" % (self.prefix(context), uid) if uid is not None else None
+            return text_(uid) if uid is not None else None
         except (LookupError, KeyError):
             pass
         return None
@@ -245,7 +245,7 @@ class _DefaultIntIdValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         uid = component.getUtility(IIntIds).queryId(context)
-        return to_unicode(uid) if uid is not None else None
+        return text_(uid) if uid is not None else None
 DefaultObjectIntIdValue = _DefaultIntIdValue
 
 
@@ -263,7 +263,7 @@ class _DefaultContainersValue(_BasicAttributeValue):
                 and not ICommentPost.providedBy(context):
                 return None
             else:
-                return (to_unicode(cid),)
+                return (text_(cid),)
         return None
 
 
@@ -276,7 +276,7 @@ class _DefaultInReplyToValue(_BasicAttributeValue):
         if not isinstance(result, six.string_types):
             result = INTIIDValue(result, None)
             result = result.value() if result else None
-        return to_unicode(result.lower()) if result else None
+        return text_(result.lower()) if result else None
 
 
 @interface.implementer(ISharedWithValue)
@@ -286,7 +286,7 @@ class _DefaultSharedWithValue(_BasicAttributeValue):
         context = self.context if context is None else context
         sharedWith = getattr(context, "sharedWith", None)
         if sharedWith is not None:
-            sharedWith = tuple(to_unicode(x.lower()) for x in sharedWith)
+            sharedWith = tuple(text_(x.lower()) for x in sharedWith)
         return sharedWith
 DefaultSharedWithValue = _DefaultSharedWithValue
 
@@ -307,7 +307,6 @@ class _DefaultTaggedToValue(_BasicAttributeValue):
         raw_tags = context.tags
         if not raw_tags:
             return None
-
         username_tags = set()
         for raw_tag in raw_tags:
             if is_ntiid_of_types(raw_tag, self._ENTITY_TYPES):
@@ -336,21 +335,18 @@ class _DefaultIsTopLevelContentValue(_BasicAttributeValue):
         # NOTE: This is referenced by persistent objects, must stay
         if getattr(context, '__is_toplevel_content__', False):
             return True
-
         if IModeledContent.providedBy(context):
             if IFriendsList.providedBy(context) or IDevice.providedBy(context):
                 # These things are modeled content, for some reason
                 return False
             if IPersonalBlogEntryPost.providedBy(context):
                 return bool(context.sharedWith)
-
             # HeadlinePosts (which are IMutedInStream) are threadable,
             # but we don't consider them top-level. (At this writing,
             # we don't consider the containing Topic to be top-level
             # either, because it isn't IModeledContent.)
             elif IHeadlinePost.providedBy(context):
                 return False
-
             if IInspectableWeakThreadable.providedBy(context):
                 return bool(not context.isOrWasChildInThread())
             if IThreadable.providedBy(context):
@@ -383,7 +379,7 @@ class _DefaultContainerContextValue(_BasicAttributeValue):
         context = self.context if context is None else context
         container_context = IContainerContext(context, None)
         if container_context is not None:
-            return to_unicode(container_context.context_id)
+            return text_(container_context.context_id)
         return None
 
 
@@ -391,7 +387,7 @@ class _DefaultContainerContextValue(_BasicAttributeValue):
 class MetadataDocument(SchemaConfigured):
     createDirectFieldProperties(IMetadataDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.metadatadocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.metadatadocument'
 
 
 @interface.implementer(IMetadataDocument)

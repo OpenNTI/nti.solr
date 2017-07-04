@@ -32,8 +32,10 @@ from nti.solr import CONTENT_UNITS_CATALOG
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
+from nti.solr.interfaces import ICreatedTimeValue
 from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.lucene import lucene_escape
@@ -51,7 +53,7 @@ from nti.traversal.location import lineage
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, _=None):
         self.context = context
 
 
@@ -59,11 +61,11 @@ class _BasicAttributeValue(object):
 class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 
     @classmethod
-    def createdTime(cls, context):
+    def createdTime(cls, _):
         return ZERO_DATETIME
 
     @classmethod
-    def creator(cls, context):
+    def creator(cls, _):
         return SYSTEM_USER_NAME
 
     def value(self, context=None):
@@ -71,6 +73,22 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
         if not INoAutoIndex.providedBy(context):
             return self.prefix(context) + context.ntiid
         return None
+
+
+@component.adapter(IRenderableContentUnit)
+class _RenderableContentUnitIDValue(_DefaultContentUnitIDValue):
+
+    @classmethod
+    def createdTime(cls, context):
+        adapted = ICreatedTimeValue(context, None)
+        value = adapted.value() if adapted is not None else None
+        return value or ZERO_DATETIME
+
+    @classmethod
+    def creator(cls, context):
+        adapted = ICreatorValue(context, None)
+        value = adapted.value() if adapted is not None else None
+        return value or SYSTEM_USER_NAME
 
 
 @component.adapter(IContentUnit)
@@ -167,7 +185,7 @@ def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
 
 @component.adapter(IContentUnit)
 @interface.implementer(ICoreCatalog)
-def _contentunit_to_catalog(obj):
+def _contentunit_to_catalog(_):
     return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
 
 
@@ -177,13 +195,6 @@ class ContentUnitsCatalog(MetadataCatalog):
     document_interface = IContentUnitDocument
 
     return_fields = ('id', 'score', 'containerId')
-    
-    def index_doc(self, doc_id, value, *args, **kwargs):
-        super(ContentUnitsCatalog, self).index_doc(doc_id, value, *args, **kwargs)
-        path = getattr(value.key, 'absolute_path', '')
-        contents = value.read_contents()
-        logger.info("Indexed content (%s) (%s) (length=%s)",
-                    value.ntiid, path, len(contents or ''))
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
