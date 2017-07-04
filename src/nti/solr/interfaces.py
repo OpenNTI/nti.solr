@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -79,12 +79,6 @@ class IStringValue(IAttributeValue):
         """
 
 # metadata
-
-
-class IACEValue(IAttributeValue):
-    """
-    Adapter interface to get the ace values from a given object
-    """
 
 
 class IIntIdValue(IAttributeValue):
@@ -196,11 +190,6 @@ tagField(ICoreDocument['id'], True, IIDValue)
 
 class IMetadataDocument(ICoreDocument):
 
-    ace = IndexedIterable(title=u'The ACL aces',
-                          required=False,
-                          value_type=ValidTextLine(title=u"The ace"),
-                          min_length=0)
-
     site = ValidTextLine(title=u'The site', required=False)
 
     creator = ValidTextLine(title=u'The creator', required=False)
@@ -237,8 +226,6 @@ class IMetadataDocument(ICoreDocument):
 
     isUserGeneratedData = Bool(title=u'Is UGD object flag', required=False)
 
-tagField(IMetadataDocument['ace'], True, IACEValue,
-         multiValued=True, indexed=False)
 tagField(IMetadataDocument['site'], False, ISiteValue)
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)

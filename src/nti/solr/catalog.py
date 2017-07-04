@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -178,16 +178,16 @@ class CoreCatalog(object):
                    'Invalid field query'
             for k, v in value.items():
                 if k == 'any_of':
-                    fq[name] = "(%s)" % self._OR_.join(lucene_escape(x)
-                                                       for x in v)
+                    values = (lucene_escape(x) for x in v)
+                    fq[name] = "(%s)" % self._OR_.join(values)
                 elif k == 'all_of':
-                    fq[name] = "(%s)" % self._AND_.join(lucene_escape(x)
-                                                        for x in v)
+                    values = (lucene_escape(x) for x in v)
+                    fq[name] = "(%s)" % self._AND_.join(values)
                 elif k == 'between':
                     if IDatetime.providedBy(field):
                         v = [SolrDatetime.toUnicode(x) for x in v]
-                    fq[name] = "[%s TO %s]" % (lucene_escape(v[0]),
-                                               lucene_escape(v[1]))
+                    data = (lucene_escape(v[0]), lucene_escape(v[1]))
+                    fq[name] = "[%s TO %s]" % data
         return fq
 
     def _build_from_catalog_query(self, query):
@@ -257,11 +257,11 @@ class CoreCatalog(object):
             if isinstance(value, tuple) and len(value) == 2:  # range
                 if IDatetime.providedBy(field):
                     value = [SolrDatetime.toUnicode(x) for x in value]
-                fq.add_term(name, "[%s TO %s]" % (
-                    lucene_escape(value[0]), lucene_escape(value[1])))
+                data = (lucene_escape(value[0]), lucene_escape(value[1]))
+                fq.add_term(name, "[%s TO %s]" % data)
             elif isinstance(value, (list, tuple, set)) and value:  # OR list
-                fq.add_term(name, "(%s)" % self._OR_.join(lucene_escape(x)
-                                                          for x in value))
+                data = (lucene_escape(x) for x in value)
+                fq.add_term(name, "(%s)" % self._OR_.join(data))
             else:
                 fq.add_term(name, lucene_escape(str(value)))
         return fq
@@ -315,7 +315,7 @@ class CoreCatalog(object):
         return self.client.search(term, **params)
 
     def search(self, query, *args, **kwargs):
-        term, fq, params = self.build_from_search_query(query, **kwargs)
+        term, fq, params = self.build_from_search_query(query, *args, **kwargs)
         return self.execute(term, fq, params)
 
     # content search / ISearcher.suggest
