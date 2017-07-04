@@ -149,6 +149,6 @@ class _SOLRSearcher(object):
                 if events:  # may be None
                     results = self._get_suggestions(catalog, events)
             except Exception:
-                logger.exception(
-                    "Error while executing query %s on %s", query, catalog)
+                logger.exception("Error while executing query %s on %s",
+                                 query, catalog)
         return results
