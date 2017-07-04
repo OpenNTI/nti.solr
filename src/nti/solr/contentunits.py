@@ -176,6 +176,8 @@ class ContentUnitsCatalog(MetadataCatalog):
     name = CONTENT_UNITS_CATALOG
     document_interface = IContentUnitDocument
 
+    return_fields = ('id', 'score', 'containerId')
+    
     def index_doc(self, doc_id, value, *args, **kwargs):
         super(ContentUnitsCatalog, self).index_doc(doc_id, value, *args, **kwargs)
         path = getattr(value.key, 'absolute_path', '')
