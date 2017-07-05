@@ -2,9 +2,6 @@ import codecs
 from setuptools import setup, find_packages
 
 entry_points = {
-    'console_scripts': [
-        "nti_solr_indexer = nti.solr.scripts.constructor:main",
-    ],
 }
 
 TESTS_REQUIRE = [
