@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
 from zope import component
 from zope import interface
 
@@ -202,6 +204,22 @@ class ContentUnitsCatalog(MetadataCatalog):
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
         return term, fq, params
+
+    def filter(self, events, query=None):
+        packages = set(getattr(query, 'packages', None) or ())
+        for event in events or ():
+            containers = event.get('containerId')
+            if isinstance(containers, six.string_types):
+                containers = containers.split()
+            containers = set(containers or ())
+            if not packages or not containers:
+                yield event
+            if packages.intersection(containers):
+                yield event
+
+    def execute(self, term, fq, params, query=None):
+        events = MetadataCatalog.execute(self, term, fq, params, query)
+        return self.filter(events, query)
 
     def clear(self, commit=None, mimeTypes=()):
         types = mimeTypes or self.get_mime_types(self.name)
