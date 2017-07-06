@@ -218,8 +218,7 @@ class ContentUnitsCatalog(MetadataCatalog):
                 yield event
 
     def execute(self, term, fq, params, query=None):
-        events = MetadataCatalog.execute(self, term, fq, params, query)
-        return self.filter(events, query)
+        return MetadataCatalog.execute(self, term, fq, params, query)
 
     def clear(self, commit=None, mimeTypes=()):
         types = mimeTypes or self.get_mime_types(self.name)
