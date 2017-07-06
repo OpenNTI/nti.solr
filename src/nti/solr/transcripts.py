@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -16,7 +16,7 @@ from zope import interface
 
 from zope.event import notify
 
-from nti.base._compat import unicode_
+from nti.base._compat import text_
 
 from nti.contentindexing.media.interfaces import IMediaTranscriptEntry
 from nti.contentindexing.media.interfaces import IAudioTranscriptParser
@@ -138,7 +138,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
     def parse_content(cls, context, raw_content):
         transcript = cls.transcript(context, raw_content)
         if transcript is not None:
-            return unicode_(transcript.text)
+            return text_(transcript.text)
         return None
 
     @classmethod
@@ -222,7 +222,7 @@ class _TranscriptCueEndTime(_BasicAttributeValue):
 class TranscriptDocument(MetadataDocument):
     createDirectFieldProperties(ITranscriptDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.transcriptdocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.transcriptdocument'
 
 
 @component.adapter(INTITranscript)
@@ -245,7 +245,7 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
         for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
             doc = factory()
             doc.__dict__.update(source.__dict__) # update with source
-            doc.id = "%s%s%s" % (uid, POST_FIX_SEP, x)  # = is id postfix
+            doc.id = u"%s%s%s" % (uid, POST_FIX_SEP, x)  # = is id postfix
             doc.media = media  # ntiid of the media object
             doc.content_en = IContentValue(entry).value()
             doc.cue_end_time = ITranscriptCueEndTimeValue(entry).value()
@@ -261,7 +261,7 @@ class TranscriptsCatalog(MetadataCatalog):
     name = TRANSCRIPTS_CATALOG
     document_interface = ITranscriptDocument
 
-    return_fields = ('id', 'score', 'cue_end_time', 'cue_start_time')
+    return_fields = ('id', 'score', 'cue_end_time', 'cue_start_time', 'containerId')
 
     def index_doc(self, doc_id, value, commit=None, event=True):
         commit = self.auto_commit if commit is None else commit
@@ -285,13 +285,23 @@ class TranscriptsCatalog(MetadataCatalog):
             return obj
         return None
 
+    def filter(self, events, query=None):
+        packages = set(getattr(query, 'packages', None) or ())
+        for event in events or ():
+            containers = event.get('containerId')
+            if isinstance(containers, string_types):
+                containers = containers.split()
+            containers = set(containers or ())
+            if not packages or not containers:
+                yield event
+            if packages.intersection(containers):
+                yield event
+
+    def execute(self, term, fq, params, query=None):
+        return MetadataCatalog.execute(self, term, fq, params, query)
+
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
-        packs = getattr(query, 'packages', None) \
-             or getattr(query, 'package', None)
-        if 'containerId' not in fq and packs:
-            packs = packs.split() if isinstance(packs, string_types) else packs
-            fq.add_or('containerId', [lucene_escape(x) for x in packs])
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
