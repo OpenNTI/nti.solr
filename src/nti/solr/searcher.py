@@ -103,7 +103,10 @@ class _SOLRSearcher(object):
         try:
             events = catalog.execute(term, fq, params, query)
             for event in events or ():
-                hit = self._get_search_hit(catalog, event, events.highlighting)
+                if not catalog.filter(event, query):
+                    hit = self._get_search_hit(catalog, event, events.highlighting)
+                else:
+                    hit = None
                 # Always yield hit, even if None; it lets the caller batch
                 # properly. Not sure the best way to handle this; seems like
                 # we want to always return what SOLR gives us, even if None.

@@ -703,6 +703,14 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         :param batch_size the number of items needed from the searcher
         """
 
+    def filter(self, event, query=None):
+        """
+        Return True if the event needs to be filtered
+        
+        :param event solr event dict return 
+        :param param query a :class:`nti.contentsearch.interfaces.ISearcherQuery` object
+        """
+
     def execute(term, fq, params, query=None):
         """
         Execute a solr search

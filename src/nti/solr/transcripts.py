@@ -285,20 +285,18 @@ class TranscriptsCatalog(MetadataCatalog):
             return obj
         return None
 
-    def filter(self, events, query=None):
-        packages = set(getattr(query, 'packages', None) or ())
-        for event in events or ():
-            containers = event.get('containerId')
-            if isinstance(containers, string_types):
-                containers = containers.split()
-            containers = set(containers or ())
-            if not packages or not containers:
-                yield event
-            if packages.intersection(containers):
-                yield event
-
-    def execute(self, term, fq, params, query=None):
-        return MetadataCatalog.execute(self, term, fq, params, query)
+    def filter(self, event, query=None):
+        packages = getattr(query, '_v_packages', None)
+        packages = packages or set(getattr(query, 'packages', None) or ())
+        if not hasattr('packages', '_v_packages'):
+            query._v_packages = packages
+        containers = event.get('containerId')
+        if isinstance(containers, string_types):
+            containers = containers.split()
+        containers = set(containers or ())
+        return not bool(   not packages 
+                        or not containers 
+                        or packages.intersection(containers))
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
