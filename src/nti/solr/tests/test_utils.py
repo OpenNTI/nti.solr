@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 # disable: accessing protected members, too many methods
@@ -32,6 +32,6 @@ class TestUtils(unittest.TestCase):
         result = normalize_key(key)
         assert_that(result, is_('tag:nextthought.com,2011-10:sjohnson@nextthought.com-HTML-4950716093280901324.0'))
 
-        key = u'19701S-system-contentunit#tag:nextthought.com,2011-10:SYMMYS-HTML-Symmys_Text_Book.SecFiNTeaf_copy(1)'
+        key = '19701S-system-contentunit#tag:nextthought.com,2011-10:SYMMYS-HTML-Symmys_Text_Book.SecFiNTeaf_copy(1)'
         result = normalize_key(key)
         assert_that(result, is_('tag:nextthought.com,2011-10:SYMMYS-HTML-Symmys_Text_Book.SecFiNTeaf_copy(1)'))

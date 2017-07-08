@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 # disable: accessing protected members, too many methods
@@ -106,22 +106,22 @@ class TestAdpaters(unittest.TestCase):
         assert_that(value, is_('aizen'))
 
     def test_entities(self):
-        user = User("ichigo@bleach.org")
+        user = User(u"ichigo@bleach.org")
         prof = ICompleteUserProfile(user)
-        prof.alias = 'Ichigo'
-        prof.realname = 'Ichigo Kurosaki'
+        prof.alias = u'Ichigo'
+        prof.realname = u'Ichigo Kurosaki'
 
-        prof.twitter = str('https://twitter.com/ichigo')
+        prof.twitter = 'https://twitter.com/ichigo'
         prof.positions = [ProfessionalPosition(startYear=1998,
                                                endYear=2009,
-                                               companyName='RMG',
-                                               title='Developer',
-                                               description='Software Developer')]
+                                               companyName=u'NTI',
+                                               title=u'Developer',
+                                               description=u'Software Developer')]
         prof.education = [Education(startYear=1994,
                                     endYear=1997,
-                                    school='OU',
-                                    degree='Master',
-                                    description='Computer Science')]
+                                    school=u'OU',
+                                    degree=u'Master',
+                                    description=u'Computer Science')]
 
         value = ISocialURLValue(user).value()
         assert_that(value, is_(('https://twitter.com/ichigo',)))
@@ -130,7 +130,7 @@ class TestAdpaters(unittest.TestCase):
         assert_that(value, is_(('Developer',)))
 
         value = IProfessionalCompanyValue(user).value()
-        assert_that(value, is_(('RMG',)))
+        assert_that(value, is_(('NTI',)))
 
         value = IProfessionalDescriptionValue(user).value()
         assert_that(value, is_(('Software Developer',)))

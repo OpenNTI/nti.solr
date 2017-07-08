@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -13,7 +13,7 @@ import six
 
 from zope import interface
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.contentprocessing.content_utils import tokenize_content
 
@@ -52,7 +52,7 @@ def extract_key_words(content, max_words=10, lang='en',
         word = r.token
         terms = getattr(r, 'terms', ())
         word = terms[0] if terms else word  # pick the first word
-        word = to_unicode(word.lower())
+        word = text_(word.lower())
         if word not in blacklist:
             keywords.add(word)
             if len(keywords) >= max_words:
