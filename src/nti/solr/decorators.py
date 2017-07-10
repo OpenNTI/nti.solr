@@ -13,7 +13,7 @@ import re
 
 from zope import component
 
-from nti.base._compat import to_unicode
+from nti.base._compat import text_
 
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
@@ -47,7 +47,7 @@ class _SearchFragmentDecorator(object):
         wrapped in `tag` remain wrapped in `tag`.
         """
         # clean raw string and make it unicode
-        raw = re.sub(r'\\/', '/', to_unicode(raw))
+        raw = re.sub(r'\\/', '/', text_(raw))
         # clean anything that may come from a valid <html> tag
         m = re.match(r"(.*)(<html>.*)", raw)
         raw = m.groups()[1] if m else raw
