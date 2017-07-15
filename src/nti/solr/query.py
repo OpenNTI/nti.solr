@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -62,7 +62,7 @@ class QueryTerm(TermMixin):
     def to_solr(self, op=_OR_):
         if self.default:
             return self.default
-        return op.join('%s:(%s)' % (name, value)
+        return op.join(u'%s:(%s)' % (name, value)
                        for name, value in self._terms.items())
 
     def __iadd__(self, other):
@@ -91,10 +91,10 @@ class FilterQuery(TermMixin):
     def to_solr(self, op=_AND_):
         result = dict(self._terms)
         for name, values in self._or_list.items():
-            result[name] = "(%s)" % _OR_.join(values)
+            result[name] = u"(%s)" % _OR_.join(values)
         for name, values in self._and_list.items():
-            result[name] = "(%s)" % _AND_.join(values)
-        result = ['%s:%s' % (name, value) for name, value in result.items()]
+            result[name] = u"(%s)" % _AND_.join(values)
+        result = (u'%s:%s' % (name, value) for name, value in result.items())
         return op.join(result)
 
     def __contains__(self, *args, **kwargs):
@@ -137,7 +137,7 @@ class QueryParms(dict):
         for name in self.list_fields:
             values = result.get(name)
             if values:
-                result[name] = ','.join(values)
+                result[name] = u','.join(values)
         return result
 
 
@@ -146,7 +146,7 @@ def prepare_solr_query(term, fq, params, cache=False):
     fq_query = fq.to_solr()
     if fq_query:
         if not cache or 'fq' in params:
-            term = "((%s)%s(%s))" % (term, _AND_, fq_query)
+            term = u"((%s)%s(%s))" % (term, _AND_, fq_query)
         else:
             params['fq'] = fq_query
     return term, params
@@ -171,8 +171,8 @@ def prepare_solr_triplets(triplets):
 def hl_useFastVectorHighlighter(query):
     query = ISearchQuery(query)
     context = query.context or {}
-    vector =  context.get('hl.useFastVectorHighlighter') \
-        or context.get('useFastVectorHighlighter')
+    vector = context.get('hl.useFastVectorHighlighter') \
+          or context.get('useFastVectorHighlighter')
     return is_true(vector)
 
 
