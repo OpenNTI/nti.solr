@@ -93,6 +93,18 @@
 				for="nti.contenttypes.presentation.interfaces.INTITranscript
 				 	 ..interfaces.IUnindexObjectEvent"/>
 
+	<subscriber handler=".assets._index_transcript_added"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 zope.lifecycleevent.interfaces.IObjectAddedEvent"/>
+
+	<subscriber handler=".assets._index_transcript_modified"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler=".assets._index_transcript_removed"
+				for="nti.contenttypes.presentation.interfaces.INTITranscript
+				 	 zope.lifecycleevent.interfaces.IObjectRemovedEvent"/>
+
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
 		<subscriber handler=".courses._course_added"
