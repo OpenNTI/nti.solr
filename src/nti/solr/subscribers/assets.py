@@ -64,7 +64,7 @@ def _index_transcript_modified(obj, _):
 @component.adapter(INTITranscript, IObjectRemovedEvent)
 def _index_transcript_removed(obj, _):
     if IUserCreatedTranscript.providedBy(obj):
-        queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
+        queue_add(TRANSCRIPTS_QUEUE, single_unindex_job, obj)
 
 
 @component.adapter(IPresentationAsset, IAfterIdAddedEvent)
