@@ -22,6 +22,8 @@ from nti.base.interfaces import ICreated
 from nti.base.interfaces import ICreatedTime
 from nti.base.interfaces import ILastModified
 
+from nti.contenttypes.presentation.media import NTITranscript
+
 from nti.dataserver.users import User
 
 from nti.dataserver.users.interfaces import ICompleteUserProfile
@@ -29,6 +31,7 @@ from nti.dataserver.users.interfaces import ICompleteUserProfile
 from nti.dataserver.users.user_profile import Education
 from nti.dataserver.users.user_profile import ProfessionalPosition
 
+from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IMimeTypeValue
@@ -143,3 +146,10 @@ class TestAdpaters(unittest.TestCase):
 
         value = IEducationDescriptionValue(user).value()
         assert_that(value, is_(('Computer Science',)))
+        
+    def test_transcript(self):
+        transcript = NTITranscript()
+        transcript.ntiid = u"tag:nextthought.com,2011-10:NTI-NTITranscript-system_A10319BA.0"
+        assert_that(IIDValue(transcript).value(),
+                    is_('19701S-system-ntitranscript#tag:nextthought.com,2011-10:NTI-NTITranscript-system_A10319BA.0'))
+        
