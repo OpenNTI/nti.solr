@@ -46,7 +46,7 @@ def _index_transcript(obj, _):
 
 @component.adapter(INTITranscript, IUnindexObjectEvent)
 def _unindex_transcript(obj, _):
-    queue_add(TRANSCRIPTS_QUEUE, single_unindex_job, obj)
+    queue_remove(TRANSCRIPTS_QUEUE, single_unindex_job, obj)
 
    
 @component.adapter(INTITranscript, IObjectAddedEvent)
@@ -58,7 +58,7 @@ def _index_transcript_added(obj, _):
 @component.adapter(INTITranscript, IObjectModifiedEvent)
 def _index_transcript_modified(obj, _):
     if IUserCreatedTranscript.providedBy(obj):
-        queue_add(TRANSCRIPTS_QUEUE, single_index_job, obj)
+        queue_modified(TRANSCRIPTS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(INTITranscript, IObjectRemovedEvent)
