@@ -32,30 +32,30 @@ from nti.solr.interfaces import IUnindexObjectEvent
 
 
 @component.adapter(ICourseInstance, IIntIdAddedEvent)
-def _course_added(obj, event):
+def _course_added(obj, _):
     queue_add(COURSES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(ICourseInstance, IObjectModifiedEvent)
-def _course_modified(obj, event):
+def _course_modified(obj, _):
     queue_modified(COURSES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(ICourseInstance, ICourseInstanceImportedEvent)
-def _course_imported(obj, event):
+def _course_imported(obj, _):
     queue_modified(COURSES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(ICourseInstance, IIntIdRemovedEvent)
-def _course_removed(obj, event):
+def _course_removed(obj, _):
     queue_remove(COURSES_QUEUE, single_unindex_job, obj=obj)
 
 
 @component.adapter(ICourseInstance, IIndexObjectEvent)
-def _index_course(obj, event):
+def _index_course(obj, _):
     _course_added(obj, None)
 
 
 @component.adapter(ICourseInstance, IUnindexObjectEvent)
-def _unindex_course(obj, event):
-    queue_remove(obj, None)
+def _unindex_course(obj, _):
+    _course_removed(obj, None)
