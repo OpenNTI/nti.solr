@@ -46,7 +46,7 @@ class _StringValue(object):
     def __init__(self, context=None):
         self.context = context
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):

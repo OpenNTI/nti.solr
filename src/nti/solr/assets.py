@@ -52,7 +52,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 
@@ -88,7 +88,7 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
 @component.adapter(IPresentationAsset)
 class _DefaultAssetTitleValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -101,7 +101,7 @@ class _DefaultAssetTitleValue(_BasicAttributeValue):
 @component.adapter(IPresentationAsset)
 class _DefaultAssetCreatorValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -122,7 +122,7 @@ class _DefaultAssetContentValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def get_content(self, context):
@@ -139,7 +139,7 @@ class _DefaultAssetKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
@@ -177,7 +177,7 @@ def _AssetDocumentCreator(obj, factory=AssetDocument):
 
 @interface.implementer(ICoreCatalog)
 @component.adapter(IPresentationAsset)
-def _asset_to_catalog(obj):
+def _asset_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=ASSETS_CATALOG)
 
 
