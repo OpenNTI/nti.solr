@@ -9,6 +9,8 @@ __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
 
+import six
+
 from zope import component
 from zope import interface
 
@@ -282,6 +284,19 @@ class TranscriptsCatalog(MetadataCatalog):
             notify(ObjectUnindexedEvent(obj, doc_id))
             return obj
         return None
+
+    def filter(self, event, query=None):
+        packages = getattr(query, '_v_packages', None)
+        packages = packages or set(getattr(query, 'packages', None) or ())
+        if not hasattr('packages', '_v_packages'):
+            query._v_packages = packages
+        containers = event.get('containerId')
+        if isinstance(containers, six.string_types):
+            containers = containers.split()
+        containers = set(containers or ())
+        return not bool(   not packages 
+                        or not containers 
+                        or packages.intersection(containers))
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
