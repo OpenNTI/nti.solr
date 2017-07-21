@@ -22,6 +22,7 @@ from nti.solr import ENTITIES_QUEUE
 from nti.solr import USERDATA_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
+from nti.solr.interfaces import IUnindexObjectEvent
 
 from nti.solr.common import queue_add
 from nti.solr.common import add_to_queue
@@ -33,22 +34,27 @@ from nti.solr.common import single_unindex_job
 
 
 @component.adapter(IEntity, IIntIdAddedEvent)
-def _entity_added(obj, event=None):
+def _entity_added(obj, _):
     queue_add(ENTITIES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IEntity, IObjectModifiedEvent)
-def _entity_modified(obj, event):
+def _entity_modified(obj, _):
     queue_modified(ENTITIES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IEntity, IIntIdRemovedEvent)
-def _entity_removed(obj, event):
+def _entity_removed(obj, _):
     queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)
     add_to_queue(USERDATA_QUEUE, delete_user_data, obj=obj,
                  jid='userdata_removal', username=obj.username)
 
 
 @component.adapter(IEntity, IIndexObjectEvent)
-def _index_entity(obj, event):
+def _index_entity(obj, _):
     _entity_added(obj, None)
+
+
+@component.adapter(IEntity, IUnindexObjectEvent)
+def _unindex_entity(obj, _):
+    queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)

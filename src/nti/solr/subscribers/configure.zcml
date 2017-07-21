@@ -20,6 +20,10 @@
 					for="nti.dataserver.interfaces.IEntity
 					 	 ..interfaces.IIndexObjectEvent"/>
 
+	<subscriber handler=".entities._unindex_entity"
+					for="nti.dataserver.interfaces.IEntity
+					 	 ..interfaces.IUnindexObjectEvent"/>
+
 	<!-- Content Units -->
 	<configure zcml:condition="installed nti.contentlibrary">
 		<subscriber handler=".contentunits._contentunit_added"
