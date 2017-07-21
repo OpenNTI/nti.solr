@@ -66,7 +66,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 
@@ -190,7 +190,7 @@ class _TranscriptCueContentValue(_BasicAttributeValue):
 @component.adapter(IMediaTranscriptEntry)
 class _TranscriptCueMimeTypeValue(_BasicAttributeValue):
 
-    def value(self, context=None):
+    def value(self, unused_context=None):
         return NTI_TRANSCRIPT_MIME_TYPE
 
 
@@ -228,7 +228,7 @@ class TranscriptDocument(MetadataDocument):
 @component.adapter(INTITranscript)
 @component.adapter(IMediaTranscriptEntry)
 @interface.implementer(ICoreCatalog)
-def _transcript_to_catalog(obj):
+def _transcript_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=TRANSCRIPTS_CATALOG)
 
 
