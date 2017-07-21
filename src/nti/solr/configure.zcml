@@ -398,19 +398,17 @@
 			 provides=".interfaces.IMediaNTIIDValue"
 			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
-	<configure zcml:condition="installed nti.contentlibrary">
-		<adapter factory=".transcripts._TranscriptContentValue"
-				 provides=".interfaces.IContentValue"
-				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+	<adapter factory=".transcripts._TranscriptContentValue"
+			 provides=".interfaces.IContentValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
-		<adapter factory="._mixins._TranscriptSource"
-				 provides=".interfaces.ITranscriptSourceValue"
-				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
+	<adapter factory="._mixins._TranscriptSource"
+			 provides=".interfaces.ITranscriptSourceValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
-		<adapter factory="._mixins._TranscriptContainerIdValue"
-				 provides=".interfaces.IContainersValue"
-				 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-	</configure>
+	<adapter factory="._mixins._TranscriptContainerIdValue"
+			 provides=".interfaces.IContainersValue"
+			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
 
 	<adapter factory=".transcripts._TranscriptCueMimeTypeValue"
 			 provides=".interfaces.IMimeTypeValue"

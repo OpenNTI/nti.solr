@@ -17,8 +17,6 @@ from zope import interface
 
 from nti.base.interfaces import IFile
 
-from nti.contentlibrary.interfaces import IContentPackage
-
 from nti.contenttypes.presentation.interfaces import INTITranscript
 from nti.contenttypes.presentation.interfaces import IPresentationAsset
 
@@ -63,6 +61,16 @@ class _AssetContainerIdValue(object):
         return ntiids, result
 
     @classmethod
+    def _package_containers(cls, context):
+        try:
+            from nti.contentlibrary.interfaces import IContentPackage
+            containers, _ = cls._container_lineage(context, IContentPackage)
+            return containers
+        except ImportError:
+            pass
+        return ()
+
+    @classmethod
     def _course_containers(cls, context):
         try:
             from nti.contenttypes.courses.interfaces import ICourseInstance
@@ -79,7 +87,7 @@ class _AssetContainerIdValue(object):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        containers, _ = self._container_lineage(context, IContentPackage)
+        containers = self._package_containers(context)
         if not containers:  # check for courses
             containers = self._course_containers(context)
         return tuple(containers)
@@ -96,17 +104,21 @@ class _TranscriptSource(object):
         self.context = context
 
     def library_source(self, context, source):
-        raw_content = None
-        # is in content pkg ?
-        if      not source.startswith('/')  \
-            and '://' not in source:  # e.g. resources/...
-            package = find_interface(context, IContentPackage, strict=False)
-            if package is not None:
-                try:
-                    raw_content = package.read_contents_of_sibling_entry(source)
-                except Exception:
-                    logger.exception("Cannot read contents for %s", source)
-        return StringIO(raw_content) if raw_content else None
+        try:
+            from nti.contentlibrary.interfaces import IContentPackage
+            raw_content = None
+            # is in content pkg ?
+            if      not source.startswith('/')  \
+                and '://' not in source:  # e.g. resources/...
+                package = find_interface(context, IContentPackage, strict=False)
+                if package is not None:
+                    try:
+                        raw_content = package.read_contents_of_sibling_entry(source)
+                    except Exception:
+                        logger.exception("Cannot read contents for %s", source)
+            return StringIO(raw_content) if raw_content else None
+        except ImportError:
+            return None
 
     def attached_source(self, context, source):
         raw_content = source.data
@@ -125,8 +137,4 @@ class _TranscriptSource(object):
 @component.adapter(INTITranscript)
 @interface.implementer(IContainersValue)
 class _TranscriptContainerIdValue(_AssetContainerIdValue):
-
-    def value(self, context=None):
-        context = self.context if context is None else context
-        containers, _ = self._container_lineage(context, IContentPackage)
-        return tuple(containers)
+    pass
