@@ -32,13 +32,13 @@ from nti.solr.common import single_unindex_job
 
 
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
-def _userdata_added(obj, event=None):
+def _userdata_added(obj, _):
     queue_add(USERDATA_QUEUE, single_index_job, obj)
 userdata_added = _userdata_added
 
 
 @component.adapter(IUserGeneratedData, IObjectModifiedEvent)
-def _userdata_modified(obj, event=None):
+def _userdata_modified(obj, _):
     if IDeletedObjectPlaceholder.providedBy(obj):
         queue_remove(USERDATA_QUEUE, single_unindex_job, obj)
     else:
@@ -46,16 +46,16 @@ def _userdata_modified(obj, event=None):
 
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
-def _userdata_removed(obj, event):
+def _userdata_removed(obj, _):
     queue_remove(USERDATA_QUEUE, single_unindex_job, obj=obj)
 
 
 @component.adapter(IUserGeneratedData, IIndexObjectEvent)
-def _index_userdata(obj, event=None):
+def _index_userdata(obj, _):
     _userdata_added(obj, None)
 index_userdata = _index_userdata
 
 
 @component.adapter(IUserGeneratedData, IUnindexObjectEvent)
-def _unindex_userdata(obj, event):
+def _unindex_userdata(obj, _):
     _userdata_removed(obj, None)
