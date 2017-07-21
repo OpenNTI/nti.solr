@@ -35,7 +35,7 @@ from nti.traversal.location import lineage
 @interface.implementer(IContainersValue)
 class _AssetContainerIdValue(object):
 
-    def __init__(self, context, default=None):
+    def __init__(self, context, unused_default=None):
         self.context = context
 
     @classmethod
@@ -46,7 +46,7 @@ class _AssetContainerIdValue(object):
             return None
 
     @classmethod
-    def _container_lineage(cls, context, break_interface):
+    def _container_lineage(cls, context, break_interface=None):
         result = None
         ntiids = list()
         for item in lineage(context):
@@ -55,7 +55,7 @@ class _AssetContainerIdValue(object):
             ntiid = cls._get_ntiid(item)
             if ntiid:
                 ntiids.append(ntiid)
-            if break_interface.providedBy(item):
+            if break_interface is not None and break_interface.providedBy(item):
                 result = item
                 break
         return ntiids, result
@@ -100,7 +100,7 @@ class _AssetContainerIdValue(object):
 @interface.implementer(ITranscriptSourceValue)
 class _TranscriptSource(object):
 
-    def __init__(self, context, default=None):
+    def __init__(self, context, unused_default=None):
         self.context = context
 
     def library_source(self, context, source):
@@ -120,10 +120,10 @@ class _TranscriptSource(object):
         except ImportError:
             return None
 
-    def attached_source(self, context, source):
+    def attached_source(self, unused_context, source):
         raw_content = source.data
         return StringIO(raw_content) if raw_content else None
-     
+
     def value(self, context=None):
         context = self.context if context is None else context
         source = context.src
