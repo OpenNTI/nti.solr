@@ -84,7 +84,8 @@ def _asset_modified(obj, _):
         queue_modified(ASSETS_QUEUE, single_index_job, obj)
     if INTIMedia.providedBy(obj):
         for transcript in getattr(obj, 'transcripts', None) or ():
-            _index_transcript(transcript, None)
+            if not IUserCreatedTranscript.providedBy(transcript):
+                _index_transcript(transcript, None)
 
 
 @component.adapter(IPresentationAsset, IIntIdRemovedEvent)
