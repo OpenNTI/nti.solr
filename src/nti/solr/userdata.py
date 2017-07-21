@@ -4,7 +4,7 @@
 .. $Id$
 """
 
-from __future__ import print_function, unicode_literals, absolute_import, division
+from __future__ import print_function, absolute_import, division
 __docformat__ = "restructuredtext en"
 
 logger = __import__('logging').getLogger(__name__)
@@ -66,7 +66,7 @@ from nti.solr.utils import resolve_content_parts
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 
@@ -85,7 +85,7 @@ class _UserDataSharedWithValue(DefaultSharedWithValue):
 @interface.implementer(ITitleValue)
 class _DefaultUserDataTitleValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -99,7 +99,7 @@ class _DefaultUserDataContentValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def get_content(self, context):
@@ -130,7 +130,7 @@ class _HighlightContentValue(_DefaultUserDataContentValue):
 @component.adapter(IHeadlineTopic)
 class _HeadlineTopicIDValue(_BasicAttributeValue):
 
-    def value(self, context=None):
+    def value(self, unused_context=None):
         return None
 
 
@@ -138,7 +138,7 @@ class _HeadlineTopicIDValue(_BasicAttributeValue):
 @interface.implementer(ITitleValue)
 class _HeadlineTopicTitleValue(_BasicAttributeValue):
 
-    def value(self, context=None):
+    def value(self, unused_context=None):
         return None
 
 
@@ -146,7 +146,7 @@ class _HeadlineTopicTitleValue(_BasicAttributeValue):
 @interface.implementer(IContentValue)
 class _HeadlineTopicContentValue(_DefaultUserDataContentValue):
 
-    def value(self, context=None):
+    def value(self, unused_context=None):
         return None
 
 
@@ -156,7 +156,7 @@ class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
@@ -181,7 +181,7 @@ class _DefaultTagsValue(_BasicAttributeValue):
 @interface.implementer(ITagsValue)
 class _HeadlineTopicTagsValue(_BasicAttributeValue):
 
-    def value(self, context=None):
+    def value(self, unused_context=None):
         return None
 
 
@@ -221,7 +221,7 @@ class _DefaultRecipientsValue(_BasicAttributeValue):
 @interface.implementer(IExplanationValue)
 class _DefaultRedactionExplanationValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -233,7 +233,7 @@ class _DefaultRedactionExplanationValue(_BasicAttributeValue):
 @interface.implementer(IReplacementContentValue)
 class _DefaultReplacementContentValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -245,7 +245,7 @@ class _DefaultReplacementContentValue(_BasicAttributeValue):
 class UserDataDocument(MetadataDocument):
     createDirectFieldProperties(IUserDataDocument)
 
-    mimeType = mime_type = u'application/vnd.nextthought.solr.usergenerateddatadocument'
+    mimeType = mime_type = 'application/vnd.nextthought.solr.usergenerateddatadocument'
 
 
 @component.adapter(IUserGeneratedData)
@@ -256,7 +256,7 @@ def _UserDataDocumentCreator(obj, factory=UserDataDocument):
 
 @interface.implementer(ICoreCatalog)
 @component.adapter(IUserGeneratedData)
-def _userdata_to_catalog(obj):
+def _userdata_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
 
 
@@ -280,7 +280,7 @@ class UserDataCatalog(MetadataCatalog):
             # Memberships
             dynamic_memberships = user.usernames_of_dynamic_memberships or ()
             usernames = itertools.chain((user.username,), dynamic_memberships)
-            result = {x.lower() for x in usernames}
+            result = {x.lower() for x in usernames} # normalize
             # Groups we created
             for friends_list in user.friendsLists.values():
                 if IDynamicSharingTargetFriendsList.providedBy(friends_list):
