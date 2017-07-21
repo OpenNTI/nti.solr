@@ -49,47 +49,47 @@ isPublished = is_published
 
 
 @component.adapter(IContentUnit, IIntIdAddedEvent)
-def _contentunit_added(obj, event=None):
+def _contentunit_added(obj, _):
     if not IRenderableContentUnit.providedBy(obj):
         queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IContentUnit, IObjectModifiedEvent)
-def _contentunit_modified(obj, event):
+def _contentunit_modified(obj, _):
     if not IRenderableContentUnit.providedBy(obj):
         queue_modified(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IRenderableContentUnit, IContentPackageRenderedEvent)
-def _contentunit_rendered(obj, event):
+def _contentunit_rendered(obj, _):
     if is_published(obj):
         queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IContentUnit, IIntIdRemovedEvent)
-def _contentunit_removed(obj, event):
+def _contentunit_removed(obj, _):
     queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
 
 
 @component.adapter(IContentPackage, IContentPackageRemovedEvent)
-def _contentpacakge_removed(obj, event):
+def _contentpacakge_removed(obj, _):
     queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
 
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
-def _index_contentunit(obj, event):
+def _index_contentunit(obj, _):
     if not IContentPackage.providedBy(obj):
         _contentunit_added(obj, None)
 
 
 @component.adapter(IContentUnit, IUnindexObjectEvent)
-def _unindex_contentunit(obj, event):
+def _unindex_contentunit(obj, _):
     if not IContentPackage.providedBy(obj):
         _contentunit_removed(obj, None)
 
 
 @component.adapter(IContentPackage, IIndexObjectEvent)
-def _index_contentpackage(obj, event):
+def _index_contentpackage(obj, _):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
                      index_content_package,
@@ -102,7 +102,7 @@ def _index_contentpackage(obj, event):
 
 
 @component.adapter(IContentPackage, IUnindexObjectEvent)
-def _unindex_contentpackage(obj, event):
+def _unindex_contentpackage(obj, _):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
                      unindex_content_package,
