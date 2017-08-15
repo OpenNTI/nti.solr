@@ -100,6 +100,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
         keywords = ICourseKeywords(context, None)
         if keywords:
             result = keywords.keywords or ()
+            result = [text_(x) for x in result]
         return result
 
 
