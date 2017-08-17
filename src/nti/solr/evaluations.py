@@ -21,8 +21,6 @@ from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
-from nti.publishing.interfaces import IPublishable
-
 from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import EVALUATIONS_CATALOG
@@ -47,7 +45,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 
@@ -69,11 +67,7 @@ class _DefaultEvaluationIDValue(DefaultObjectIDValue):
     def value(self, context=None):
         context = self.context if context is None else context
         if IQEditableEvaluation.providedBy(context):
-            if     not IPublishable.providedBy(context) \
-                or context.is_published():
-                return super(_DefaultEvaluationIDValue, self).value(context)
-            else:
-                return None
+            return super(_DefaultEvaluationIDValue, self).value(context)
         return self.prefix(context) + context.ntiid
 
 
@@ -81,7 +75,7 @@ class _DefaultEvaluationIDValue(DefaultObjectIDValue):
 @interface.implementer(ITitleValue)
 class _DefaultEvaluationTitleValue(_BasicAttributeValue):
 
-    def lang(self, context):
+    def lang(self, unused_context):
         return 'en'
 
     def value(self, context=None):
@@ -105,7 +99,7 @@ class _DefaultEvaluationContentValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def get_content(self, context):
@@ -122,7 +116,7 @@ class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
