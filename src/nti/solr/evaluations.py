@@ -71,7 +71,7 @@ class _DefaultEvaluationIDValue(DefaultObjectIDValue):
         if IQEditableEvaluation.providedBy(context):
             if     not IPublishable.providedBy(context) \
                 or context.is_published():
-                return super(_DefaultEvaluationIDValue, self).creator(context)
+                return super(_DefaultEvaluationIDValue, self).value(context)
             else:
                 return None
         return self.prefix(context) + context.ntiid
