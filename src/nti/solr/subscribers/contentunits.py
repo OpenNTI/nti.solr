@@ -11,15 +11,12 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import component
 
-from zope.intid.interfaces import IIntIdAddedEvent
-from zope.intid.interfaces import IIntIdRemovedEvent
-
-from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 from nti.contentlibrary.interfaces import IRenderableContentUnit
+from nti.contentlibrary.interfaces import IContentPackageAddedEvent
 from nti.contentlibrary.interfaces import IContentPackageRemovedEvent
+from nti.contentlibrary.interfaces import IContentPackageReplacedEvent
 from nti.contentlibrary.interfaces import IContentPackageRenderedEvent
 
 from nti.publishing.interfaces import IPublishable
@@ -43,49 +40,72 @@ from nti.solr.contentunits import index_content_package_assets
 from nti.solr.contentunits import unindex_content_package_assets
 
 
+def _get_package_and_units(package):
+    result = []
+    def _recur(unit):
+        result.append(unit)
+        for child in unit.children:
+            _recur(child)
+    _recur(package)
+    return result
+
+
 def is_published(obj):
     return not IPublishable.providedBy(obj) or obj.is_published()
 isPublished = is_published
 
 
-@component.adapter(IContentUnit, IIntIdAddedEvent)
-def _contentunit_added(obj, _):
-    if not IRenderableContentUnit.providedBy(obj):
-        queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
+def _index_unit(unit):
+    queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj=unit)
 
 
-@component.adapter(IContentUnit, IObjectModifiedEvent)
-def _contentunit_modified(obj, _):
-    if not IRenderableContentUnit.providedBy(obj):
-        queue_modified(CONTENT_UNITS_QUEUE, single_index_job, obj)
+def _update_unit(unit):
+    queue_modified(CONTENT_UNITS_QUEUE, single_index_job, unit)
+
+
+def _unindex_unit(unit):
+    queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=unit)
 
 
 @component.adapter(IRenderableContentUnit, IContentPackageRenderedEvent)
 def _contentunit_rendered(obj, _):
     if is_published(obj):
-        queue_add(CONTENT_UNITS_QUEUE, single_index_job, obj)
+        for unit in _get_package_and_units(obj):
+            _index_unit(unit)
 
 
-@component.adapter(IContentUnit, IIntIdRemovedEvent)
-def _contentunit_removed(obj, _):
-    queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
+@component.adapter(IContentPackage, IContentPackageAddedEvent)
+def _contentpackage_added(obj, _):
+    for unit in _get_package_and_units(obj):
+        _index_unit(unit)
+
+
+@component.adapter(IContentUnit, IContentPackageReplacedEvent)
+def _contentpackage_replaced(new_package, event):
+    old_package = event.original
+    if old_package is not None:
+        for unit in _get_package_and_units(old_package):
+            _unindex_unit(unit)
+    for new_unit in _get_package_and_units(new_package):
+        _index_unit(new_unit)
 
 
 @component.adapter(IContentPackage, IContentPackageRemovedEvent)
-def _contentpacakge_removed(obj, _):
-    queue_remove(CONTENT_UNITS_QUEUE, single_unindex_job, obj=obj)
+def _contentpackage_removed(obj, _):
+    for unit in _get_package_and_units(obj):
+        _unindex_unit(unit)
 
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
 def _index_contentunit(obj, _):
     if not IContentPackage.providedBy(obj):
-        _contentunit_added(obj, None)
+        _index_unit(obj)
 
 
 @component.adapter(IContentUnit, IUnindexObjectEvent)
 def _unindex_contentunit(obj, _):
     if not IContentPackage.providedBy(obj):
-        _contentunit_removed(obj, None)
+        _unindex_unit(obj)
 
 
 @component.adapter(IContentPackage, IIndexObjectEvent)

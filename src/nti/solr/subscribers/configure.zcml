@@ -26,38 +26,34 @@
 
 	<!-- Content Units -->
 	<configure zcml:condition="installed nti.contentlibrary">
-		<subscriber handler=".contentunits._contentunit_added"
-					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.intid.interfaces.IIntIdAddedEvent" />
-	
-		<subscriber handler=".contentunits._contentunit_removed"
-					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.intid.interfaces.IIntIdRemovedEvent" />
-	
-		<subscriber handler=".contentunits._contentpacakge_removed"
+		<subscriber handler=".contentunits._contentpackage_added"
+                    for="nti.contentlibrary.interfaces.IContentPackage
+                         nti.contentlibrary.interfaces.IContentPackageAddedEvent" />
+
+		<subscriber handler=".contentunits._contentpackage_removed"
 					for="nti.contentlibrary.interfaces.IContentPackage
 						 nti.contentlibrary.interfaces.IContentPackageRemovedEvent" />
 
-		<subscriber handler=".contentunits._contentunit_modified"
-					for="nti.contentlibrary.interfaces.IContentUnit
-						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
-	
+		<subscriber handler=".contentunits._contentpackage_replaced"
+                    for="nti.contentlibrary.interfaces.IContentPackage
+                         nti.contentlibrary.interfaces.IContentPackageReplacedEvent" />
+
 		<subscriber handler=".contentunits._contentunit_rendered"
 					for="nti.contentlibrary.interfaces.IRenderableContentUnit
 						 nti.contentlibrary.interfaces.IContentPackageRenderedEvent" />
-						 
+
 		<subscriber handler=".contentunits._index_contentunit"
 					for="nti.contentlibrary.interfaces.IContentUnit
 						 ..interfaces.IIndexObjectEvent" />
-	
+
 		<subscriber handler=".contentunits._unindex_contentunit"
 					for="nti.contentlibrary.interfaces.IContentUnit
 						 ..interfaces.IUnindexObjectEvent" />
-	
+
 		<subscriber handler=".contentunits._index_contentpackage"
 					for="nti.contentlibrary.interfaces.IContentPackage
 						 ..interfaces.IIndexObjectEvent" />
-	
+
 		<subscriber handler=".contentunits._unindex_contentpackage"
 					for="nti.contentlibrary.interfaces.IContentPackage
 						 ..interfaces.IUnindexObjectEvent" />
@@ -79,7 +75,7 @@
 	<subscriber handler=".assets._asset_moved"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 nti.contenttypes.presentation.interfaces.IPresentationAssetMovedEvent"/>
-					 
+
 	<subscriber handler=".assets._index_asset"
 				for="nti.contenttypes.presentation.interfaces.IPresentationAsset
 					 ..interfaces.IIndexObjectEvent"/>
@@ -114,7 +110,7 @@
 		<subscriber handler=".courses._course_added"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
 						 zope.intid.interfaces.IIntIdAddedEvent" />
-						 
+
 		<subscriber handler=".courses._course_imported"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
 						 nti.contenttypes.courses.interfaces.ICourseInstanceImportedEvent" />

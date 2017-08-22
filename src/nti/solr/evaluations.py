@@ -68,6 +68,7 @@ class _DefaultEvaluationIDValue(DefaultObjectIDValue):
         context = self.context if context is None else context
         if IQEditableEvaluation.providedBy(context):
             return super(_DefaultEvaluationIDValue, self).value(context)
+        # Have to use ntiid for content-backed/syncable items.
         return self.prefix(context) + context.ntiid
 
 
