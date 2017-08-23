@@ -15,6 +15,7 @@ from zope.security.management import queryInteraction
 
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
+from nti.contentlibrary.interfaces import IGlobalContentPackage 
 from nti.contentlibrary.interfaces import IRenderableContentUnit
 from nti.contentlibrary.interfaces import IContentPackageAddedEvent
 from nti.contentlibrary.interfaces import IContentPackageRemovedEvent
@@ -78,7 +79,7 @@ def _contentunit_rendered(obj, _):
 
 @component.adapter(IContentPackage, IContentPackageAddedEvent)
 def _contentpackage_added(obj, _):
-    if queryInteraction() is None:
+    if queryInteraction() is None and IGlobalContentPackage.providedBy(obj):
         return
     for unit in _get_package_and_units(obj):
         _index_unit(unit)
@@ -96,7 +97,7 @@ def _contentpackage_replaced(new_package, event):
 
 @component.adapter(IContentPackage, IContentPackageRemovedEvent)
 def _contentpackage_removed(obj, _):
-    if queryInteraction() is None:
+    if queryInteraction() is None and IGlobalContentPackage.providedBy(obj):
         return
     for unit in _get_package_and_units(obj):
         _unindex_unit(unit)
