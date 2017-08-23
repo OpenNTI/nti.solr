@@ -76,7 +76,7 @@ class _SearchHitDecorator(object):
 
     __metaclass__ = SingletonDecorator
 
-    def decorateExternalObject(self, original, external):
+    def decorateExternalObject(self, unused_original, external):
         containers = external.get('Containers') or ()
         if CONTAINER_ID not in external and len(containers) == 1:
             external[CONTAINER_ID] = containers[0]

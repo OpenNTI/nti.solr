@@ -39,7 +39,7 @@ from nti.solr.utils import document_creator
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, _=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
     def entry(self, context):
@@ -59,7 +59,7 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
 @component.adapter(ICourseInstance)
 class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 
-    def lang(self, _):
+    def lang(self, unused_context=None):
         return 'en'
 
     def value(self, context=None):
@@ -73,7 +73,7 @@ class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, _=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def get_content(self, context):
@@ -90,7 +90,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, _=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
@@ -119,7 +119,7 @@ def _CourseCatalogDocumentCreator(obj, factory=CourseCatalogDocument):
 
 @component.adapter(ICourseInstance)
 @interface.implementer(ICoreCatalog)
-def _course_to_catalog(_):
+def _course_to_catalog(unused_context):
     return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
 
 

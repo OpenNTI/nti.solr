@@ -111,7 +111,7 @@ def get_job_site(job_site_name=None):
     return job_site
 
 
-def single_index_job(source, site=None, **kwargs):
+def single_index_job(source, site=None, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         obj = object_finder(source)
@@ -120,7 +120,7 @@ def single_index_job(source, site=None, **kwargs):
             return catalog.index_doc(source, obj)
 
 
-def single_unindex_job(source, core, site=None, **kwargs):
+def single_unindex_job(source, core, site=None, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         catalog = component.queryUtility(ICoreCatalog, name=core)
@@ -150,13 +150,13 @@ def process_asset(obj, index=True, commit=False):
     return result
 
 
-def index_asset(source, site=None, commit=True, *args, **kwargs):
+def index_asset(source, site=None, commit=True, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         process_asset(finder(source), index=True, commit=commit)
 
 
-def unindex_asset(source, site=None, commit=True, *args, **kwargs):
+def unindex_asset(source, site=None, commit=True, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         process_asset(finder(source), index=False, commit=commit)
@@ -164,7 +164,7 @@ def unindex_asset(source, site=None, commit=True, *args, **kwargs):
 # entities
 
 
-def delete_user_data(username, *args, **kwargs):
+def delete_user_data(username, *unused_args, **unused_kwargs):
     catalog = component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
     catalog.delete(q="creator:%s" %
                    lucene_escape(username.lower()), commit=True)

@@ -55,7 +55,7 @@ from nti.traversal.location import lineage
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, _=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 
@@ -63,11 +63,11 @@ class _BasicAttributeValue(object):
 class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 
     @classmethod
-    def createdTime(cls, _):
+    def createdTime(cls, unused_context=None):
         return ZERO_DATETIME
 
     @classmethod
-    def creator(cls, _):
+    def creator(cls, unused_context=None):
         return SYSTEM_USER_NAME
 
     def value(self, context=None):
@@ -112,7 +112,7 @@ class _DefaultContainerIdValue(_BasicAttributeValue):
 @interface.implementer(ITitleValue)
 class _DefaultTitleValue(_BasicAttributeValue):
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return 'en'
 
     def value(self, context=None):
@@ -133,7 +133,7 @@ class _DefaultContentUnitContentValue(_BasicAttributeValue):
             return sanitize_user_html(text_(context.read_contents()))
         return None
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
@@ -157,7 +157,7 @@ class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
 
     language = 'en'
 
-    def lang(self, context=None):
+    def lang(self, unused_context=None):
         return self.language
 
     def value(self, context=None):
@@ -251,7 +251,7 @@ def process_content_package(obj, index=True):
     recur(obj)
 
 
-def index_content_package(source, site=None, *args, **kwargs):
+def index_content_package(source, site=None, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         obj = finder(source)
@@ -261,7 +261,7 @@ def index_content_package(source, site=None, *args, **kwargs):
             logger.info("Content package indexing %s completed", obj.ntiid)
 
 
-def unindex_content_package(source, site=None, **kwargs):
+def unindex_content_package(source, site=None, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         obj = finder(source)
@@ -284,7 +284,7 @@ def process_content_package_assets(obj, index=True):
         process_asset(obj, index=index, commit=False)
 
 
-def index_content_package_assets(source, site=None, *args, **kwargs):
+def index_content_package_assets(source, site=None, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         obj = finder(source)
@@ -296,7 +296,7 @@ def index_content_package_assets(source, site=None, *args, **kwargs):
                         obj.ntiid)
 
 
-def unindex_content_package_assets(source, site=None, *args, **kwargs):
+def unindex_content_package_assets(source, site=None, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
         obj = finder(source)
