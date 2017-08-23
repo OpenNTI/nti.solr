@@ -11,6 +11,8 @@ logger = __import__('logging').getLogger(__name__)
 
 from zope import component
 
+from zope.security.management import queryInteraction
+
 from nti.contentlibrary.interfaces import IContentUnit
 from nti.contentlibrary.interfaces import IContentPackage
 from nti.contentlibrary.interfaces import IRenderableContentUnit
@@ -76,6 +78,8 @@ def _contentunit_rendered(obj, _):
 
 @component.adapter(IContentPackage, IContentPackageAddedEvent)
 def _contentpackage_added(obj, _):
+    if queryInteraction() is None:
+        return
     for unit in _get_package_and_units(obj):
         _index_unit(unit)
 
@@ -92,6 +96,8 @@ def _contentpackage_replaced(new_package, event):
 
 @component.adapter(IContentPackage, IContentPackageRemovedEvent)
 def _contentpackage_removed(obj, _):
+    if queryInteraction() is None:
+        return
     for unit in _get_package_and_units(obj):
         _unindex_unit(unit)
 
