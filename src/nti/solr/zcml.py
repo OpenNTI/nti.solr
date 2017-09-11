@@ -65,7 +65,7 @@ class ImmediateQueueRunner(object):
 @interface.implementer(ISOLRQueueFactory)
 class _ImmediateQueueFactory(object):
 
-    def get_queue(self, name):
+    def get_queue(self, *unused_args, **unused_kwargs):
         return ImmediateQueueRunner()
 
 
