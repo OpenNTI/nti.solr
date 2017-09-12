@@ -5,17 +5,16 @@ entry_points = {
 }
 
 TESTS_REQUIRE = [
-    'fudge',
-    'nose2[coverage_plugin]',
-    'nti.testing',
     'pyhamcrest',
     'z3c.baseregistry',
     'zope.testrunner',
 ]
 
+
 def _read(fname):
     with codecs.open(fname, encoding='utf-8') as f:
         return f.read()
+
 
 setup(
     name='nti.solr',
@@ -23,20 +22,18 @@ setup(
     author='Jason Madden',
     author_email='jason@nextthought.com',
     description="NTI solr",
-    long_description=_read('README.rst'),
+    long_description=(_read('README.rst') + '\n\n' + _read("CHANGES.rst")),
     license='Apache',
-    keywords='solr',
+    keywords='solr index',
     classifiers=[
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
     ],
+    url="https://github.com/NextThought/nti.solr",
     zip_safe=True,
     packages=find_packages('src'),
     package_dir={'': 'src'},

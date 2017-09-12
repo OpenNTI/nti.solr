@@ -7,5 +7,3 @@
 
 .. image:: https://coveralls.io/repos/github/NextThought/nti.solr/badge.svg?branch=master
     :target: https://coveralls.io/github/NextThought/nti.solr?branch=master
-
-For complete details and the changelog, see the `documentation <http://ntisolr.readthedocs.io/>`_.
