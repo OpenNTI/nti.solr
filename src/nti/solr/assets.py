@@ -23,9 +23,9 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
 
-from nti.externalization.externalization import to_external_ntiid_oid
-
 from nti.ntiids.ntiids import is_ntiid_of_type
+
+from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 

@@ -49,8 +49,6 @@ from nti.dataserver.interfaces import IInspectableWeakThreadable
 from nti.dataserver.interfaces import IContained as INTIContained
 from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
-from nti.externalization.externalization import to_external_ntiid_oid
-
 from nti.ntiids.ntiids import TYPE_OID
 from nti.ntiids.ntiids import TYPE_UUID
 from nti.ntiids.ntiids import TYPE_INTID
@@ -59,6 +57,8 @@ from nti.ntiids.ntiids import TYPE_NAMED_ENTITY
 
 from nti.ntiids.ntiids import is_ntiid_of_types
 from nti.ntiids.ntiids import find_object_with_ntiid
+
+from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.schema.field import SchemaConfigured
 from nti.schema.fieldproperty import createDirectFieldProperties

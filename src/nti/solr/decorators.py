@@ -24,9 +24,9 @@ from nti.contentsearch.interfaces import IUserGeneratedDataSearchHit
 
 from nti.externalization.interfaces import StandardExternalFields
 
-from nti.externalization.oids import to_external_ntiid_oid
-
 from nti.externalization.singleton import SingletonDecorator
+
+from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.solr.query import hl_removeEncodedHTML
 
