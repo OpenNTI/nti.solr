@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import re
 
@@ -24,7 +23,7 @@ from nti.contentsearch.interfaces import IUserGeneratedDataSearchHit
 
 from nti.externalization.interfaces import StandardExternalFields
 
-from nti.externalization.singleton import SingletonDecorator
+from nti.externalization.singleton import Singleton
 
 from nti.ntiids.oids import to_external_ntiid_oid
 
@@ -34,11 +33,11 @@ ID = StandardExternalFields.ID
 NTIID = StandardExternalFields.NTIID
 CONTAINER_ID = StandardExternalFields.CONTAINER_ID
 
+logger = __import__('logging').getLogger(__name__)
+
 
 @component.adapter(ISearchFragment)
-class _SearchFragmentDecorator(object):
-
-    __metaclass__ = SingletonDecorator
+class _SearchFragmentDecorator(Singleton):
 
     @classmethod
     def sanitize(cls, raw, tag='hit'):
@@ -72,9 +71,7 @@ class _SearchFragmentDecorator(object):
 
 
 @component.adapter(ISearchHit)
-class _SearchHitDecorator(object):
-
-    __metaclass__ = SingletonDecorator
+class _SearchHitDecorator(Singleton):
 
     def decorateExternalObject(self, unused_original, external):
         containers = external.get('Containers') or ()
@@ -84,9 +81,7 @@ class _SearchHitDecorator(object):
 
 
 @component.adapter(IUserGeneratedDataSearchHit)
-class _UGDSearchHitDecorator(object):
-
-    __metaclass__ = SingletonDecorator
+class _UGDSearchHitDecorator(Singleton):
 
     def decorateExternalObject(self, original, external):
         target = original.Target
