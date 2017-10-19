@@ -552,7 +552,8 @@ class IUserDataDocument(IMetadataDocument):
 
 tagField(IUserDataDocument['channel'], False, IChannelValue)
 tagField(IUserDataDocument['recipients'], True, IRecipientsValue)
-tagField(IUserDataDocument['tags'], True, ITagsValue, provided=ITextField)
+tagField(IUserDataDocument['tags'], True, ITagsValue, True,
+         provided=ITextField)
 tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
 tagField(IUserDataDocument['content_en'], True,
          IContentValue, provided=(ITextField, ISuggestField))
@@ -613,14 +614,14 @@ class ICourseCatalogDocument(IMetadataDocument):
                            min_length=0)
 
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
-tagField(ICourseCatalogDocument['title_en'],
-         True, ITitleValue, provided=ITextField)
+tagField(ICourseCatalogDocument['title_en'], True, 
+         ITitleValue, provided=ITextField)
 tagField(ICourseCatalogDocument['content_en'], True, IContentValue,
          provided=(ITextField, ISuggestField))
 tagField(ICourseCatalogDocument['keywords_en'], False, 
          IKeywordsValue, True, 'text_lower',
          provided=ITextField)
-tagField(ICourseCatalogDocument['tags'], True, ITagsValue, 
+tagField(ICourseCatalogDocument['tags'], True, ITagsValue, True,
          provided=ITextField)
 
 
