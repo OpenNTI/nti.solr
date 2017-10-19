@@ -5,8 +5,8 @@ entry_points = {
 }
 
 TESTS_REQUIRE = [
-    'pyhamcrest',
-    'z3c.baseregistry',
+    'nti.testing',
+    'zope.dottedname',
     'zope.testrunner',
 ]
 
@@ -32,6 +32,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
     ],
     url="https://github.com/NextThought/nti.solr",
     zip_safe=True,
@@ -43,21 +44,35 @@ setup(
     install_requires=[
         'setuptools',
         'BTrees',
+        'gevent',
+        'isodate',
         'nti.async',
         'nti.base',
+        'nti.common',
+        'nti.contentfragments',
         'nti.contentindexing',
         'nti.contentprocessing',
         'nti.contenttypes.presentation',
         'nti.coremetadata',
         'nti.externalization',
+        'nti.ntiids',
+        'nti.property',
         'nti.publishing',
+        'nti.schema',
+        'nti.site',
+        'nti.traversal',
+        'nti.zope_catalog',
         'pyparsing',
         'pysolr',
+        'pytz',
         'six',
         'z3c.autoinclude',
         'zc.intid',
+        'zope.cachedescriptors',
         'zope.component',
+        'zope.configuration',
         'zope.event',
+        'zope.index',
         'zope.interface',
         'zope.intid',
         'zope.lifecycleevent',
@@ -65,8 +80,13 @@ setup(
         'zope.mimetype',
         'zope.schema',
     ],
-    extras_require={
+     extras_require={
         'test': TESTS_REQUIRE,
+        'docs': [
+            'Sphinx',
+            'repoze.sphinx.autointerface',
+            'sphinx_rtd_theme',
+        ],
     },
     entry_points=entry_points,
 )
