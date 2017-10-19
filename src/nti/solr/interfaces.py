@@ -606,14 +606,21 @@ class ICourseCatalogDocument(IMetadataDocument):
                                   required=False,
                                   value_type=ValidTextLine(title=u"The keyword"),
                                   min_length=0)
+    
+    tags = IndexedIterable(title=u'The tags',
+                           required=False,
+                           value_type=ValidTextLine(title=u"The tag"),
+                           min_length=0)
 
 tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
 tagField(ICourseCatalogDocument['title_en'],
          True, ITitleValue, provided=ITextField)
 tagField(ICourseCatalogDocument['content_en'], True, IContentValue,
          provided=(ITextField, ISuggestField))
-tagField(ICourseCatalogDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
+tagField(ICourseCatalogDocument['keywords_en'], False, 
+         IKeywordsValue, True, 'text_lower',
+         provided=ITextField)
+tagField(ICourseCatalogDocument['tags'], True, ITagsValue, 
          provided=ITextField)
 
 

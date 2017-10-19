@@ -108,7 +108,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 
 @interface.implementer(ITagsValue)
 @component.adapter(ICourseInstance)
-class _DefaultCourseTagsValue(_BasicAttributeValue):
+class _DefaultCourseCatalogTagsValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
