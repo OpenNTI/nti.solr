@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 from zope import component
 from zope import interface
@@ -22,6 +21,7 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr import COURSES_CATALOG
 
+from nti.solr.interfaces import ITagsValue
 from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
@@ -35,6 +35,8 @@ from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
+
+logger = __import__('logging').getLogger(__name__)
 
 
 class _BasicAttributeValue(object):
@@ -102,6 +104,16 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
             result = keywords.keywords or ()
             result = [text_(x) for x in result]
         return result
+
+
+@interface.implementer(ITagsValue)
+@component.adapter(ICourseInstance)
+class _DefaultCourseTagsValue(_BasicAttributeValue):
+
+    def value(self, context=None):
+        context = self.context if context is None else context
+        entry = ICourseCatalogEntry(context, None)
+        return entry.tags or () if entry is not None else ()
 
 
 @interface.implementer(ICourseCatalogDocument)

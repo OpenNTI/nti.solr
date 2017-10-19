@@ -321,6 +321,10 @@
 				 provides=".interfaces.INTIIDValue"
 				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
 
+		<adapter factory=".courses._DefaultCourseTagsValue"
+			 	 provides=".interfaces.ITagsValue"
+			 	 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
+			 
 		<adapter factory=".courses._CourseCatalogDocumentCreator"
 				 provides=".interfaces.ICourseCatalogDocument"
 				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
@@ -383,6 +387,7 @@
 				 for=".interfaces.IEvaluationDocument"
 				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 				 name="solr" />
+
 	</configure>
 
 	<!-- Transcripts -->
