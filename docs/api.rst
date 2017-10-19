@@ -22,8 +22,8 @@ Common
 
 .. automodule:: nti.solr.common
 
-Contentunits
-============
+Content Units
+=============
 
 .. automodule:: nti.solr.contentunits
 
