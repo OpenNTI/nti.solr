@@ -4,16 +4,16 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import six
-import pytz
 import numbers
 from datetime import datetime
 from dateutil.parser import parse
+
+import pytz
 
 from zope import interface
 
@@ -25,6 +25,8 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ConstraintNotSatisfied
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+
+logger = __import__('logging').getLogger(__name__)
 
 
 @interface.implementer(IDatetime, IFromUnicode)

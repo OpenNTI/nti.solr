@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 # disable: accessing protected members, too many methods
 # pylint: disable=W0212,R0904
@@ -24,9 +25,9 @@ from nti.base.interfaces import ILastModified
 
 from nti.contenttypes.presentation.media import NTITranscript
 
-from nti.dataserver.users import User
-
 from nti.dataserver.users.interfaces import ICompleteUserProfile
+
+from nti.dataserver.users.users import User
 
 from nti.dataserver.users.user_profile import Education
 from nti.dataserver.users.user_profile import ProfessionalPosition

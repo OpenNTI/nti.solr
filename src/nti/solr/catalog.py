@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import six
 from collections import Mapping
@@ -67,6 +66,8 @@ from nti.solr.utils import object_finder
 from nti.solr.utils import mimeTypeRegistry
 
 from nti.zope_catalog.catalog import ResultSet
+
+logger = __import__('logging').getLogger(__name__)
 
 
 @EqHash('name')
@@ -313,7 +314,7 @@ class CoreCatalog(object):
     def _prepare_solr_query(self, term, fq, params):
         return prepare_solr_query(term, fq, params)
 
-    def filter(self, event, query=None):
+    def filter(self, unused_event, unused_query=None):
         return False
 
     def execute(self, term, fq, params, unused_query=None):
@@ -348,7 +349,8 @@ class CoreCatalog(object):
             params['rows'] = str(batch_size)
         return params
 
-    def suggest(self, query, fields=None, batch_start=None, batch_size=None, *args, **kwargs):
+    def suggest(self, query, fields=None, batch_start=None, batch_size=None, 
+                *unused_args, **unused_kwargs):
         suggest_fields = fields or self.suggest_fields
         params = self._prepare_solr_suggest(query,
                                             batch_start=batch_start,

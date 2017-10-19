@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import copy
 
@@ -32,6 +31,8 @@ from nti.solr.interfaces import ISOLRSearcher
 
 from nti.solr.utils import normalize_field
 from nti.solr.utils import mimeTypeRegistry
+
+logger = __import__('logging').getLogger(__name__)
 
 
 @component.adapter(IUser)
@@ -116,7 +117,8 @@ class _SOLRSearcher(object):
         except Exception:
             logger.exception("Error while executing query %s", term)
 
-    def search(self, query, batch_start=None, batch_size=None, *args, **kwargs):
+    def search(self, query, batch_start=None, batch_size=None, 
+               *unused_args, **unused_kwargs):
         queries = {}
         query = ISearchQuery(query)
         catalogs = self.query_search_catalogs(query)
@@ -140,7 +142,8 @@ class _SOLRSearcher(object):
             result.update(x for x, _ in hits)
         return result
 
-    def suggest(self, query, batch_start=None, batch_size=None, *args, **kwargs):
+    def suggest(self, query, batch_start=None, batch_size=None, 
+                *unused_args, **unused_kwargs):
         query = ISearchQuery(query)
         clone = self._query_clone(query)
         results = ()

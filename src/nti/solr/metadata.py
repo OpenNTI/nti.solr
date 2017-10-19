@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import re
 import six
@@ -95,10 +94,12 @@ from nti.traversal.traversal import find_interface
 
 ZERO_DATETIME = datetime.utcfromtimestamp(0)
 
+logger = __import__('logging').getLogger(__name__)
+
 
 class _BasicAttributeValue(object):
 
-    def __init__(self, context=None, default=None):
+    def __init__(self, context=None, unused_default=None):
         self.context = context
 
 

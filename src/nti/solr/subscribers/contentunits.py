@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 from zope import component
 
@@ -41,6 +40,8 @@ from nti.solr.contentunits import index_content_package
 from nti.solr.contentunits import unindex_content_package
 from nti.solr.contentunits import index_content_package_assets
 from nti.solr.contentunits import unindex_content_package_assets
+
+logger = __import__('logging').getLogger(__name__)
 
 
 def _get_package_and_units(package):

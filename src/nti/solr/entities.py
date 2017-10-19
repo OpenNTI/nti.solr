@@ -4,10 +4,9 @@
 .. $Id$
 """
 
-from __future__ import print_function, absolute_import, division
-__docformat__ = "restructuredtext en"
-
-logger = __import__('logging').getLogger(__name__)
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
 import six
 
@@ -54,6 +53,8 @@ from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
 from nti.solr.utils import resolve_content_parts
+
+logger = __import__('logging').getLogger(__name__)
 
 
 class _BasicAttributeValue(object):
