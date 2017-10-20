@@ -112,7 +112,8 @@ class _DefaultCourseCatalogTagsValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        return getattr(context, 'tags', None) or ()
+        entry = ICourseCatalogEntry(context, None)
+        return getattr(entry, 'tags', None) or ()
 
 
 @interface.implementer(ICourseCatalogDocument)
