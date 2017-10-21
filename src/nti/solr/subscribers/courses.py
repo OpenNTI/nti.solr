@@ -16,6 +16,7 @@ from zope.intid.interfaces import IIntIdRemovedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.contenttypes.courses.interfaces import ICourseInstance
+from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 from nti.contenttypes.courses.interfaces import ICourseInstanceImportedEvent
 
 from nti.solr import COURSES_QUEUE
@@ -38,8 +39,10 @@ def _course_added(obj, _):
 
 
 @component.adapter(ICourseInstance, IObjectModifiedEvent)
+@component.adapter(ICourseCatalogEntry, IObjectModifiedEvent)
 def _course_modified(obj, _):
-    queue_modified(COURSES_QUEUE, single_index_job, obj)
+    course = ICourseInstance(obj)
+    queue_modified(COURSES_QUEUE, single_index_job, course)
 
 
 @component.adapter(ICourseInstance, ICourseInstanceImportedEvent)

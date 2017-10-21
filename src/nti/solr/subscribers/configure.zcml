@@ -123,6 +123,10 @@
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
 						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
 
+		<subscriber handler=".courses._course_modified"
+					for="nti.contenttypes.courses.interfaces.ICourseCatalogEntry
+						 zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
+
 		<subscriber handler=".courses._index_course"
 					for="nti.contenttypes.courses.interfaces.ICourseInstance
 					 	 ..interfaces.IIndexObjectEvent" />
