@@ -38,7 +38,7 @@ EVALUATIONS_CATALOG = 'evaluations'
 TRANSCRIPTS_CATALOG = 'transcripts'
 CONTENT_UNITS_CATALOG = 'contentunits'
 
-primitive_types = six.string_types + (Number,)
+primitive_types = six.string_types + (Number, bool)
 
 _OR_ = u' OR '
 _AND_ = u' AND '

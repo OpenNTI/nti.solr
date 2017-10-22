@@ -8,6 +8,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+import six
 from datetime import datetime
 
 import isodate
@@ -31,7 +32,6 @@ from nti.site.transient import TrivialSite
 from nti.solr import USERDATA_CATALOG
 
 from nti.solr import get_factory
-from nti.solr import primitive_types
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
@@ -129,11 +129,15 @@ def single_unindex_job(source, core, site=None, **unused_kwargs):
         if catalog is not None:
             catalog.unindex_doc(source)
 
+
 # assets
 
 
 def finder(source):
-    return object_finder(source) if isinstance(source, primitive_types) else source
+    if     isinstance(source, six.string_types) \
+        or isinstance(source, six.integer_types):
+        return object_finder(source)
+    return source
 
 
 def process_asset(obj, index=True, commit=False):
@@ -162,6 +166,7 @@ def unindex_asset(source, site=None, commit=True, *unused_args, **unused_kwargs)
     job_site = get_job_site(site)
     with current_site(job_site):
         process_asset(finder(source), index=False, commit=commit)
+
 
 # entities
 

@@ -200,7 +200,7 @@ class CoreCatalog(object):
 
     def apply(self, query):
         if isinstance(query, primitive_types):
-            if isinstance(query, six.string_types):
+            if not isinstance(query, six.string_types):
                 query = str(query)
             term, fq, params = query, {}, {'fl': ','.join(self.return_fields)}
         else:
