@@ -31,7 +31,7 @@ from nti.dataserver.interfaces import IUserTaggedContent
 from nti.dataserver.interfaces import IContained as INTIContained
 from nti.dataserver.interfaces import IDynamicSharingTargetFriendsList
 
-from nti.dataserver.users import User
+from nti.dataserver.users.users import User
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 

@@ -35,6 +35,7 @@ from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
+from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 logger = __import__('logging').getLogger(__name__)
 
@@ -79,7 +80,13 @@ class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
         return self.language
 
     def get_content(self, context):
-        return text_(getattr(context, 'description', None))
+        content = getattr(context, 'RichDescription', None)
+        if content:
+            content = component.getAdapter(content,
+                                           IPlainTextContentFragment,
+                                           name='text')
+        content = content or getattr(context, 'description', None)
+        return text_(content)
 
     def value(self, context=None):
         context = self.context if context is None else context
@@ -112,8 +119,7 @@ class _DefaultCourseCatalogTagsValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        entry = ICourseCatalogEntry(context, None)
-        return getattr(entry, 'tags', None) or ()
+        return getattr(self.entry(context), 'tags', None) or ()
 
 
 @interface.implementer(ICourseCatalogDocument)
