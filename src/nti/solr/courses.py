@@ -143,6 +143,7 @@ def _course_to_catalog(unused_context):
 
 class CoursesCatalog(MetadataCatalog):
 
+    skip = True
     name = COURSES_CATALOG
     document_interface = ICourseCatalogDocument
 
