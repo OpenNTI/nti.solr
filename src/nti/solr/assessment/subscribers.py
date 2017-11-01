@@ -20,7 +20,7 @@ from nti.assessment.interfaces import IQEvaluation
 from nti.publishing.interfaces import IObjectPublishedEvent
 from nti.publishing.interfaces import IObjectUnpublishedEvent
 
-from nti.solr import EVALUATIONS_QUEUE
+from nti.solr.assessment import EVALUATIONS_QUEUE
 
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove

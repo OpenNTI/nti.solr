@@ -24,10 +24,10 @@ from nti.contentsearch.search_fragments import SearchFragment
 
 from nti.dataserver.interfaces import IUser
 
-from nti.solr import USERDATA_CATALOG
-
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ISOLRSearcher
+
+from nti.solr.userdata import USERDATA_CATALOG
 
 from nti.solr.utils import normalize_field
 from nti.solr.utils import mimeTypeRegistry

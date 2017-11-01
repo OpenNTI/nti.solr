@@ -19,13 +19,13 @@ from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 from nti.contenttypes.courses.interfaces import ICourseInstanceImportedEvent
 
-from nti.solr import COURSES_QUEUE
-
 from nti.solr.common import queue_add
 from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
+
+from nti.solr.courses import COURSES_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent

@@ -11,7 +11,6 @@ from __future__ import absolute_import
 import re
 import six
 import functools
-from itertools import chain
 from collections import defaultdict
 
 import gevent
@@ -32,28 +31,17 @@ from nti.contentprocessing.interfaces import IStopWords
 
 from nti.contentprocessing.keyword import extract_key_words
 
-from nti.contenttypes.presentation import AUDIO_MIME_TYPES
-from nti.contenttypes.presentation import VIDEO_MIME_TYPES
-from nti.contenttypes.presentation import TIMELINE_MIME_TYPES
-from nti.contenttypes.presentation import RELATED_WORK_REF_MIME_TYPES
-
 from nti.ntiids.ntiids import is_valid_ntiid_string
 from nti.ntiids.ntiids import find_object_with_ntiid
 
 from nti.schema.interfaces import find_most_derived_interface
 
-from nti.solr import ASSETS_CATALOG
-from nti.solr import COURSES_CATALOG
-from nti.solr import ENTITIES_CATALOG
-from nti.solr import USERDATA_CATALOG
-from nti.solr import EVALUATIONS_CATALOG
-from nti.solr import TRANSCRIPTS_CATALOG
-from nti.solr import CONTENT_UNITS_CATALOG
-
 from nti.solr.interfaces import IStringValue
 from nti.solr.interfaces import ICoreDocument
 
 from nti.solr.termextract import extract_key_words as term_extract_key_words
+
+from nti.solr.userdata import USERDATA_CATALOG
 
 logger = __import__('logging').getLogger(__name__)
 
@@ -192,7 +180,7 @@ class MimeTypeRegistry(object):
                 cls, *args, **kwargs)
         return cls.instance
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *unused_args, **unused_kwargs):
         self.mime_type_catalog = {}
         self.catalog_mime_type = defaultdict(set)
 
@@ -217,66 +205,3 @@ class MimeTypeRegistry(object):
 
 # Global registry
 mimeTypeRegistry = MimeTypeRegistry()
-
-# Known mimeTypes used to map to their corresponding  search catalogs
-CONTENT_MIME_TYPE = 'application/vnd.nextthought.content'
-BOOK_CONTENT_MIME_TYPE = 'application/vnd.nextthought.bookcontent'
-
-NTI_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.ntitranscript'
-AUDIO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.audiotranscript'
-VIDEO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.videotranscript'
-
-COURSE_MIME_TYPE = 'application/vnd.nextthought.courses.courseinstance'
-CATALOG_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecatalogentry'
-CATALOG_LEGACY_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecataloglegacyentry'
-
-USER_MIME_TYPE = 'application/vnd.nextthought.user'
-COMMUNITY_MIME_TYPE = 'application/vnd.nextthought.community'
-DFL_MIME_TYPE = 'application/vnd.nextthought.dynamicfriendslist'
-FRIEND_LISTS_MIME_TYPE = 'application/vnd.nextthought.friendslist'
-
-
-def _register():
-    # transcripts
-    mimeTypeRegistry.register(NTI_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
-    mimeTypeRegistry.register(AUDIO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
-    mimeTypeRegistry.register(VIDEO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
-
-    # courses
-    mimeTypeRegistry.register(COURSE_MIME_TYPE, COURSES_CATALOG)
-    mimeTypeRegistry.register(CATALOG_ENTRY_MIME_TYPE, COURSES_CATALOG)
-    mimeTypeRegistry.register(CATALOG_LEGACY_ENTRY_MIME_TYPE, COURSES_CATALOG)
-
-    # entities
-    mimeTypeRegistry.register(DFL_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.register(USER_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.register(COMMUNITY_MIME_TYPE, ENTITIES_CATALOG)
-    mimeTypeRegistry.register(FRIEND_LISTS_MIME_TYPE, ENTITIES_CATALOG)
-
-    # assets
-    for m in chain(AUDIO_MIME_TYPES,
-                   VIDEO_MIME_TYPES,
-                   TIMELINE_MIME_TYPES,
-                   RELATED_WORK_REF_MIME_TYPES):
-        mimeTypeRegistry.register(m, ASSETS_CATALOG)
-
-    # evaluations
-    try:
-        from nti.assessment.interfaces import ALL_EVALUATION_MIME_TYPES
-        for m in ALL_EVALUATION_MIME_TYPES:
-            mimeTypeRegistry.register(m, EVALUATIONS_CATALOG)
-    except ImportError:
-        pass
-
-    # content
-    try:
-        from nti.contentlibrary import ALL_CONTENT_MIMETYPES
-        for m in ALL_CONTENT_MIMETYPES:
-            mimeTypeRegistry.register(m, CONTENT_UNITS_CATALOG)
-        mimeTypeRegistry.register(CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-        mimeTypeRegistry.register(BOOK_CONTENT_MIME_TYPE, CONTENT_UNITS_CATALOG)
-    except ImportError:
-        pass
-
-_register()
-del _register

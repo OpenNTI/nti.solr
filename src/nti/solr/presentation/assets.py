@@ -28,15 +28,11 @@ from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import ASSETS_CATALOG
-
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
-from nti.solr.interfaces import ITargetValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import IAssetDocument
 
 from nti.solr.lucene import lucene_escape
 
@@ -44,6 +40,11 @@ from nti.solr.metadata import ZERO_DATETIME
 from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
+
+from nti.solr.presentation import ASSETS_CATALOG
+
+from nti.solr.presentation.interfaces import ITargetValue
+from nti.solr.presentation.interfaces import IAssetDocument
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -75,8 +76,8 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
     def value(self, context=None):
         context = self.context if context is None else context
         # Filter out legacy RelatedWork ntiid and asset refs.
-        if     IAssetRef.providedBy(context) \
-            or is_ntiid_of_type(context.ntiid, RELATED_WORK):
+        if IAssetRef.providedBy(context) \
+                or is_ntiid_of_type(context.ntiid, RELATED_WORK):
             result = None
         elif IUserCreatedAsset.providedBy(context):
             result = super(_DefaultAssetIDValue, self).value(context)
@@ -108,7 +109,7 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         result = getattr(context, 'creator', None) \
-              or getattr(context, 'byline', None)
+            or getattr(context, 'byline', None)
         if IUseNTIIDAsExternalUsername.providedBy(result):
             result = to_external_ntiid_oid(result)
         else:
@@ -201,6 +202,6 @@ class AssetsCatalog(MetadataCatalog):
     def clear(self, commit=None):
         types = self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
-        commit = commit=self.auto_commit if commit is None else bool(commit)
+        commit = commit = self.auto_commit if commit is None else bool(commit)
         self.client.delete(q=q, commit=commit)
     reset = clear

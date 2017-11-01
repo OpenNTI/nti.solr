@@ -17,8 +17,7 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from nti.dataserver.interfaces import IEntity
 
-from nti.solr import ENTITIES_QUEUE
-from nti.solr import USERDATA_QUEUE
+from nti.solr.entities import ENTITIES_QUEUE
 
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
@@ -30,6 +29,8 @@ from nti.solr.common import queue_modified
 from nti.solr.common import delete_user_data
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
+
+from nti.solr.userdata import USERDATA_QUEUE
 
 logger = __import__('logging').getLogger(__name__)
 

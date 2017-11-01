@@ -64,7 +64,7 @@ HIT_FIELDS = ((INTIIDValue, 'NTIID'),
 
 @interface.implementer(ISearchHit)
 @component.adapter(interface.Interface, IDict)
-def _default_search_hit_adapter(obj, result, hit=None):
+def default_search_hit_adapter(obj, result, hit=None):
     hit = SearchHit() if hit is None else hit
     # set required fields
     hit.Target = obj
@@ -78,12 +78,13 @@ def _default_search_hit_adapter(obj, result, hit=None):
             if value is not None:
                 setattr(hit, name, value)
     return hit
+_default_search_hit_adapter = default_search_hit_adapter
 
 
 @interface.implementer(ITranscriptSearchHit)
 @component.adapter(INTITranscript, IDict)
 def _transcript_search_hit_adapter(obj, result):
-    hit = _default_search_hit_adapter(obj, result, TranscriptSearchHit())
+    hit = default_search_hit_adapter(obj, result, TranscriptSearchHit())
     hit.EndMilliSecs = result['cue_end_time']
     hit.StartMilliSecs = result['cue_start_time']
     return hit
@@ -91,10 +92,10 @@ def _transcript_search_hit_adapter(obj, result):
 
 @interface.implementer(IContentUnitSearchHit)
 def _contentunit_search_hit_adapter(obj, result):
-    return _default_search_hit_adapter(obj, result, ContentUnitSearchHit())
+    return default_search_hit_adapter(obj, result, ContentUnitSearchHit())
 
 
 @component.adapter(IUserGeneratedData, IDict)
 @interface.implementer(IUserGeneratedDataSearchHit)
 def ugd_search_hit_adapter(obj, result):
-    return _default_search_hit_adapter(obj, result, UserGeneratedDataSearchHit())
+    return default_search_hit_adapter(obj, result, UserGeneratedDataSearchHit())

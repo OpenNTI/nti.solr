@@ -1,0 +1,123 @@
+<!-- -*- mode: nxml -*- -->
+<configure	xmlns="http://namespaces.zope.org/zope"
+			xmlns:i18n="http://namespaces.zope.org/i18n"
+			xmlns:zcml="http://namespaces.zope.org/zcml"
+			xmlns:ext="http://nextthought.com/ntp/ext"
+			i18n_domain="zope">
+
+	<include package="zope.component" file="meta.zcml" />
+	<include package="zope.component" />
+	
+	<!-- Externalization -->
+	<include package="nti.externalization" file="meta.zcml" />
+	<include package="nti.externalization" />
+
+	<ext:registerAutoPackageIO
+		root_interfaces=".interfaces.IUserDataDocument"
+		modules=".catalog" />
+
+	<!-- Adapters -->
+	<adapter factory=".catalog._UserDataSharedWithValue"
+			 provides="nti.solr.interfaces.ISharedWithValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".catalog._DefaultUserDataTitleValue"
+			 provides="nti.solr.interfaces.ITitleValue"
+			 for="nti.dataserver.interfaces.ITitledContent" />
+
+	<adapter factory=".catalog._DefaultUserDataContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".catalog._NoteContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.INote" />
+
+	<adapter factory=".catalog._HighlightContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.dataserver.interfaces.IHighlight" />
+
+	<adapter factory=".catalog._HeadlineTopicIDValue"
+			 provides="nti.solr.interfaces.IIDValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
+
+	<adapter factory=".catalog._HeadlineTopicTitleValue"
+			 provides="nti.solr.interfaces.ITitleValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
+
+	<adapter factory=".catalog._HeadlineTopicContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
+
+	<adapter factory=".catalog._DefaultUserDataKeywordsValue"
+			 provides="nti.solr.interfaces.IKeywordsValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".catalog._UserGeneratedDataContainersValue"
+			 provides="nti.solr.interfaces.IContainersValue"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".catalog._DefaultTagsValue"
+			 provides="nti.solr.interfaces.ITagsValue"
+			 for="nti.dataserver.interfaces.IUserTaggedContent" />
+
+	<adapter factory=".catalog._HeadlineTopicTagsValue"
+			 provides="nti.solr.interfaces.ITagsValue"
+			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
+
+	<adapter factory=".catalog._DefaultChannelValue"
+			 provides=".interfaces.IChannelValue"
+			 for="nti.chatserver.interfaces.IMessageInfo" />
+
+	<adapter factory=".catalog._DefaultRecipientsValue"
+			 provides=".interfaces.IRecipientsValue"
+			 for="nti.chatserver.interfaces.IMessageInfo" />
+
+	<adapter factory=".catalog._DefaultRedactionExplanationValue"
+			 provides=".interfaces.IExplanationValue"
+			 for="nti.dataserver.interfaces.IRedaction" />
+
+	<adapter factory=".catalog._DefaultReplacementContentValue"
+			 provides=".interfaces.IReplacementContentValue"
+			 for="nti.dataserver.interfaces.IRedaction" />
+
+	<adapter factory=".catalog._UserDataDocumentCreator"
+			 provides=".interfaces.IUserDataDocument"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".catalog._userdata_to_catalog"
+			 provides="nti.solr.interfaces.ICoreCatalog"
+			 for="nti.dataserver.interfaces.IUserGeneratedData" />
+
+	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
+			 for=".interfaces.IUserDataDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
+	<!-- Utilities -->
+	<utility factory=".catalog.UserDataCatalog"
+			 provides="nti.solr.interfaces.ICoreCatalog"
+			 name='userdata' />
+			 
+	<!-- Subscribers -->
+	<subscriber handler=".subscribers._userdata_added"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdAddedEvent"/>
+
+	<subscriber handler=".subscribers._userdata_removed"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.intid.interfaces.IIntIdRemovedEvent"/>
+
+	<subscriber handler=".subscribers._userdata_modified"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+					 zope.lifecycleevent.interfaces.IObjectModifiedEvent"/>
+
+	<subscriber handler=".subscribers._index_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 nti.solr.interfaces.IIndexObjectEvent"/>
+
+	<subscriber handler=".subscribers._unindex_userdata"
+				for="nti.dataserver.interfaces.IUserGeneratedData
+				 	 nti.solr.interfaces.IUnindexObjectEvent"/>
+
+</configure>

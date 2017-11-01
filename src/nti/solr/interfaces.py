@@ -26,10 +26,8 @@ from nti.contentsearch.interfaces import ISearchQueryValidator
 from nti.solr.schema import SolrDatetime
 
 from nti.schema.field import Bool
-from nti.schema.field import Number
 from nti.schema.field import IndexedIterable
-from nti.schema.field import Text as ValidText
-from nti.schema.field import TextLine as ValidTextLine
+from nti.schema.field import DecodingValidTextLine as ValidTextLine
 
 
 class ITextField(interface.Interface):
@@ -184,6 +182,7 @@ def tagField(field, stored=True, adapter=None, multiValued=False, indexed=True,
 
 class ICoreDocument(interface.Interface):
     id = ValidTextLine(title=u'The id', required=True)
+
 tagField(ICoreDocument['id'], True, IIDValue)
 
 
@@ -212,12 +211,13 @@ class IMetadataDocument(ICoreDocument):
                                  value_type=ValidTextLine(title=u"The entiy"),
                                  min_length=0)
 
-    containerContext = ValidTextLine(title=u'The container context', 
+    containerContext = ValidTextLine(title=u'The container context',
                                      required=False)
 
     createdTime = SolrDatetime(title=u'The created date', required=False)
 
-    lastModified = SolrDatetime(title=u'The last modified date', required=False)
+    lastModified = SolrDatetime(title=u'The last modified date', \
+                                required=False)
 
     isDeletedObject = Bool(title=u'Is deleted object flag', required=False)
 
@@ -225,25 +225,40 @@ class IMetadataDocument(ICoreDocument):
 
     isUserGeneratedData = Bool(title=u'Is UGD object flag', required=False)
 
+
 tagField(IMetadataDocument['site'], False, ISiteValue)
+
 tagField(IMetadataDocument['creator'], True, ICreatorValue)
+
 tagField(IMetadataDocument['mimeType'], True, IMimeTypeValue)
+
 tagField(IMetadataDocument['inReplyTo'], False, IInReplyToValue)
+
 tagField(IMetadataDocument['isDeletedObject'], False, IIsDeletedObjectValue)
+
 tagField(IMetadataDocument['containerContext'], False, IContainerContextValue)
+
 tagField(IMetadataDocument['isTopLevelContent'],
          False, IIsTopLevelContentValue)
+
 tagField(IMetadataDocument['isUserGeneratedData'],
          False, IIsUserGeneratedDataValue)
-tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue, multiValued=True)
+
+tagField(IMetadataDocument['taggedTo'], True, ITaggedToValue,
+         multiValued=True)
+
 tagField(IMetadataDocument['sharedWith'], True,
          ISharedWithValue, multiValued=True)
+
 tagField(IMetadataDocument['containerId'], False,
          IContainersValue, multiValued=True)
+
 tagField(IMetadataDocument['createdTime'], False,
          ICreatedTimeValue, provided=IDateField)
+
 tagField(IMetadataDocument['lastModified'], False,
          ILastModifiedValue, provided=IDateField)
+
 
 # misc
 
@@ -270,196 +285,6 @@ class INTIIDValue(IAttributeValue):
     Adapter interface to get the ntiid value from a given object
     """
 
-# entities
-
-
-class IUsernameValue(IAttributeValue):
-    """
-    Adapter interface to get the username value from a given object
-    """
-
-
-class IAliasValue(IAttributeValue):
-    """
-    Adapter interface to get the alias value from a given object
-    """
-
-
-class IRealnameValue(IAttributeValue):
-    """
-    Adapter interface to get the realname value from a given object
-    """
-
-
-class IEmailValue(IAttributeValue):
-    """
-    Adapter interface to get the email value from a given object
-    """
-
-
-class IProfessionalTitleValue(IAttributeValue):
-    """
-    Adapter interface to get the professional titles from a given entity object
-    """
-
-
-class IProfessionalCompanyValue(IAttributeValue):
-    """
-    Adapter interface to get the professional companies from a given entity object
-    """
-
-
-class IProfessionalDescriptionValue(IAttributeValue):
-    """
-    Adapter interface to get the professional descriptions from a given entity object
-    """
-
-
-class IEducationSchoolValue(IAttributeValue):
-    """
-    Adapter interface to get the education schools from a given entity object
-    """
-
-
-class IEducationDegreeValue(IAttributeValue):
-    """
-    Adapter interface to get the education degrees from a given entity object
-    """
-
-
-class IEducationDescriptionValue(IAttributeValue):
-    """
-    Adapter interface to get the education descriptions from a given entity object
-    """
-
-
-class ISocialURLValue(IAttributeValue):
-    """
-    Adapter interface to get the social URLs from a given entity object
-    """
-
-
-class IAboutValue(IStringValue):
-    """
-    Adapter interface to get the about value from a given entity object
-    """
-
-
-class IEntityDocument(IMetadataDocument):
-
-    username = IndexedIterable(title=u'The username identifiers',
-                               required=False,
-                               value_type=ValidTextLine(title=u"The username"),
-                               min_length=1)
-
-    alias = ValidTextLine(title=u'The alias', required=False)
-
-    email = ValidTextLine(title=u'The username', required=False)
-
-    realname = ValidTextLine(title=u'The realname', required=False)
-
-    about_en = ValidText(title=u'The about statement', required=False)
-
-    education_school = IndexedIterable(title=u'The school names',
-                                       required=False,
-                                       value_type=ValidTextLine(
-                                           title=u"The school name"),
-                                       min_length=0)
-
-    education_degree = IndexedIterable(title=u'The school degrees',
-                                       required=False,
-                                       value_type=ValidTextLine(title=u"The school degree"),
-                                       min_length=0)
-
-    education_description = IndexedIterable(title=u'The education descriptions',
-                                            required=False,
-                                            value_type=ValidText(
-                                                title=u"The description"),
-                                            min_length=0)
-
-    professional_description = IndexedIterable(title=u'The professional company descriptions',
-                                               required=False,
-                                               value_type=ValidText(title=u"The description"),
-                                               min_length=0)
-
-    professional_title = IndexedIterable(title=u'The company names',
-                                         required=False,
-                                         value_type=ValidTextLine(title=u"The company name"),
-                                         min_length=0)
-
-    professional_company = IndexedIterable(title=u'The company names',
-                                           required=False,
-                                           value_type=ValidTextLine(title=u"The company name"),
-                                           min_length=0)
-
-    social_url = IndexedIterable(title=u'The social URLS',
-                                 required=False,
-                                 value_type=ValidTextLine(title=u"The url"),
-                                 min_length=0)
-
-tagField(IEntityDocument['email'], True, IEmailValue)
-tagField(IEntityDocument['alias'], True, IAliasValue, type_=u'text_lower')
-tagField(IEntityDocument['realname'], True, IRealnameValue, type_=u'text_lower')
-tagField(IEntityDocument['username'], True, IUsernameValue, True)
-tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
-tagField(IEntityDocument['about_en'], False, IAboutValue, provided=ITextField)
-tagField(IEntityDocument['education_school'], True,
-         IEducationSchoolValue, True, type_=u'text_lower', provided=ITextField)
-tagField(IEntityDocument['education_degree'], True,
-         IEducationDegreeValue, True, type_=u'text_lower', provided=ITextField)
-tagField(IEntityDocument['education_description'], True,
-         IEducationDescriptionValue, True, type_=u'text_lower', provided=ITextField)
-tagField(IEntityDocument['professional_title'], True,
-         IProfessionalTitleValue, True, type_=u'text_lower', provided=ITextField)
-tagField(IEntityDocument['professional_company'], True,
-         IProfessionalCompanyValue, True, type_=u'text_lower', provided=ITextField)
-tagField(IEntityDocument['professional_description'], True,
-         IProfessionalDescriptionValue, True, type_=u'text_lower', provided=ITextField)
-
-
-class IMediaNTIIDValue(IAttributeValue):
-    """
-    Adapter interface to get the media (video/audio) NTIID associated with a transcript object
-    """
-
-
-class ITranscriptCueStartTimeValue(IAttributeValue):
-    """
-    Adapter interface to get the transcript cue start time
-    """
-
-
-class ITranscriptCueEndTimeValue(IAttributeValue):
-    """
-    Adapter interface to get the transcript cue end time
-    """
-
-
-class ITranscriptSourceValue(IAttributeValue):
-    """
-    Adapter interface to get a file source from a transcript
-    """
-
-
-class ITranscriptDocument(IMetadataDocument):
-
-    media = ValidText(title=u'The media ntiid', required=False)
-
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    cue_end_time = Number(title=u'Cue end time', required=False)
-    cue_start_time = Number(title=u'Cue start time', required=False)
-
-tagField(ITranscriptDocument['media'], True, IMediaNTIIDValue)
-tagField(ITranscriptDocument['cue_end_time'],
-         False, ITranscriptCueStartTimeValue)
-tagField(ITranscriptDocument['cue_start_time'],
-         False, ITranscriptCueStartTimeValue)
-tagField(ITranscriptDocument['content_en'], True,
-         IContentValue, provided=(ITextField, ISuggestField))
-
-# content units
-
 
 class ITitleValue(IStringValue):
     """
@@ -467,185 +292,10 @@ class ITitleValue(IStringValue):
     """
 
 
-class IContentUnitDocument(IMetadataDocument):
-
-    ntiid = ValidTextLine(title=u'Content unit ntiid', required=False)
-
-    title_en = ValidTextLine(title=u'Title to index', required=False)
-
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    keywords_en = IndexedIterable(title=u'The keywords',
-                                  required=False,
-                                  value_type=ValidTextLine(title=u"The keyword"),
-                                  min_length=0)
-
-tagField(IContentUnitDocument['ntiid'], True, INTIIDValue)
-tagField(IContentUnitDocument['title_en'],
-         True, ITitleValue, provided=ITextField)
-tagField(IContentUnitDocument['content_en'], True, IContentValue,
-         provided=(ITextField, ISuggestField))
-tagField(IContentUnitDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
-         provided=ITextField)
-
-# user data
-
-
 class ITagsValue(IAttributeValue):
     """
     Adapter interface to get the tag values from a given object
     """
-
-
-class IChannelValue(IAttributeValue):
-    """
-    Adapter interface to get the channel value from a given object
-    """
-
-
-class IExplanationValue(IAttributeValue):
-    """
-    Adapter interface to get the explanation value from a given object
-    """
-
-
-class IReplacementContentValue(IAttributeValue):
-    """
-    Adapter interface to get the replacement content value from a given object
-    """
-
-
-class IRecipientsValue(IAttributeValue):
-    """
-    Adapter interface to get the recipients value from a given object
-    """
-
-
-class IUserDataDocument(IMetadataDocument):
-    """
-    User generated data document
-    """
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    title_en = ValidTextLine(title=u'Title to index', required=False)
-
-    redaction_explanation_en = ValidText(title=u'Text to index', required=False)
-    replacement_content_en = ValidText(title=u'Text to index', required=False)
-
-    recipients = IndexedIterable(title=u'The recipient entities',
-                                 required=False,
-                                 value_type=ValidTextLine(title=u"The entiy"),
-                                 min_length=0)
-
-    channel = ValidTextLine(title=u'channel value', required=False)
-
-    tags = IndexedIterable(title=u'The tags',
-                           required=False,
-                           value_type=ValidTextLine(title=u"The tag"),
-                           min_length=0)
-
-    keywords_en = IndexedIterable(title=u'The keywords',
-                                  required=False,
-                                  value_type=ValidTextLine(title=u"The keyword"),
-                                  min_length=0)
-
-tagField(IUserDataDocument['channel'], False, IChannelValue)
-tagField(IUserDataDocument['recipients'], True, IRecipientsValue)
-tagField(IUserDataDocument['tags'], True, ITagsValue, True,
-         provided=ITextField)
-tagField(IUserDataDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IUserDataDocument['content_en'], True,
-         IContentValue, provided=(ITextField, ISuggestField))
-tagField(IUserDataDocument['redaction_explanation_en'],
-         True, IExplanationValue, provided=ITextField)
-tagField(IUserDataDocument['replacement_content_en'],
-         True, IReplacementContentValue, provided=ITextField)
-tagField(IUserDataDocument['keywords_en'], False,
-         IKeywordsValue, True, 'text_lower', provided=ITextField)
-
-
-class ITargetValue(IStringValue):
-    """
-    Adapter interface to get the target value from a given object
-    """
-
-
-class IAssetDocument(IMetadataDocument):
-
-    ntiid = ValidTextLine(title=u'Asset ntiid', required=False)
-
-    target = ValidTextLine(title=u'Asset target ntiid', required=False)
-
-    title_en = ValidTextLine(title=u'Title to index', required=False)
-
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    keywords_en = IndexedIterable(title=u'The keywords',
-                                  required=False,
-                                  value_type=ValidTextLine(title=u"The keyword"),
-                                  min_length=0)
-
-tagField(IAssetDocument['ntiid'], True, INTIIDValue)
-tagField(IAssetDocument['target'], True, ITargetValue)
-tagField(IAssetDocument['title_en'], True, ITitleValue, provided=ITextField)
-tagField(IAssetDocument['content_en'], True,
-         IContentValue, provided=(ITextField, ISuggestField))
-tagField(IAssetDocument['keywords_en'], False,
-         IKeywordsValue, True, 'text_lower', provided=ITextField)
-
-
-class ICourseCatalogDocument(IMetadataDocument):
-
-    ntiid = ValidTextLine(title=u'Course catalog ntiid', required=False)
-
-    title_en = ValidTextLine(title=u'Title to index', required=False)
-
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    keywords_en = IndexedIterable(title=u'The keywords',
-                                  required=False,
-                                  value_type=ValidTextLine(title=u"The keyword"),
-                                  min_length=0)
-    
-    tags = IndexedIterable(title=u'The tags',
-                           required=False,
-                           value_type=ValidTextLine(title=u"The tag"),
-                           min_length=0)
-
-tagField(ICourseCatalogDocument['ntiid'], True, INTIIDValue)
-tagField(ICourseCatalogDocument['title_en'], True, 
-         ITitleValue, provided=ITextField)
-tagField(ICourseCatalogDocument['content_en'], True, IContentValue,
-         provided=(ITextField, ISuggestField))
-tagField(ICourseCatalogDocument['keywords_en'], False, 
-         IKeywordsValue, True, 'text_lower',
-         provided=ITextField)
-tagField(ICourseCatalogDocument['tags'], True, ITagsValue, True,
-         provided=ITextField)
-
-
-class IEvaluationDocument(IMetadataDocument):
-
-    ntiid = ValidTextLine(title=u'Evaluation ntiid', required=False)
-
-    title_en = ValidTextLine(title=u'Title to index', required=False)
-
-    content_en = ValidText(title=u'Text to index', required=False)
-
-    keywords_en = IndexedIterable(title=u'The keywords',
-                                  required=False,
-                                  value_type=ValidTextLine(title=u"The keyword"),
-                                  min_length=0)
-
-tagField(IEvaluationDocument['ntiid'], True, INTIIDValue)
-tagField(IEvaluationDocument['title_en'], True,
-         ITitleValue, provided=ITextField)
-tagField(IEvaluationDocument['content_en'], True,
-         IContentValue, provided=(ITextField, ISuggestField))
-tagField(IEvaluationDocument[
-         'keywords_en'], False, IKeywordsValue, True, 'text_lower',
-         provided=ITextField)
 
 
 class ICoreCatalog(IInjection, IIndexSearch, IContained):
@@ -713,7 +363,7 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
     def filter(self, event, query=None):
         """
         Return True if the event needs to be filtered
-        
+
         :param event solr event dict return 
         :param param query a :class:`nti.contentsearch.interfaces.ISearcherQuery` object
         """
@@ -726,6 +376,7 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         :param fq a :class:`ISOLRFilterQuery` object
         :param params a :class:`ISOLRQueryParams` object
         """
+
 
 class IIndexObjectEvent(IObjectEvent):
     """

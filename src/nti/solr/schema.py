@@ -9,9 +9,10 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import six
+import time
 import numbers
+from datetime import date
 from datetime import datetime
-from dateutil.parser import parse
 
 import pytz
 
@@ -23,6 +24,8 @@ from zope.schema import Orderable
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ConstraintNotSatisfied
+
+from nti.externalization.datetime import datetime_from_string
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -47,6 +50,9 @@ class SolrDatetime(Orderable, Field):
             return datetime.fromtimestamp(value, pytz.utc)
         elif isinstance(value, datetime):
             return value
+        elif isinstance(value, date):
+            ts = time.mktime(value.timetuple())
+            return datetime.fromtimestamp(ts, pytz.utc)
         return None
 
     def _validate(self, value):
@@ -74,7 +80,7 @@ class SolrDatetime(Orderable, Field):
 
     @staticmethod
     def fromUnicode(s):
-        return parse(s)
+        return datetime_from_string(s)
 
     @staticmethod
     def toUnicode(value):

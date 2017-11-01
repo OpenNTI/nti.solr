@@ -25,9 +25,6 @@ from nti.contenttypes.presentation.interfaces import IPresentationAsset
 from nti.contenttypes.presentation.interfaces import IUserCreatedTranscript
 from nti.contenttypes.presentation.interfaces import IPresentationAssetMovedEvent
 
-from nti.solr import ASSETS_QUEUE
-from nti.solr import TRANSCRIPTS_QUEUE
-
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
@@ -36,6 +33,9 @@ from nti.solr.common import queue_remove
 from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
+
+from nti.solr.presentation import ASSETS_QUEUE
+from nti.solr.presentation import TRANSCRIPTS_QUEUE
 
 logger = __import__('logging').getLogger(__name__)
 

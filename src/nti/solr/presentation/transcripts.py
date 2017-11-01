@@ -32,19 +32,12 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import TRANSCRIPTS_CATALOG
-
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import IIntIdValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IMimeTypeValue
-from nti.solr.interfaces import IMediaNTIIDValue
 from nti.solr.interfaces import IMetadataDocument
-from nti.solr.interfaces import ITranscriptDocument
-from nti.solr.interfaces import ITranscriptSourceValue
-from nti.solr.interfaces import ITranscriptCueEndTimeValue
-from nti.solr.interfaces import ITranscriptCueStartTimeValue
 
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
@@ -57,7 +50,14 @@ from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultObjectIDValue
 from nti.solr.metadata import DefaultObjectIntIdValue
 
-from nti.solr.utils import NTI_TRANSCRIPT_MIME_TYPE
+from nti.solr.presentation import TRANSCRIPTS_CATALOG
+from nti.solr.presentation import NTI_TRANSCRIPT_MIME_TYPE
+
+from nti.solr.presentation.interfaces import IMediaNTIIDValue
+from nti.solr.presentation.interfaces import ITranscriptDocument
+from nti.solr.presentation.interfaces import ITranscriptSourceValue
+from nti.solr.presentation.interfaces import ITranscriptCueEndTimeValue
+from nti.solr.presentation.interfaces import ITranscriptCueStartTimeValue
 
 from nti.solr.utils import object_finder
 from nti.solr.utils import document_creator
@@ -169,6 +169,8 @@ class _TranscriptContentValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         return self.get_content(context)
+
+
 TranscriptContentValue = _TranscriptContentValue
 
 
@@ -235,6 +237,7 @@ def _transcript_to_catalog(unused_obj):
 
 POST_FIX_SEP = u'='
 
+
 def _transcript_documents_creator(transcript, factory=TranscriptDocument):
     if INTITranscript.providedBy(transcript):
         result = []
@@ -245,7 +248,7 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
                                   provided=IMetadataDocument)
         for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
             doc = factory()
-            doc.__dict__.update(source.__dict__) # update with source
+            doc.__dict__.update(source.__dict__)  # update with source
             doc.id = u"%s%s%s" % (uid, POST_FIX_SEP, x)  # = is id postfix
             doc.media = media  # ntiid of the media object
             doc.content_en = IContentValue(entry).value()
@@ -262,7 +265,8 @@ class TranscriptsCatalog(MetadataCatalog):
     name = TRANSCRIPTS_CATALOG
     document_interface = ITranscriptDocument
 
-    return_fields = ('id', 'score', 'cue_end_time', 'cue_start_time', 'containerId')
+    return_fields = ('id', 'score', 'cue_end_time',
+                     'cue_start_time', 'containerId')
 
     def index_doc(self, doc_id, value, commit=None, event=True):
         commit = self.auto_commit if commit is None else commit
@@ -295,8 +299,8 @@ class TranscriptsCatalog(MetadataCatalog):
         if isinstance(containers, six.string_types):
             containers = containers.split()
         containers = set(containers or ())
-        return not bool(   not packages 
-                        or not containers 
+        return not bool(   not packages
+                        or not containers
                         or packages.intersection(containers))
 
     def build_from_search_query(self, query, **kwargs):

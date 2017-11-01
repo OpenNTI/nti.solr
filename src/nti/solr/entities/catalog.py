@@ -29,22 +29,23 @@ from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import ENTITIES_CATALOG
+from nti.solr.entities import ENTITIES_CATALOG
 
-from nti.solr.interfaces import IAboutValue
-from nti.solr.interfaces import IAliasValue
-from nti.solr.interfaces import IEmailValue
+from nti.solr.entities.interfaces import IAboutValue
+from nti.solr.entities.interfaces import IAliasValue
+from nti.solr.entities.interfaces import IEmailValue
+from nti.solr.entities.interfaces import IRealnameValue
+from nti.solr.entities.interfaces import IUsernameValue
+from nti.solr.entities.interfaces import IEntityDocument
+from nti.solr.entities.interfaces import ISocialURLValue
+from nti.solr.entities.interfaces import IEducationDegreeValue
+from nti.solr.entities.interfaces import IEducationSchoolValue
+from nti.solr.entities.interfaces import IProfessionalTitleValue
+from nti.solr.entities.interfaces import IProfessionalCompanyValue
+from nti.solr.entities.interfaces import IEducationDescriptionValue
+from nti.solr.entities.interfaces import IProfessionalDescriptionValue
+
 from nti.solr.interfaces import ICoreCatalog
-from nti.solr.interfaces import IRealnameValue
-from nti.solr.interfaces import IUsernameValue
-from nti.solr.interfaces import IEntityDocument
-from nti.solr.interfaces import ISocialURLValue
-from nti.solr.interfaces import IEducationDegreeValue
-from nti.solr.interfaces import IEducationSchoolValue
-from nti.solr.interfaces import IProfessionalTitleValue
-from nti.solr.interfaces import IProfessionalCompanyValue
-from nti.solr.interfaces import IEducationDescriptionValue
-from nti.solr.interfaces import IProfessionalDescriptionValue
 
 from nti.solr.lucene import lucene_escape
 

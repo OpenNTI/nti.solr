@@ -13,9 +13,9 @@ import itertools
 from zope import component
 from zope import interface
 
-from nti.chatserver.interfaces import IMessageInfo
-
 from nti.base._compat import text_
+
+from nti.chatserver.interfaces import IMessageInfo
 
 from nti.coremetadata.interfaces import IModeledContentBody
 
@@ -35,28 +35,29 @@ from nti.dataserver.users.users import User
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import USERDATA_CATALOG
-
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ITagsValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
-from nti.solr.interfaces import IChannelValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
-from nti.solr.interfaces import IRecipientsValue
 from nti.solr.interfaces import ISharedWithValue
-from nti.solr.interfaces import IExplanationValue
-from nti.solr.interfaces import IUserDataDocument
-from nti.solr.interfaces import IReplacementContentValue
 
 from nti.solr.lucene import lucene_escape
 
 from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 from nti.solr.metadata import DefaultSharedWithValue
+
+from nti.solr.userdata import USERDATA_CATALOG
+
+from nti.solr.userdata.interfaces import IChannelValue
+from nti.solr.userdata.interfaces import IRecipientsValue
+from nti.solr.userdata.interfaces import IExplanationValue
+from nti.solr.userdata.interfaces import IUserDataDocument
+from nti.solr.userdata.interfaces import IReplacementContentValue
 
 from nti.solr.utils import get_keywords
 from nti.solr.utils import document_creator
@@ -281,7 +282,7 @@ class UserDataCatalog(MetadataCatalog):
             # Memberships
             dynamic_memberships = user.usernames_of_dynamic_memberships or ()
             usernames = itertools.chain((user.username,), dynamic_memberships)
-            result = {x.lower() for x in usernames} # normalize
+            result = {x.lower() for x in usernames}  # normalize
             # Groups we created
             for friends_list in user.friendsLists.values():
                 if IDynamicSharingTargetFriendsList.providedBy(friends_list):

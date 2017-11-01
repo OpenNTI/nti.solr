@@ -1,0 +1,104 @@
+<!-- -*- mode: nxml -*- -->
+<configure	xmlns="http://namespaces.zope.org/zope"
+			xmlns:i18n="http://namespaces.zope.org/i18n"
+			xmlns:zcml="http://namespaces.zope.org/zcml"
+			xmlns:ext="http://nextthought.com/ntp/ext"
+			i18n_domain="zope">
+
+	<include package="zope.component" file="meta.zcml" />
+	<include package="zope.component" />
+
+	<!-- Externalization -->
+	<include package="nti.externalization" file="meta.zcml" />
+	<include package="nti.externalization" />
+
+	<!-- Adapters -->
+	<ext:registerAutoPackageIO
+		root_interfaces=".interfaces.IContentUnitDocument"
+		modules=".catalog" />
+
+	<adapter factory=".catalog._DefaultContentUnitIDValue"
+			 provides="nti.solr.interfaces.IIDValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".catalog._RenderableContentUnitIDValue"
+			 provides="nti.solr.interfaces.IIDValue"
+			 for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
+
+	<adapter factory=".catalog._DefaultContainerIdValue"
+			 provides="nti.solr.interfaces.IContainersValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".catalog._DefaultTitleValue"
+			 provides="nti.solr.interfaces.ITitleValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".catalog._DefaultContentUnitContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+			 
+	<adapter factory=".catalog._RenderableContentUnitContentValue"
+             provides="nti.solr.interfaces.IContentValue"
+             for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
+
+	<adapter factory=".catalog._DefaultContentUnitKeywordsValue"
+			 provides="nti.solr.interfaces.IKeywordsValue"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".catalog._ContentUnitDocumentCreator"
+			 provides=".interfaces.IContentUnitDocument"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".catalog._contentunit_to_catalog"
+			 provides="nti.solr.interfaces.ICoreCatalog"
+			 for="nti.contentlibrary.interfaces.IContentUnit" />
+
+	<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
+			 for=".interfaces.IContentUnitDocument"
+			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
+			 name="solr" />
+
+	<adapter factory=".adapters._contentunit_search_hit_adapter"
+		 provides="nti.contentsearch.interfaces.IContentUnitSearchHit"
+		 for="nti.contentlibrary.interfaces.IContentUnit
+		 	  nti.base.interfaces.IDict" />
+
+	<!-- Utilities -->
+	<utility factory=".catalog.ContentUnitsCatalog"
+			 provides="nti.solr.interfaces.ICoreCatalog"
+			 name='contentunits' />
+
+	<!-- Subscribers -->
+	<subscriber handler=".subscribers._contentpackage_added"
+                    for="nti.contentlibrary.interfaces.IContentPackage
+                         nti.contentlibrary.interfaces.IContentPackageAddedEvent" />
+
+	<subscriber handler=".subscribers._contentpackage_removed"
+				for="nti.contentlibrary.interfaces.IContentPackage
+					 nti.contentlibrary.interfaces.IContentPackageRemovedEvent" />
+
+	<subscriber handler=".subscribers._contentpackage_replaced"
+                for="nti.contentlibrary.interfaces.IContentPackage
+                     nti.contentlibrary.interfaces.IContentPackageReplacedEvent" />
+
+	<subscriber handler=".subscribers._contentunit_rendered"
+				for="nti.contentlibrary.interfaces.IRenderableContentUnit
+					 nti.contentlibrary.interfaces.IContentPackageRenderedEvent" />
+
+	<subscriber handler=".subscribers._index_contentunit"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 ..interfaces.IIndexObjectEvent" />
+
+	<subscriber handler=".subscribers._unindex_contentunit"
+				for="nti.contentlibrary.interfaces.IContentUnit
+					 nti.solr.interfaces.IUnindexObjectEvent" />
+
+	<subscriber handler=".subscribers._index_contentpackage"
+				for="nti.contentlibrary.interfaces.IContentPackage
+					 nti.solr.interfaces.IIndexObjectEvent" />
+
+	<subscriber handler=".subscribers._unindex_contentpackage"
+				for="nti.contentlibrary.interfaces.IContentPackage
+					 nti.solr.interfaces.IUnindexObjectEvent" />
+
+</configure>

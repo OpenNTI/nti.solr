@@ -26,18 +26,15 @@
 	<include package="nti.externalization" />
 
 	<ext:registerAutoPackageIO
-		root_interfaces=".interfaces.IAssetDocument
-						 .interfaces.IEntityDocument
-						 .interfaces.IMetadataDocument
-						 .interfaces.ITranscriptDocument"
-		modules=".metadata .transcripts .entities .assets" />
+		root_interfaces=".interfaces.IMetadataDocument"
+		modules=".metadata" />
 
 	<!-- Adapters -->
 	<adapter factory=".adapters._StringValue"
 			 provides=".interfaces.IStringValue"
-			 for="basestring" />
+			 for="nti.base.interfaces.IBasestring" />
 
-	<adapter factory=".adapters._default_search_hit_adapter"
+	<adapter factory=".adapters.default_search_hit_adapter"
 			 provides="nti.contentsearch.interfaces.ISearchHit"
 			 for="* nti.base.interfaces.IDict" />
 
@@ -125,411 +122,32 @@
 			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
 			 name="solr" />
 
-	<!-- Entities -->
-	<adapter factory=".entities._DefaultUsernameValue"
-			 provides=".interfaces.IUsernameValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultEmailValue"
-			 provides=".interfaces.IEmailValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultAliasValue"
-			 provides=".interfaces.IAliasValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultRealnameValue"
-			 provides=".interfaces.IRealnameValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultProfessionalTitleValue"
-			 provides=".interfaces.IProfessionalTitleValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultProfessionalCompanyValue"
-			 provides=".interfaces.IProfessionalCompanyValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultProfessionalDescriptionValue"
-			 provides=".interfaces.IProfessionalDescriptionValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultEducationDegreeValue"
-			 provides=".interfaces.IEducationDegreeValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultEducationSchoolValue"
-			 provides=".interfaces.IEducationSchoolValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultEducationDescriptionValue"
-			 provides=".interfaces.IEducationDescriptionValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultSocialURLValue"
-			 provides=".interfaces.ISocialURLValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._DefaultAboutValue"
-			 provides=".interfaces.IAboutValue"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._EntityDocumentCreator"
-			 provides=".interfaces.IEntityDocument"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<adapter factory=".entities._entity_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.dataserver.interfaces.IEntity" />
-
-	<utility factory=".entities.EntitiesCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 name='entities' />
-
-	<adapter factory=".externalization._EntityDocumentSOLRExternalizer"
-			 for=".interfaces.IEntityDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
+	<!-- Assets & Transcripts -->
+	<configure zcml:condition="installed nti.contenttypes.presentation">
+		<include package=".presentation" />
+	</configure>
 
 	<!-- Content Units -->
 	<configure zcml:condition="installed nti.contentlibrary">
-	
-		<ext:registerAutoPackageIO
-			root_interfaces=".interfaces.IContentUnitDocument"
-			modules=".contentunits" />
-	
-		<adapter factory=".contentunits._DefaultContentUnitIDValue"
-				 provides=".interfaces.IIDValue"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<adapter factory=".contentunits._RenderableContentUnitIDValue"
-				 provides=".interfaces.IIDValue"
-				 for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
-
-		<adapter factory=".contentunits._DefaultContainerIdValue"
-				 provides=".interfaces.IContainersValue"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<adapter factory=".contentunits._DefaultTitleValue"
-				 provides=".interfaces.ITitleValue"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<adapter factory=".contentunits._DefaultContentUnitContentValue"
-				 provides=".interfaces.IContentValue"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-				 
-		<adapter factory=".contentunits._RenderableContentUnitContentValue"
-                 provides=".interfaces.IContentValue"
-                 for="nti.contentlibrary.interfaces.IRenderableContentUnit" />
-
-		<adapter factory=".contentunits._DefaultContentUnitKeywordsValue"
-				 provides=".interfaces.IKeywordsValue"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<adapter factory=".contentunits._ContentUnitDocumentCreator"
-				 provides=".interfaces.IContentUnitDocument"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<adapter factory=".contentunits._contentunit_to_catalog"
-				 provides=".interfaces.ICoreCatalog"
-				 for="nti.contentlibrary.interfaces.IContentUnit" />
-
-		<utility factory=".contentunits.ContentUnitsCatalog"
-				 provides=".interfaces.ICoreCatalog"
-				 name='contentunits' />
-
-		<adapter factory=".externalization._ContentUnitDocumentSOLRExternalizer"
-				 for=".interfaces.IContentUnitDocument"
-				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-				 name="solr" />
-
-		<adapter factory=".adapters._contentunit_search_hit_adapter"
-			 provides="nti.contentsearch.interfaces.IContentUnitSearchHit"
-			 for="nti.contentlibrary.interfaces.IContentUnit
-			 	  nti.base.interfaces.IDict" />
-
+		<include package=".contentlibrary" />
 	</configure>
-
-	<!-- Assets -->
-	<adapter factory=".assets._DefaultAssetIDValue"
-			 provides=".interfaces.IIDValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._DefaultAssetTitleValue"
-			 provides=".interfaces.ITitleValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._DefaultAssetCreatorValue"
-			 provides=".interfaces.ICreatorValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._DefaultAssetContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<configure zcml:condition="installed nti.contentlibrary">
-	 	<adapter factory=".mixins._AssetContainerIdValue"
-				 provides=".interfaces.IContainersValue"
-				 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-	</configure>
-
-	<adapter factory=".assets._DefaultAssetKeywordsValue"
-			 provides=".interfaces.IKeywordsValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._DefaultTargetValue"
-			 provides=".interfaces.ITargetValue"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._AssetDocumentCreator"
-			 provides=".interfaces.IAssetDocument"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<adapter factory=".assets._asset_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
-
-	<utility factory=".assets.AssetsCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 name='assets' />
-
-	<adapter factory=".externalization._AssetDocumentSOLRExternalizer"
-			 for=".interfaces.IAssetDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
 
 	<!-- Courses -->
 	<configure zcml:condition="installed nti.contenttypes.courses">
-
-		<ext:registerAutoPackageIO
-			root_interfaces=".interfaces.ICourseCatalogDocument"
-			modules=".courses" />
-
-		<adapter factory=".courses._DefaultCourseCatalogTitleValue"
-				 provides=".interfaces.ITitleValue"
-				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<adapter factory=".courses._DefaultCourseCatalogContentValue"
-				 provides=".interfaces.IContentValue"
-				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<adapter factory=".courses._DefaultCourseCatalogKeywordsValue"
-				 provides=".interfaces.IKeywordsValue"
-				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<adapter factory=".courses._DefaultNTIIDValue"
-				 provides=".interfaces.INTIIDValue"
-				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<adapter factory=".courses._DefaultCourseCatalogTagsValue"
-			 	 provides=".interfaces.ITagsValue"
-			 	 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-			 
-		<adapter factory=".courses._CourseCatalogDocumentCreator"
-				 provides=".interfaces.ICourseCatalogDocument"
-				 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<adapter factory=".courses._course_to_catalog"
-				 provides=".interfaces.ICoreCatalog"
-			 	 for="nti.contenttypes.courses.interfaces.ICourseInstance" />
-
-		<utility factory=".courses.CoursesCatalog"
-			 	 provides=".interfaces.ICoreCatalog"
-			 	 name='courses' />
-
-		<adapter factory=".externalization._CourseCatalogDocumentSOLRExternalizer"
-				 for=".interfaces.ICourseCatalogDocument"
-				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-				 name="solr" />
-
+		<include package=".courses" />
 	</configure>
 
 	<!-- Assessments / Evaluations -->
 	<configure zcml:condition="installed nti.assessment">
-	
-		<ext:registerAutoPackageIO
-			root_interfaces=".interfaces.IEvaluationDocument"
-			modules=".evaluations" />
-	
-		<adapter factory=".evaluations._DefaultEvaluationIDValue"
-			 	 provides=".interfaces.IIDValue"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._DefaultEvaluationTitleValue"
-				 provides=".interfaces.ITitleValue"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._DefaultEvaluationContentValue"
-				 provides=".interfaces.IContentValue"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._DefaultContainerIdValue"
-				 provides=".interfaces.IContainersValue"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._DefaultEvaluationKeywordsValue"
-				 provides=".interfaces.IKeywordsValue"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._EvaluationDocumentCreator"
-				 provides=".interfaces.IEvaluationDocument"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<adapter factory=".evaluations._evaluation_to_catalog"
-				 provides=".interfaces.ICoreCatalog"
-				 for="nti.assessment.interfaces.IQEvaluation" />
-
-		<utility factory=".evaluations.EvaluationsCatalog"
-				 provides=".interfaces.ICoreCatalog"
-				 name='evaluations' />
-
-		<adapter factory=".externalization._EvaluationDocumentSOLRExternalizer"
-				 for=".interfaces.IEvaluationDocument"
-				 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-				 name="solr" />
-
+		<include package=".assessment" />
 	</configure>
 
-	<!-- Transcripts -->
-	<adapter factory=".transcripts._TranscriptIDValue"
-			 provides=".interfaces.IIDValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".transcripts._TranscriptIntIdValue"
-			 provides=".interfaces.IIntIdValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".transcripts._TranscriptMediaNTIIDValue"
-			 provides=".interfaces.IMediaNTIIDValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".transcripts._TranscriptContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".mixins._TranscriptSource"
-			 provides=".interfaces.ITranscriptSourceValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".mixins._TranscriptContainerIdValue"
-			 provides=".interfaces.IContainersValue"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".transcripts._TranscriptCueMimeTypeValue"
-			 provides=".interfaces.IMimeTypeValue"
-			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
-
-	<adapter factory=".transcripts._TranscriptCueContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
-
-	<adapter factory=".transcripts._TranscriptCueStartTime"
-			 provides=".interfaces.ITranscriptCueStartTimeValue"
-			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
-
-	<adapter factory=".transcripts._TranscriptCueEndTime"
-			 provides=".interfaces.ITranscriptCueEndTimeValue"
-			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
-
-	<adapter factory=".transcripts._transcript_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.contenttypes.presentation.interfaces.INTITranscript" />
-
-	<adapter factory=".transcripts._transcript_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
-
-	<utility factory=".transcripts.TranscriptsCatalog"
-			 	 provides=".interfaces.ICoreCatalog"
-			 	 name='transcripts' />
-
-	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"
-			 for=".interfaces.ITranscriptDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
-
-	<!-- User Generated Data -->
-	<adapter factory=".userdata._UserDataSharedWithValue"
-			 provides=".interfaces.ISharedWithValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<adapter factory=".userdata._DefaultUserDataTitleValue"
-			 provides=".interfaces.ITitleValue"
-			 for="nti.dataserver.interfaces.ITitledContent" />
-
-	<adapter factory=".userdata._DefaultUserDataContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<adapter factory=".userdata._NoteContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.dataserver.interfaces.INote" />
-
-	<adapter factory=".userdata._HighlightContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.dataserver.interfaces.IHighlight" />
-
-	<adapter factory=".userdata._HeadlineTopicIDValue"
-			 provides=".interfaces.IIDValue"
-			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
-
-	<adapter factory=".userdata._HeadlineTopicTitleValue"
-			 provides=".interfaces.ITitleValue"
-			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
-
-	<adapter factory=".userdata._HeadlineTopicContentValue"
-			 provides=".interfaces.IContentValue"
-			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
-
-	<adapter factory=".userdata._DefaultUserDataKeywordsValue"
-			 provides=".interfaces.IKeywordsValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<adapter factory=".userdata._UserGeneratedDataContainersValue"
-			 provides=".interfaces.IContainersValue"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<adapter factory=".userdata._DefaultTagsValue"
-			 provides=".interfaces.ITagsValue"
-			 for="nti.dataserver.interfaces.IUserTaggedContent" />
-
-	<adapter factory=".userdata._HeadlineTopicTagsValue"
-			 provides=".interfaces.ITagsValue"
-			 for="nti.dataserver.contenttypes.forums.interfaces.IHeadlineTopic" />
-
-	<adapter factory=".userdata._DefaultChannelValue"
-			 provides=".interfaces.IChannelValue"
-			 for="nti.chatserver.interfaces.IMessageInfo" />
-
-	<adapter factory=".userdata._DefaultRecipientsValue"
-			 provides=".interfaces.IRecipientsValue"
-			 for="nti.chatserver.interfaces.IMessageInfo" />
-
-	<adapter factory=".userdata._DefaultRedactionExplanationValue"
-			 provides=".interfaces.IExplanationValue"
-			 for="nti.dataserver.interfaces.IRedaction" />
-
-	<adapter factory=".userdata._DefaultReplacementContentValue"
-			 provides=".interfaces.IReplacementContentValue"
-			 for="nti.dataserver.interfaces.IRedaction" />
-
-	<adapter factory=".userdata._UserDataDocumentCreator"
-			 provides=".interfaces.IUserDataDocument"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<adapter factory=".userdata._userdata_to_catalog"
-			 provides=".interfaces.ICoreCatalog"
-			 for="nti.dataserver.interfaces.IUserGeneratedData" />
-
-	<utility factory=".userdata.UserDataCatalog"
-			 provides=".interfaces.ICoreCatalog"
-			 name='userdata' />
-
-	<adapter factory=".externalization._UserDataDocumentSOLRExternalizer"
-			 for=".interfaces.IUserDataDocument"
-			 provides="nti.externalization.interfaces.IInternalObjectExternalizer"
-			 name="solr" />
-
+	<!-- Userdata -->
+	<include package=".userdata" />
+	
+	<!-- Entities -->
+	<include package=".entities" />
+	
 	<!-- Utilities -->
 	<utility factory=".query._SOLRQueryValidator" />
 

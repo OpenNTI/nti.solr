@@ -22,14 +22,15 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import EVALUATIONS_CATALOG
+from nti.solr.assessment import EVALUATIONS_CATALOG
+
+from nti.solr.assessment.interfaces import IEvaluationDocument
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
-from nti.solr.interfaces import IEvaluationDocument
 
 from nti.solr.lucene import lucene_escape
 

@@ -13,13 +13,19 @@ from zope import interface
 
 from nti.base._compat import text_
 
+from nti.contentfragments.interfaces import IPlainTextContentFragment
+
 from nti.contenttypes.courses.interfaces import ICourseInstance
 from nti.contenttypes.courses.interfaces import ICourseKeywords
 from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import COURSES_CATALOG
+from nti.solr import DEFAULT_LANGUAGE
+
+from nti.solr.courses import COURSES_CATALOG
+
+from nti.solr.courses.interfaces import ICourseCatalogDocument
 
 from nti.solr.interfaces import ITagsValue
 from nti.solr.interfaces import INTIIDValue
@@ -27,7 +33,6 @@ from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
-from nti.solr.interfaces import ICourseCatalogDocument
 
 from nti.solr.lucene import lucene_escape
 
@@ -35,7 +40,6 @@ from nti.solr.metadata import MetadataCatalog
 from nti.solr.metadata import MetadataDocument
 
 from nti.solr.utils import document_creator
-from nti.contentfragments.interfaces import IPlainTextContentFragment
 
 logger = __import__('logging').getLogger(__name__)
 
@@ -63,7 +67,7 @@ class _DefaultNTIIDValue(_BasicAttributeValue):
 class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 
     def lang(self, unused_context=None):
-        return 'en'
+        return DEFAULT_LANGUAGE
 
     def value(self, context=None):
         context = self.context if context is None else context
@@ -74,7 +78,7 @@ class _DefaultCourseCatalogTitleValue(_BasicAttributeValue):
 @interface.implementer(IContentValue)
 class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 
-    language = 'en'
+    language = DEFAULT_LANGUAGE
 
     def lang(self, unused_context=None):
         return self.language
@@ -97,7 +101,7 @@ class _DefaultCourseCatalogContentValue(_BasicAttributeValue):
 @interface.implementer(IKeywordsValue)
 class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
 
-    language = 'en'
+    language = DEFAULT_LANGUAGE
 
     def lang(self, unused_context=None):
         return self.language

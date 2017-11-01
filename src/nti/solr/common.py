@@ -29,14 +29,14 @@ from nti.site.site import get_site_for_site_names
 
 from nti.site.transient import TrivialSite
 
-from nti.solr import USERDATA_CATALOG
-
 from nti.solr import get_factory
 
 from nti.solr.interfaces import IIDValue
 from nti.solr.interfaces import ICoreCatalog
 
 from nti.solr.lucene import lucene_escape
+
+from nti.solr.userdata import USERDATA_CATALOG
 
 from nti.solr.utils import object_finder
 

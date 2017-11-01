@@ -23,9 +23,6 @@ from nti.contentlibrary.interfaces import IContentPackageRenderedEvent
 
 from nti.publishing.interfaces import IPublishable
 
-from nti.solr import ASSETS_QUEUE
-from nti.solr import CONTENT_UNITS_QUEUE
-
 from nti.solr.interfaces import IIndexObjectEvent
 from nti.solr.interfaces import IUnindexObjectEvent
 
@@ -36,10 +33,14 @@ from nti.solr.common import queue_modified
 from nti.solr.common import single_index_job
 from nti.solr.common import single_unindex_job
 
-from nti.solr.contentunits import index_content_package
-from nti.solr.contentunits import unindex_content_package
-from nti.solr.contentunits import index_content_package_assets
-from nti.solr.contentunits import unindex_content_package_assets
+from nti.solr.contentlibrary import CONTENT_UNITS_QUEUE
+
+from nti.solr.contentlibrary.catalog import index_content_package
+from nti.solr.contentlibrary.catalog import unindex_content_package
+from nti.solr.contentlibrary.catalog import index_content_package_assets
+from nti.solr.contentlibrary.catalog import unindex_content_package_assets
+
+from nti.solr.presentation import ASSETS_QUEUE
 
 logger = __import__('logging').getLogger(__name__)
 

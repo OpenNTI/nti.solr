@@ -22,9 +22,26 @@ from nti.contenttypes.presentation.interfaces import IPresentationAsset
 from nti.traversal.traversal import find_interface
 
 from nti.solr.interfaces import IContainersValue
-from nti.solr.interfaces import ITranscriptSourceValue
+
+from nti.solr.presentation.interfaces import ITranscriptSourceValue
 
 from nti.traversal.location import lineage
+
+try:
+    from nti.contentlibrary.interfaces import IContentPackage
+    HAS_CONTENT_LIBRARY = True
+except ImportError:
+    HAS_CONTENT_LIBRARY = False
+    IContentPackage = interface.Interface
+    
+try:
+    from nti.contenttypes.courses.interfaces import ICourseInstance
+    from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
+    HAS_COURSE = True
+except ImportError:
+    HAS_COURSE = False
+    ICourseInstance = ICourseCatalogEntry = interface.Interface
+    
 
 logger = __import__('logging').getLogger(__name__)
 
@@ -63,27 +80,19 @@ class _AssetContainerIdValue(object):
 
     @classmethod
     def _package_containers(cls, context):
-        try:
-            from nti.contentlibrary.interfaces import IContentPackage
+        if HAS_CONTENT_LIBRARY:
             containers, _ = cls._container_lineage(context, IContentPackage)
             return containers
-        except ImportError:
-            pass
         return ()
 
     @classmethod
     def _course_containers(cls, context):
-        try:
-            from nti.contenttypes.courses.interfaces import ICourseInstance
-            from nti.contenttypes.courses.interfaces import ICourseCatalogEntry
-
+        if HAS_COURSE:
             containers, item = cls._container_lineage(context, ICourseInstance)
             entry = ICourseCatalogEntry(item, None)
             if entry is not None and entry.ntiid:
                 containers.append(entry.ntiid)
             return containers
-        except ImportError:
-            pass
         return ()
 
     def value(self, context=None):
@@ -105,8 +114,7 @@ class _TranscriptSource(object):
         self.context = context
 
     def library_source(self, context, source):
-        try:
-            from nti.contentlibrary.interfaces import IContentPackage
+        if HAS_CONTENT_LIBRARY:
             raw_content = None
             # is in content pkg ?
             if      not source.startswith('/')  \
@@ -118,8 +126,7 @@ class _TranscriptSource(object):
                     except Exception:
                         logger.exception("Cannot read contents for %s", source)
             return StringIO(raw_content) if raw_content else None
-        except ImportError:
-            return None
+        return None
 
     def attached_source(self, unused_context, source):
         raw_content = source.data

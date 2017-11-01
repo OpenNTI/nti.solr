@@ -28,7 +28,9 @@ from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.schema.fieldproperty import createDirectFieldProperties
 
-from nti.solr import CONTENT_UNITS_CATALOG
+from nti.solr.contentlibrary import CONTENT_UNITS_CATALOG
+
+from nti.solr.contentlibrary.interfaces import IContentUnitDocument
 
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
@@ -37,7 +39,6 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ICreatedTimeValue
-from nti.solr.interfaces import IContentUnitDocument
 
 from nti.solr.lucene import lucene_escape
 

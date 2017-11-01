@@ -22,16 +22,6 @@ Common
 
 .. automodule:: nti.solr.common
 
-Content Units
-=============
-
-.. automodule:: nti.solr.contentunits
-
-Courses
-=======
-
-.. automodule:: nti.solr.courses
-
 Decorators
 ==========
 
@@ -41,11 +31,6 @@ Entities
 ========
 
 .. automodule:: nti.solr.entities
-
-Evaluations
-===========
-
-.. automodule:: nti.solr.evaluations
 
 Externalization
 ===============

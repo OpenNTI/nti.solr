@@ -16,27 +16,11 @@ from zope import component
 from nti.solr.interfaces import ISOLRQueueFactory
 
 QUEUE_NAME = '++etc++solr++queue'
-
-ASSETS_QUEUE = QUEUE_NAME + '++assets'
-COURSES_QUEUE = QUEUE_NAME + '++courses'
-ENTITIES_QUEUE = QUEUE_NAME + '++entities'
-USERDATA_QUEUE = QUEUE_NAME + '++userdata'
-EVALUATIONS_QUEUE = QUEUE_NAME + '++evaluations'
-TRANSCRIPTS_QUEUE = QUEUE_NAME + '++transcripts'
-CONTENT_UNITS_QUEUE = QUEUE_NAME + '++contentunits'
-
-QUEUE_NAMES = (CONTENT_UNITS_QUEUE, TRANSCRIPTS_QUEUE,
-               USERDATA_QUEUE, ASSETS_QUEUE, ENTITIES_QUEUE,
-               EVALUATIONS_QUEUE, COURSES_QUEUE)
+QUEUE_NAMES = ()
 
 NTI_CATALOG = 'nti'
-ASSETS_CATALOG = 'assets'
-COURSES_CATALOG = 'courses'
-ENTITIES_CATALOG = 'entities'
-USERDATA_CATALOG = 'userdata'
-EVALUATIONS_CATALOG = 'evaluations'
-TRANSCRIPTS_CATALOG = 'transcripts'
-CONTENT_UNITS_CATALOG = 'contentunits'
+
+DEFAULT_LANGUAGE = 'en'
 
 primitive_types = six.string_types + (Number, bool)
 
@@ -46,3 +30,10 @@ _AND_ = u' AND '
 
 def get_factory():
     return component.getUtility(ISOLRQueueFactory)
+
+
+def add_queue_name(name):
+    global QUEUE_NAMES
+    if name not in QUEUE_NAMES:
+        QUEUE_NAMES += (name,)
+addQueue = add_queue_name
