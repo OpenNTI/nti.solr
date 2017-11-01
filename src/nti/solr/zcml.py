@@ -26,8 +26,6 @@ from nti.dataserver.interfaces import IRedisClient
 
 from nti.schema.field import Int
 
-from nti.solr import QUEUE_NAMES
-
 from nti.solr.interfaces import ISOLR
 from nti.solr.interfaces import ISOLRQueueFactory
 
@@ -39,8 +37,8 @@ logger = __import__('logging').getLogger(__name__)
 class IRegisterSOLR(interface.Interface):
 
     url = fields.TextLine(title=u"SOLR url", required=True)
-    
-    name = fields.TextLine(title=u"optional registration name", 
+
+    name = fields.TextLine(title=u"optional registration name",
                            required=False)
 
     timeout = Int(title=u"timeout", required=False)
@@ -88,6 +86,7 @@ class _SOLRProcessingQueueFactory(_AbstractProcessingQueueFactory):
     queue_interface = IRedisQueue
 
     def __init__(self, _context):
+        from nti.solr import QUEUE_NAMES  # late bind
         for name in QUEUE_NAMES:
             queue = RedisQueue(self._redis, name)
             utility(_context, provides=IRedisQueue, component=queue, name=name)
