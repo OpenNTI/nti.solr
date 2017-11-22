@@ -16,7 +16,6 @@ from nti.base._compat import text_
 from nti.base.interfaces import IDict
 
 from nti.contentsearch.interfaces import ISearchHit
-from nti.contentsearch.interfaces import IResultTransformer
 from nti.contentsearch.interfaces import ITranscriptSearchHit
 from nti.contentsearch.interfaces import IContentUnitSearchHit
 from nti.contentsearch.interfaces import IUserGeneratedDataSearchHit
@@ -100,9 +99,3 @@ def _contentunit_search_hit_adapter(obj, result):
 @interface.implementer(IUserGeneratedDataSearchHit)
 def ugd_search_hit_adapter(obj, result):
     return default_search_hit_adapter(obj, result, UserGeneratedDataSearchHit())
-
-
-@component.adapter(INTITranscript)
-@interface.implementer(IResultTransformer)
-def transcript_to_media(obj):
-    return obj.__parent__
