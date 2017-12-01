@@ -18,7 +18,7 @@ from zope import component
 from zope.component.hooks import getSite
 from zope.component.hooks import site as current_site
 
-from nti.async import create_job
+from nti.asynchronous import create_job
 
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset

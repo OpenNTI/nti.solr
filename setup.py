@@ -47,6 +47,7 @@ setup(
         'BTrees',
         'gevent',
         'isodate',
+        'nti.asynchronous',
         'nti.async',
         'nti.base',
         'nti.common',

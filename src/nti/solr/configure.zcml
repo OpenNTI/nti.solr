@@ -19,7 +19,7 @@
 	<include package="." file="meta.zcml" />
 
 	<!-- Job runner -->
-	<include package="nti.async" />
+	<include package="nti.asynchronous" />
 
 	<!-- Externalization -->
 	<include package="nti.externalization" file="meta.zcml" />
