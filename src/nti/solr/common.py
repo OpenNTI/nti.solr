@@ -76,6 +76,7 @@ def add_to_queue(name, func, obj, site=None, core=None, jid=None, **kwargs):
     adpated = IIDValue(obj, None)
     catalog = ICoreCatalog(obj, None)
     core = catalog.name if not core and catalog else core
+    # pylint: disable=E1121
     doc_id = adpated.value() if adpated is not None else None
     if doc_id and core and site:
         jid = '%s_%s' % (doc_id, jid)
