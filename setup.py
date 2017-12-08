@@ -48,7 +48,6 @@ setup(
         'gevent',
         'isodate',
         'nti.asynchronous',
-        'nti.async',
         'nti.base',
         'nti.common',
         'nti.contentfragments',
