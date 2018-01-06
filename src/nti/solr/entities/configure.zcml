@@ -21,6 +21,10 @@
 			 provides=".interfaces.IUsernameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".catalog._DefaultUserSiteValue"
+			 provides=".interfaces.ISiteValue"
+			 for="nti.dataserver.interfaces.IUser" />
+
 	<adapter factory=".catalog._DefaultEmailValue"
 			 provides=".interfaces.IEmailValue"
 			 for="nti.dataserver.interfaces.IEntity" />

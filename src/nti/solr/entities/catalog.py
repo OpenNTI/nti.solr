@@ -13,8 +13,11 @@ import six
 from zope import component
 from zope import interface
 
+from zope.component.hooks import getSite
+
 from nti.base._compat import text_
 
+from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUseNTIIDAsExternalUsername
 
@@ -24,6 +27,8 @@ from nti.dataserver.users.interfaces import IFriendlyNamed
 from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
+
+from nti.dataserver.users.utils import user_creation_sitename
 
 from nti.ntiids.oids import to_external_ntiid_oid
 
@@ -45,7 +50,8 @@ from nti.solr.entities.interfaces import IProfessionalCompanyValue
 from nti.solr.entities.interfaces import IEducationDescriptionValue
 from nti.solr.entities.interfaces import IProfessionalDescriptionValue
 
-from nti.solr.interfaces import ICoreCatalog
+from nti.solr.interfaces import ISiteValue
+from nti.solr.interfaces import ICoreCatalog 
 
 from nti.solr.lucene import lucene_escape
 
@@ -68,7 +74,7 @@ class _BasicAttributeValue(object):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        profile = self.interface(context, None)
+        profile = self.interface(context, None) # pylint: disable=not-callable
         result = getattr(profile, self.field, None)
         if isinstance(result, six.string_types):
             result = text_(result)
@@ -99,6 +105,19 @@ class _DefaultEmailValue(_BasicAttributeValue):
     def value(self, context=None):
         result = _BasicAttributeValue.value(self, context)
         return result.lower() if result else None
+
+
+@component.adapter(IUser)
+@interface.implementer(ISiteValue)
+class _DefaultUserSiteValue(object):
+
+    def __init__(self, context=None, unused_default=None):
+        self.context = context
+        
+    def value(self, context=None):
+        context = self.context if context is None else context
+        result = user_creation_sitename(context) or getSite().__name__
+        return result
 
 
 @component.adapter(IEntity)
@@ -225,7 +244,7 @@ class EntitiesCatalog(MetadataCatalog):
     name = ENTITIES_CATALOG
     document_interface = IEntityDocument
 
-    def build_from_search_query(self, query, **kwargs):
+    def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)

@@ -9,7 +9,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import six
-from numbers import Number
 
 from nti.solr import QUEUE_NAME
 from nti.solr import add_queue_name
