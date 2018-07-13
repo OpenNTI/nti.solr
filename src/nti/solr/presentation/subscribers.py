@@ -8,6 +8,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+from nti.app.products.courseware_ims.interfaces import IExternalToolAsset
 from zope import component
 
 from zope.intid.interfaces import IIntIdRemovedEvent
@@ -71,7 +72,8 @@ def _index_transcript_removed(obj, _):
 @component.adapter(IPresentationAsset, IAfterIdAddedEvent)
 def _asset_added(obj, _=None):
     if     INTIMedia.providedBy(obj) \
-        or INTIDocketAsset.providedBy(obj):
+        or INTIDocketAsset.providedBy(obj) \
+        or IExternalToolAsset.providedBy(obj):
         queue_add(ASSETS_QUEUE, single_index_job, obj)
     if INTIMedia.providedBy(obj):
         for transcript in getattr(obj, 'transcripts', None) or ():
@@ -81,7 +83,8 @@ def _asset_added(obj, _=None):
 @component.adapter(IPresentationAsset, IObjectModifiedEvent)
 def _asset_modified(obj, _):
     if     INTIMedia.providedBy(obj) \
-        or INTIDocketAsset.providedBy(obj):
+        or INTIDocketAsset.providedBy(obj) \
+        or IExternalToolAsset.providedBy(obj):
         queue_modified(ASSETS_QUEUE, single_index_job, obj)
     if INTIMedia.providedBy(obj):
         for transcript in getattr(obj, 'transcripts', None) or ():
@@ -92,7 +95,8 @@ def _asset_modified(obj, _):
 @component.adapter(IPresentationAsset, IIntIdRemovedEvent)
 def _asset_removed(obj, _):
     if     INTIMedia.providedBy(obj) \
-        or INTIDocketAsset.providedBy(obj):
+        or INTIDocketAsset.providedBy(obj) \
+        or IExternalToolAsset.providedBy(obj):
         queue_remove(ASSETS_QUEUE, single_unindex_job, obj=obj)
     if INTIMedia.providedBy(obj):
         for transcript in getattr(obj, 'transcripts', None) or ():
@@ -101,7 +105,7 @@ def _asset_removed(obj, _):
 
 @component.adapter(IPresentationAsset, IPresentationAssetMovedEvent)
 def _asset_moved(obj, _):
-    if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj):
+    if INTIMedia.providedBy(obj) or INTIDocketAsset.providedBy(obj) or IExternalToolAsset.providedBy(obj):
         queue_modified(ASSETS_QUEUE, single_index_job, obj=obj)
 
 

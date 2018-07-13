@@ -38,6 +38,7 @@ def _register():
     mimeTypeRegistry.register(VIDEO_TRANSCRIPT_MIME_TYPE, TRANSCRIPTS_CATALOG)
 
     # assets
+    from nti.app.products.courseware_ims.lti import LTI_EXTERNAL_TOOL_ASSET_MIMETYPE
     from nti.contenttypes.presentation import AUDIO_MIME_TYPES
     from nti.contenttypes.presentation import VIDEO_MIME_TYPES
     from nti.contenttypes.presentation import TIMELINE_MIME_TYPES
@@ -45,7 +46,8 @@ def _register():
     for m in chain(AUDIO_MIME_TYPES,
                    VIDEO_MIME_TYPES,
                    TIMELINE_MIME_TYPES,
-                   RELATED_WORK_REF_MIME_TYPES):
+                   RELATED_WORK_REF_MIME_TYPES,
+                   (LTI_EXTERNAL_TOOL_ASSET_MIMETYPE,)):
         mimeTypeRegistry.register(m, ASSETS_CATALOG)
 _register()
 del _register
