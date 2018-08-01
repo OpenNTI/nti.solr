@@ -22,7 +22,7 @@ from nti.dataserver.interfaces import ITargetedStreamChangeEvent
 
 from nti.dataserver.users import Entity
 
-from nti.solr.subscribers.userdata import index_userdata
+from nti.solr.userdata.subscribers import userdata_added
 
 _changeType_events = (SC_CREATED, SC_SHARED, SC_MODIFIED)
 
@@ -47,6 +47,6 @@ def onChange(event):
 
     if should_process:
         if changeType != SC_DELETED:
-            index_userdata(changeObject, None)
+            userdata_added(changeObject)
 
     return should_process
