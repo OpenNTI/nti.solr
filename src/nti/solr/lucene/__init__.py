@@ -34,5 +34,5 @@ def is_prefix_search(term):
 def is_valid_query(term):
     try:
         return bool(expression.parseString(term, parseAll=True))
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return False
