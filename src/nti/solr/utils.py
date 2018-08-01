@@ -9,11 +9,12 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import re
-import six
 import functools
 from collections import defaultdict
 
 import gevent
+
+import six
 
 from zope import component
 
