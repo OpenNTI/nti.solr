@@ -61,6 +61,9 @@ boost = (CARAT + number("boost"))
 
 string_expr = Group(q_string + proximity_modifier) | q_string
 word_expr = Group(valid_word + fuzzy_modifier) | valid_word
+
+# pylint: disable=expression-not-assigned 
+
 term << ( Optional(field_name("field") + COLON) +
           (word_expr | string_expr | range_search | Group(LPAR + expression + RPAR)) +
           Optional(boost))
