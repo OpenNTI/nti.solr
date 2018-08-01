@@ -56,6 +56,7 @@ def resolve_content_parts(data):
     for item in data or ():
         adapted = IStringValue(item, None)
         if adapted is not None:
+            # pylint: disable=too-many-function-args
             result.append(adapted.value())
     result = u'\n'.join(x for x in result if x is not None)
     return result
@@ -92,6 +93,7 @@ def document_creator(obj, factory, provided=None):
     if provided is None:
         provided = find_most_derived_interface(result, ICoreDocument)
     for k, v in provided.namesAndDescriptions(all=True):
+        # pylint: disable=unused-variable
         __traceback_info__ = k, v
         if IMethod.providedBy(v):
             continue
