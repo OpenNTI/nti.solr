@@ -5,7 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
-# pylint: disable=protected-access,too-many-public-methods
+# pylint: disable=protected-access,too-many-public-methods,too-many-function-args
 
 from hamcrest import is_
 from hamcrest import assert_that
@@ -19,6 +19,7 @@ from nti.dataserver.users.users import User
 from nti.dataserver.users.user_profile import Education
 from nti.dataserver.users.user_profile import ProfessionalPosition
 
+from nti.solr.entities.interfaces import IRoleValue
 from nti.solr.entities.interfaces import ISocialURLValue
 from nti.solr.entities.interfaces import IEducationDegreeValue
 from nti.solr.entities.interfaces import IEducationSchoolValue
@@ -39,7 +40,7 @@ class TestAdapters(unittest.TestCase):
         prof = ICompleteUserProfile(user)
         prof.alias = u'Ichigo'
         prof.realname = u'Ichigo Kurosaki'
-
+        prof.role = u'Student'
         prof.twitter = 'https://twitter.com/ichigo'
         prof.positions = [ProfessionalPosition(startYear=1998,
                                                endYear=2009,
@@ -52,6 +53,9 @@ class TestAdapters(unittest.TestCase):
                                     degree=u'Master',
                                     description=u'Computer Science')]
 
+        value = IRoleValue(user).value()
+        assert_that(value, is_('Student'))
+        
         value = ISocialURLValue(user).value()
         assert_that(value, is_(('https://twitter.com/ichigo',)))
 
