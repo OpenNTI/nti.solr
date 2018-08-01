@@ -33,13 +33,13 @@ logger = __import__('logging').getLogger(__name__)
 
 
 @component.adapter(IUserGeneratedData, IIntIdAddedEvent)
-def _userdata_added(obj, _):
+def _userdata_added(obj, unused_event=None):
     queue_add(USERDATA_QUEUE, single_index_job, obj)
 userdata_added = _userdata_added
 
 
 @component.adapter(IUserGeneratedData, IObjectModifiedEvent)
-def _userdata_modified(obj, _):
+def _userdata_modified(obj, unused_event=None):
     if IDeletedObjectPlaceholder.providedBy(obj):
         queue_remove(USERDATA_QUEUE, single_unindex_job, obj)
     else:
@@ -47,16 +47,16 @@ def _userdata_modified(obj, _):
 
 
 @component.adapter(IUserGeneratedData, IIntIdRemovedEvent)
-def _userdata_removed(obj, _):
+def _userdata_removed(obj, unused_event=None):
     queue_remove(USERDATA_QUEUE, single_unindex_job, obj=obj)
 
 
 @component.adapter(IUserGeneratedData, IIndexObjectEvent)
-def _index_userdata(obj, _):
+def _index_userdata(obj, unused_event=None):
     _userdata_added(obj, None)
 index_userdata = _index_userdata
 
 
 @component.adapter(IUserGeneratedData, IUnindexObjectEvent)
-def _unindex_userdata(obj, _):
+def _unindex_userdata(obj, unused_event=None):
     _userdata_removed(obj, None)
