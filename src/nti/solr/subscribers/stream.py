@@ -20,7 +20,7 @@ from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IReadableShared
 from nti.dataserver.interfaces import ITargetedStreamChangeEvent
 
-from nti.dataserver.users import Entity
+from nti.dataserver.users.entity import Entity
 
 from nti.solr.userdata.subscribers import userdata_added
 
