@@ -23,6 +23,8 @@ COMMUNITY_MIME_TYPE = 'application/vnd.nextthought.community'
 DFL_MIME_TYPE = 'application/vnd.nextthought.dynamicfriendslist'
 FRIEND_LISTS_MIME_TYPE = 'application/vnd.nextthought.friendslist'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(ENTITIES_QUEUE)

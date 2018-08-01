@@ -20,6 +20,8 @@ COURSE_MIME_TYPE = 'application/vnd.nextthought.courses.courseinstance'
 CATALOG_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecatalogentry'
 CATALOG_LEGACY_ENTRY_MIME_TYPE = 'application/vnd.nextthought.courses.coursecataloglegacyentry'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(COURSES_QUEUE)

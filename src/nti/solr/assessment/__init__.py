@@ -18,6 +18,8 @@ from nti.solr.utils import mimeTypeRegistry
 EVALUATIONS_CATALOG = 'evaluations'
 EVALUATIONS_QUEUE = QUEUE_NAME + '++evaluations'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(EVALUATIONS_QUEUE)
