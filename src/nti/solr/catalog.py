@@ -263,7 +263,7 @@ class CoreCatalog(object):
             if name not in self.document_interface:
                 continue
             field = self.document_interface[name]
-            if isinstance(value, tuple) and len(value) == 2:  # range
+            if isinstance(value, (list, tuple)) and len(value) == 2:  # range
                 if IDatetime.providedBy(field):
                     value = [SolrDatetime.toUnicode(x) for x in value]
                 data = (lucene_escape(value[0]), lucene_escape(value[1]))
