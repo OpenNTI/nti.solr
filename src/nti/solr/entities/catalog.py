@@ -27,6 +27,7 @@ from nti.dataserver.users.interfaces import IFriendlyNamed
 from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
+from nti.dataserver.users.interfaces import ICompleteUserProfile
 
 from nti.dataserver.users.utils import user_creation_sitename
 
@@ -36,9 +37,11 @@ from nti.schema.fieldproperty import createDirectFieldProperties
 
 from nti.solr.entities import ENTITIES_CATALOG
 
-from nti.solr.entities.interfaces import IAboutValue
+from nti.solr.entities.interfaces import IRoleValue
+from nti.solr.entities.interfaces import IAboutValue 
 from nti.solr.entities.interfaces import IAliasValue
 from nti.solr.entities.interfaces import IEmailValue
+from nti.solr.entities.interfaces import ILocationValue
 from nti.solr.entities.interfaces import IRealnameValue
 from nti.solr.entities.interfaces import IUsernameValue
 from nti.solr.entities.interfaces import IEntityDocument
@@ -132,6 +135,20 @@ class _DefaultAliasValue(_BasicAttributeValue):
 class _DefaultRealnameValue(_BasicAttributeValue):
     field = 'realname'
     interface = IFriendlyNamed
+
+
+@component.adapter(IEntity)
+@interface.implementer(IRoleValue)
+class _DefaultRoleValue(_BasicAttributeValue):
+    field = 'role'
+    interface = ICompleteUserProfile
+
+
+@component.adapter(IEntity)
+@interface.implementer(ILocationValue)
+class _DefaultLocationValue(_BasicAttributeValue):
+    field = 'location'
+    interface = IUserProfile
 
 
 @component.adapter(IEntity)

@@ -21,6 +21,14 @@
 			 provides=".interfaces.IUsernameValue"
 			 for="nti.dataserver.interfaces.IEntity" />
 
+	<adapter factory=".catalog._DefaultRoleValue"
+			 provides=".interfaces.IRoleValue"
+			 for="nti.dataserver.interfaces.IUser" />
+
+	<adapter factory=".catalog._DefaultLocationValue"
+			 provides=".interfaces.ILocationValue"
+			 for="nti.dataserver.interfaces.IUser" />
+
 	<adapter factory=".catalog._DefaultUserSiteValue"
 			 provides="nti.solr.interfaces.ISiteValue"
 			 for="nti.dataserver.interfaces.IUser" />

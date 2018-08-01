@@ -100,7 +100,7 @@ class CoreCatalog(object):
             self.auto_commit = bool(auto_commit)
 
     @readproperty
-    def client(self):
+    def client(self): # pylint: disable=method-hidden
         config = component.getUtility(ISOLR)
         url = config.url + '/%s' % self.core
         return pysolr.Solr(url, timeout=config.timeout)
@@ -109,6 +109,7 @@ class CoreCatalog(object):
 
     def add(self, value, commit=None, event=True):
         adapted = IIDValue(value, None)
+        # pylint: disable=too-many-function-args
         doc_id = adapted.value() if adapted is not None else None
         if doc_id:
             return self.index_doc(doc_id, value, commit=commit, event=event)
@@ -134,6 +135,7 @@ class CoreCatalog(object):
             value = str(int)
         elif not isinstance(value, six.string_types):
             adapted = IIDValue(value, None)
+            # pylint: disable=too-many-function-args
             value = adapted.value() if adapted is not None else None
         if value:
             return self.unindex_doc(value, commit=commit, event=event)
@@ -177,6 +179,7 @@ class CoreCatalog(object):
                     value = {'between': value}
             elif isinstance(value, primitive_types):
                 value = {'any_of': (value,)}
+            # pylint: disable=unused-variable
             __traceback_info__ = name, value
             assert isinstance(value, Mapping) and len(value) == 1, \
                    'Invalid field query'
@@ -222,6 +225,7 @@ class CoreCatalog(object):
             except (ValueError, TypeError):
                 obj = self.get_object(hit['id'], intids)
                 adapted = IIntIdValue(obj, None)  # get intid
+                # pylint: disable=too-many-function-args
                 uid = adapted.value() if adapted is not None else None
             if uid is not None and uid not in result:
                 result[uid] = score
@@ -247,6 +251,7 @@ class CoreCatalog(object):
     @Lazy
     def text_fields(self):
         result = []
+        # pylint: disable=no-value-for-parameter
         for name, field in self.document_interface.namesAndDescriptions(all=True):
             if ITextField.providedBy(field):
                 result.append(name)
@@ -289,6 +294,7 @@ class CoreCatalog(object):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
         text_fields = search_fields(query, self.text_fields)
+        # pylint: disable=using-constant-test, not-an-iterable
         if text_fields:
             for name in text_fields:
                 qt.add_term(name, term)
@@ -334,6 +340,7 @@ class CoreCatalog(object):
     @Lazy
     def suggest_fields(self):
         result = []
+        # pylint: disable=no-value-for-parameter
         for name, field in self.document_interface.namesAndDescriptions(all=True):
             if ISuggestField.providedBy(field):
                 result.append(name)
@@ -349,6 +356,7 @@ class CoreCatalog(object):
             params['rows'] = str(batch_size)
         return params
 
+    # pylint: disable=keyword-arg-before-vararg
     def suggest(self, query, fields=None, batch_start=None, batch_size=None, 
                 *unused_args, **unused_kwargs):
         suggest_fields = fields or self.suggest_fields
