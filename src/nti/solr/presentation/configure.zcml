@@ -55,7 +55,7 @@
 			 for="nti.contenttypes.presentation.interfaces.IPresentationAsset" />
 
 	<utility factory=".assets.AssetsCatalog"
-			 provides="nti.solr.interfaces.ICoreCatalog"
+			 provides="nti.solr.interfaces.IPresentationAssetCatalog"
 			 name='assets' />
 
 	<adapter factory=".externalization._AssetDocumentSOLRExternalizer"
@@ -113,7 +113,7 @@
 			 for="nti.contentindexing.media.interfaces.IMediaTranscriptEntry" />
 
 	<utility factory=".transcripts.TranscriptsCatalog"
-			 	 provides="nti.solr.interfaces.ICoreCatalog"
+			 	 provides="nti.solr.interfaces.ITranscriptCatalog"
 			 	 name='transcripts' />
 
 	<adapter factory=".externalization._TranscriptDocumentSOLRExternalizer"

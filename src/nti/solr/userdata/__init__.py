@@ -14,6 +14,8 @@ from nti.solr import add_queue_name
 USERDATA_CATALOG = 'userdata'
 USERDATA_QUEUE = QUEUE_NAME + '++userdata'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(USERDATA_QUEUE)

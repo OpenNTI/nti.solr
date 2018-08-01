@@ -65,7 +65,7 @@
 
 	<!-- Utilities -->
 	<utility factory=".catalog.ContentUnitsCatalog"
-			 provides="nti.solr.interfaces.ICoreCatalog"
+			 provides="nti.solr.interfaces.ILibraryCatalog"
 			 name='contentunits' />
 
 	<!-- Subscribers -->

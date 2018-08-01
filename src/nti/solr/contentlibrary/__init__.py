@@ -21,6 +21,8 @@ CONTENT_UNITS_QUEUE = QUEUE_NAME + '++contentunits'
 CONTENT_MIME_TYPE = 'application/vnd.nextthought.content'
 BOOK_CONTENT_MIME_TYPE = 'application/vnd.nextthought.bookcontent'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(CONTENT_UNITS_QUEUE)

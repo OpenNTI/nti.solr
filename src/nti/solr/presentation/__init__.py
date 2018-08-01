@@ -27,6 +27,8 @@ NTI_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.ntitranscript'
 AUDIO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.audiotranscript'
 VIDEO_TRANSCRIPT_MIME_TYPE = 'application/vnd.nextthought.videotranscript'
 
+logger = __import__('logging').getLogger(__name__)
+
 
 def _register():
     add_queue_name(ASSETS_QUEUE)

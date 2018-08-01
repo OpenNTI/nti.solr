@@ -33,6 +33,7 @@ from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import IPresentationAssetCatalog
 
 from nti.solr.lucene import lucene_escape
 
@@ -76,8 +77,8 @@ class _DefaultAssetIDValue(DefaultObjectIDValue):
     def value(self, context=None):
         context = self.context if context is None else context
         # Filter out legacy RelatedWork ntiid and asset refs.
-        if IAssetRef.providedBy(context) \
-                or is_ntiid_of_type(context.ntiid, RELATED_WORK):
+        if     IAssetRef.providedBy(context) \
+            or is_ntiid_of_type(context.ntiid, RELATED_WORK):
             result = None
         elif IUserCreatedAsset.providedBy(context):
             result = super(_DefaultAssetIDValue, self).value(context)
@@ -109,7 +110,7 @@ class _DefaultAssetCreatorValue(_BasicAttributeValue):
     def value(self, context=None):
         context = self.context if context is None else context
         result = getattr(context, 'creator', None) \
-            or getattr(context, 'byline', None)
+              or getattr(context, 'byline', None)
         if IUseNTIIDAsExternalUsername.providedBy(result):
             result = to_external_ntiid_oid(result)
         else:
@@ -148,6 +149,7 @@ class _DefaultAssetKeywordsValue(_BasicAttributeValue):
         context = self.context if context is None else context
         adapted = IContentValue(context, None)
         if adapted is not None:
+            # pylint: disable=too-many-function-args
             self.language = adapted.lang()
             return get_keywords(adapted.value(), self.language)
         return ()
@@ -183,12 +185,13 @@ def _asset_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=ASSETS_CATALOG)
 
 
+@interface.implementer(IPresentationAssetCatalog)
 class AssetsCatalog(MetadataCatalog):
 
     name = ASSETS_CATALOG
     document_interface = IAssetDocument
 
-    def build_from_search_query(self, query, **kwargs):
+    def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
             searchOn = getattr(query, 'searchOn', None)

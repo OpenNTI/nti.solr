@@ -44,6 +44,7 @@ from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ISharedWithValue
+from nti.solr.interfaces import IUserDataCatalog
 
 from nti.solr.lucene import lucene_escape
 
@@ -77,6 +78,7 @@ class _BasicAttributeValue(object):
 class _UserDataSharedWithValue(DefaultSharedWithValue):
 
     def value(self, context=None):
+        # pylint: disable=too-many-function-args
         context = self.context if context is None else context
         sharedWith = set(DefaultSharedWithValue.value(self, context) or ())
         sharedWith.add(ICreatorValue(context).value())
@@ -165,6 +167,7 @@ class _DefaultUserDataKeywordsValue(_BasicAttributeValue):
         context = self.context if context is None else context
         adapted = IContentValue(context, None)
         if adapted is not None:
+            # pylint: disable=too-many-function-args
             self.language = adapted.lang()
             return get_keywords(adapted.value(), self.language)
         return ()
@@ -262,7 +265,7 @@ def _userdata_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=USERDATA_CATALOG)
 
 
-@interface.implementer(ICoreCatalog)
+@interface.implementer(IUserDataCatalog)
 class UserDataCatalog(MetadataCatalog):
 
     name = USERDATA_CATALOG
@@ -292,6 +295,8 @@ class UserDataCatalog(MetadataCatalog):
 
     # search methods
 
+    # pylint: disable=arguments-differ
+      
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         username = getattr(query, 'username', None)
@@ -301,7 +306,7 @@ class UserDataCatalog(MetadataCatalog):
         if 'mimeType' not in fq:
             searchOn = getattr(query, 'searchOn', None)
             if searchOn:
-                types = self.get_mime_types(self.name)  # XXX: Negative list
+                types = self.get_mime_types(self.name)  # Negative list
                 fq.add_or('mimeType', [lucene_escape(x)
                                        for x in searchOn if x not in types])
             else:
