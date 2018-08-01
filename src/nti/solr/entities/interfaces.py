@@ -90,6 +90,16 @@ class IAboutValue(IStringValue):
     Adapter interface to get the about value from a given entity object
     """
 
+class ILocationValue(IAttributeValue):
+    """
+    Adapter interface to get the location value from a given object
+    """
+
+class IRoleValue(IAttributeValue):
+    """
+    Adapter interface to get the role value from a given object
+    """
+
 
 class IEntityDocument(IMetadataDocument):
 
@@ -105,6 +115,10 @@ class IEntityDocument(IMetadataDocument):
     realname = ValidTextLine(title=u'The realname', required=False)
 
     about_en = ValidText(title=u'The about statement', required=False)
+    
+    role = ValidTextLine(title=u'The role', required=False)
+    
+    location = ValidTextLine(title=u'The location', required=False)
 
     education_school = IndexedIterable(title=u'The school names',
                                        required=False,
@@ -150,6 +164,10 @@ tagField(IEntityDocument['alias'], True, IAliasValue, type_=u'text_lower')
 tagField(IEntityDocument['realname'], True, IRealnameValue, type_=u'text_lower')
 
 tagField(IEntityDocument['username'], True, IUsernameValue, True)
+
+tagField(IEntityDocument['role'], True, IRoleValue, True, type_=u'text_lower')
+
+tagField(IEntityDocument['location'], True, ILocationValue, True, type_=u'text_lower')
 
 tagField(IEntityDocument['social_url'], True, ISocialURLValue, True)
 
