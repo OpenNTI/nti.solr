@@ -8,10 +8,13 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
-import six
 from collections import Mapping
+from collections import Iterable
+from collections import Sequence
 
 import pysolr
+
+import six
 
 from zope import component
 from zope import interface
@@ -263,15 +266,17 @@ class CoreCatalog(object):
             if name not in self.document_interface:
                 continue
             field = self.document_interface[name]
-            if isinstance(value, (list, tuple)) and len(value) == 2:  # range
+            if isinstance(value, six.string_types):
+                fq.add_term(name, lucene_escape(value))
+            elif isinstance(value, Sequence) and len(value) == 2:  # range
                 if IDatetime.providedBy(field):
                     value = [SolrDatetime.toUnicode(x) for x in value]
                 data = (lucene_escape(value[0]), lucene_escape(value[1]))
                 fq.add_term(name, "[%s TO %s]" % data)
-            elif isinstance(value, (list, tuple, set)) and value:  # OR list
+            elif isinstance(value, Iterable) and value:  # OR list
                 data = (lucene_escape(x) for x in value)
                 fq.add_term(name, "(%s)" % self._OR_.join(data))
-            else:
+            elif value is not None:
                 fq.add_term(name, lucene_escape(str(value)))
         return fq
 

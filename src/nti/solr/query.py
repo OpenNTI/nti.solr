@@ -51,6 +51,7 @@ class TermMixin(object):
         return self._terms.__contains__(*args, **kwargs)
 
     def __iadd__(self, other):
+        # pylint: disable=protected-access
         self._terms.update(other._terms)
         return self
 
@@ -69,6 +70,7 @@ class QueryTerm(TermMixin):
     def __iadd__(self, other):
         if other.default:
             self.default = other.default
+        # pylint: disable=protected-access
         self._terms.update(other._terms)
         return self
 
@@ -104,6 +106,7 @@ class FilterQuery(TermMixin):
             or self._and_list.__contains__(*args, **kwargs)
 
     def __iadd__(self, other):
+        # pylint: disable=protected-access
         self._terms.update(other._terms)
         for name, values in other._or_list.items():
             self.add_or(name, values)
@@ -193,8 +196,9 @@ def hl_useSimpleEncoder(query):
 
 def search_fields(query, all_fields=()):
     # result = ()
-    # TODO: Parse fields
+    # We need to parse fields
     query = ISearchQuery(query)
+    # for now all fields are searched 
     return all_fields
 
 
