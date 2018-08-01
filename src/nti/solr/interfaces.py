@@ -378,6 +378,41 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
         """
 
 
+class IEvaluationCatalog(ICoreCatalog):
+    """
+    Defines an Evaluations catalog
+    """
+
+class ILibraryCatalog(ICoreCatalog):
+    """
+    Defines a content library catalog
+    """
+
+class ICourseCatalog(ICoreCatalog):
+    """
+    Defines a course library catalog
+    """
+
+class IEntityCatalog(ICoreCatalog):
+    """
+    Defines an entity catalog
+    """
+
+class IPresentationAssetCatalog(ICoreCatalog):
+    """
+    Defines a presentation asset catalog
+    """
+
+class ITranscriptCatalog(ICoreCatalog):
+    """
+    Defines a transcript catalog
+    """
+
+class IUserDataCatalog(ICoreCatalog):
+    """
+    Defines a user-data catalog
+    """
+
 class IIndexObjectEvent(IObjectEvent):
     """
     Event to signal object must be indexed

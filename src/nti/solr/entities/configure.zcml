@@ -92,7 +92,7 @@
 
 	<!-- Utilities -->
 	<utility factory=".catalog.EntitiesCatalog"
-			 provides="nti.solr.interfaces.ICoreCatalog"
+			 provides="nti.solr.interfaces.IEntityCatalog"
 			 name="entities" />
 
 	<!-- Subscribers -->

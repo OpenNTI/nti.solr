@@ -38,6 +38,7 @@ from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IMimeTypeValue
 from nti.solr.interfaces import IMetadataDocument
+from nti.solr.interfaces import ITranscriptCatalog
 
 from nti.solr.interfaces import ObjectIndexedEvent
 from nti.solr.interfaces import ObjectUnindexedEvent
@@ -144,6 +145,7 @@ class _TranscriptContentValue(_BasicAttributeValue):
 
     @classmethod
     def raw_content(cls, context):
+        # pylint: disable=too-many-function-args
         source = ITranscriptSourceValue(context, None)
         return source.value() if source is not None else None
 
@@ -241,12 +243,14 @@ POST_FIX_SEP = u'='
 def _transcript_documents_creator(transcript, factory=TranscriptDocument):
     if INTITranscript.providedBy(transcript):
         result = []
+        # pylint: disable=too-many-function-args
         uid = IIDValue(transcript).value()
         media = IMediaNTIIDValue(transcript).value()
         source = document_creator(transcript,
                                   factory=MetadataDocument,
                                   provided=IMetadataDocument)
         for x, entry in enumerate(TranscriptContentValue.entries(transcript)):
+            # pylint: disable=attribute-defined-outside-init
             doc = factory()
             doc.__dict__.update(source.__dict__)  # update with source
             doc.id = u"%s%s%s" % (uid, POST_FIX_SEP, x)  # = is id postfix
@@ -260,6 +264,7 @@ def _transcript_documents_creator(transcript, factory=TranscriptDocument):
     return result
 
 
+@interface.implementer(ITranscriptCatalog)
 class TranscriptsCatalog(MetadataCatalog):
 
     name = TRANSCRIPTS_CATALOG
@@ -294,6 +299,7 @@ class TranscriptsCatalog(MetadataCatalog):
         packages = getattr(query, '_v_packages', None)
         packages = packages or set(getattr(query, 'packages', None) or ())
         if not hasattr('packages', '_v_packages'):
+            # pylint: disable=protected-access
             query._v_packages = packages
         containers = event.get('containerId')
         if isinstance(containers, six.string_types):
@@ -303,7 +309,7 @@ class TranscriptsCatalog(MetadataCatalog):
                         or not containers
                         or packages.intersection(containers))
 
-    def build_from_search_query(self, query, **kwargs):
+    def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)

@@ -37,6 +37,7 @@ from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import ICreatorValue
 from nti.solr.interfaces import IKeywordsValue
+from nti.solr.interfaces import ILibraryCatalog
 from nti.solr.interfaces import IContainersValue
 from nti.solr.interfaces import ICreatedTimeValue
 
@@ -83,14 +84,16 @@ class _DefaultContentUnitIDValue(DefaultObjectIDValue):
 class _RenderableContentUnitIDValue(_DefaultContentUnitIDValue):
 
     @classmethod
-    def createdTime(cls, context):
+    def createdTime(cls, context):  # pylint: disable=signature-differs
         adapted = ICreatedTimeValue(context, None)
+        # pylint: disable=too-many-function-args
         value = adapted.value() if adapted is not None else None
         return value or ZERO_DATETIME
 
     @classmethod
-    def creator(cls, context):
+    def creator(cls, context):  # pylint: disable=signature-differs
         adapted = ICreatorValue(context, None)
+        # pylint: disable=too-many-function-args
         value = adapted.value() if adapted is not None else None
         return value or SYSTEM_USER_NAME
 
@@ -166,6 +169,7 @@ class _DefaultContentUnitKeywordsValue(_BasicAttributeValue):
         context = self.context if context is None else context
         adapted = IContentValue(context, None)
         if adapted is not None:
+            # pylint: disable=too-many-function-args
             self.language = adapted.lang()
             content = component.getAdapter(adapted.value(),
                                            IPlainTextContentFragment,
@@ -189,16 +193,19 @@ def _ContentUnitDocumentCreator(obj, factory=ContentUnitDocument):
 
 @component.adapter(IContentUnit)
 @interface.implementer(ICoreCatalog)
-def _contentunit_to_catalog(_):
+def _contentunit_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=CONTENT_UNITS_CATALOG)
 
 
+@interface.implementer(ILibraryCatalog)
 class ContentUnitsCatalog(MetadataCatalog):
 
     name = CONTENT_UNITS_CATALOG
     document_interface = IContentUnitDocument
 
     return_fields = ('id', 'score', 'containerId')
+
+    # pylint: disable=arguments-differ
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
@@ -211,13 +218,14 @@ class ContentUnitsCatalog(MetadataCatalog):
         packages = getattr(query, '_v_packages', None)
         packages = packages or set(getattr(query, 'packages', None) or ())
         if not hasattr('packages', '_v_packages'):
+            # pylint: disable=protected-access
             query._v_packages = packages
         containers = event.get('containerId')
         if isinstance(containers, six.string_types):
             containers = containers.split()
         containers = set(containers or ())
-        return not bool(   not packages 
-                        or not containers 
+        return not bool(   not packages
+                        or not containers
                         or packages.intersection(containers))
 
     def execute(self, term, fq, params, query=None):
@@ -253,6 +261,8 @@ def process_content_package(obj, index=True):
     recur(obj)
 
 
+# pylint: disable=keyword-arg-before-vararg
+
 def index_content_package(source, site=None, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
     with current_site(job_site):
@@ -277,6 +287,7 @@ def process_content_package_assets(obj, index=True):
     def recur(unit):
         container = IPresentationAssetContainer(unit, None)
         if container:
+            # pylint: disable=too-many-function-args
             collector.update(container.values())
         for child in unit.children or ():
             recur(child)

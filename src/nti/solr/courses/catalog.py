@@ -32,6 +32,7 @@ from nti.solr.interfaces import INTIIDValue
 from nti.solr.interfaces import ITitleValue
 from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
+from nti.solr.interfaces import ICourseCatalog
 from nti.solr.interfaces import IKeywordsValue
 
 from nti.solr.lucene import lucene_escape
@@ -112,6 +113,7 @@ class _DefaultCourseCatalogKeywordsValue(_BasicAttributeValue):
         context = ICourseInstance(context, None)
         keywords = ICourseKeywords(context, None)
         if keywords:
+            # pylint: disable=not-an-iterable
             result = keywords.keywords or ()
             result = [text_(x) for x in result]
         return result
@@ -145,11 +147,14 @@ def _course_to_catalog(unused_context):
     return component.getUtility(ICoreCatalog, name=COURSES_CATALOG)
 
 
+@interface.implementer(ICourseCatalog)
 class CoursesCatalog(MetadataCatalog):
 
     skip = True
     name = COURSES_CATALOG
     document_interface = ICourseCatalogDocument
+
+    # pylint: disable=arguments-differ
 
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)

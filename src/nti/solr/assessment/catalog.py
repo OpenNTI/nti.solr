@@ -31,6 +31,7 @@ from nti.solr.interfaces import ICoreCatalog
 from nti.solr.interfaces import IContentValue
 from nti.solr.interfaces import IKeywordsValue
 from nti.solr.interfaces import IContainersValue
+from nti.solr.interfaces import IEvaluationCatalog
 
 from nti.solr.lucene import lucene_escape
 
@@ -126,6 +127,7 @@ class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
         context = self.context if context is None else context
         adapted = IContentValue(context, None)
         if adapted is not None:
+            # pylint: disable=too-many-function-args
             self.language = adapted.lang()
             content = component.getAdapter(adapted.value(),
                                            IPlainTextContentFragment,
@@ -149,17 +151,18 @@ def _EvaluationDocumentCreator(obj, factory=EvaluationDocument):
 
 @component.adapter(IQEvaluation)
 @interface.implementer(ICoreCatalog)
-def _evaluation_to_catalog(_):
+def _evaluation_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=EVALUATIONS_CATALOG)
 
 
+@interface.implementer(IEvaluationCatalog)
 class EvaluationsCatalog(MetadataCatalog):
 
     skip = False
     name = EVALUATIONS_CATALOG
     document_interface = IEvaluationDocument
 
-    def build_from_search_query(self, query, **kwargs):
+    def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
             types = self.get_mime_types(self.name)

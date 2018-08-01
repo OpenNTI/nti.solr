@@ -96,7 +96,7 @@
 
 	<!-- Utilities -->
 	<utility factory=".catalog.UserDataCatalog"
-			 provides="nti.solr.interfaces.ICoreCatalog"
+			 provides="nti.solr.interfaces.IUserDataCatalog"
 			 name='userdata' />
 			 
 	<!-- Subscribers -->

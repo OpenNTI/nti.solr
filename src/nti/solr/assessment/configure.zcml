@@ -51,8 +51,8 @@
 
 	<!-- Utilities -->
 	<utility factory=".catalog.EvaluationsCatalog"
-			 provides="nti.solr.interfaces.ICoreCatalog"
-			 name='evaluations' />
+			 provides="nti.solr.interfaces.IEvaluationCatalog"
+			 name="evaluations" />
 
 	<!-- Subscribers -->
 	<subscriber handler=".subscribers._evaluation_added"

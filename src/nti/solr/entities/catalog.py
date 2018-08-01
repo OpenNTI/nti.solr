@@ -55,6 +55,7 @@ from nti.solr.entities.interfaces import IProfessionalDescriptionValue
 
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import ICoreCatalog 
+from nti.solr.interfaces import IEntityCatalog
 
 from nti.solr.lucene import lucene_escape
 
@@ -252,10 +253,11 @@ def _EntityDocumentCreator(obj, factory=EntityDocument):
 
 @component.adapter(IEntity)
 @interface.implementer(ICoreCatalog)
-def _entity_to_catalog(_):
+def _entity_to_catalog(unused_obj):
     return component.getUtility(ICoreCatalog, name=ENTITIES_CATALOG)
 
 
+@interface.implementer(IEntityCatalog)
 class EntitiesCatalog(MetadataCatalog):
 
     name = ENTITIES_CATALOG

@@ -52,7 +52,7 @@
 
 	<!-- Utilities -->
 	<utility factory=".catalog.CoursesCatalog"
-		 	 provides="nti.solr.interfaces.ICoreCatalog"
+		 	 provides="nti.solr.interfaces.ICourseCatalog"
 		 	 name='courses' />
 	
 	<!-- Subscribers -->
