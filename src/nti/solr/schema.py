@@ -8,13 +8,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
-import six
 import time
 import numbers
 from datetime import date
 from datetime import datetime
 
 import pytz
+
+import six
 
 from zope import interface
 
@@ -61,6 +62,8 @@ class SolrDatetime(Orderable, Field):
         except ValueError:
             raise ConstraintNotSatisfied(value, self.__name__)
         Field._validate(self, converted)
+
+    # pylint: disable=arguments-differ
 
     def get(self, obj):
         value = getattr(obj, self.__name__)
