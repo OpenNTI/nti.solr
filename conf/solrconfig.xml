@@ -757,6 +757,7 @@
 		will be overridden by parameters in the request
 		-->
 		<lst name="defaults">
+			<str name="df">_text_</str>
 			<str name="echoParams">explicit</str>
 			<int name="rows">50</int>
 			<str name="qf">content_en^1.5 title_en^1.0 keywords_en^1.2 tags^0.5</str>
