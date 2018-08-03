@@ -96,7 +96,7 @@ class _SOLRSearcher(object):
             if fragments:
                 hit.Fragments = fragments
             return hit
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             logger.debug('Could not create hit for %s. %s', result, e)
         return None
 
@@ -114,8 +114,10 @@ class _SOLRSearcher(object):
                 # Thus, the caller can keep calling us, with incrementing
                 # batches until SOLR runs out of results or the batch is filled.
                 yield hit
-        except Exception:
+        except Exception: # pylint: disable=broad-except
             logger.exception("Error while executing query %s", term)
+
+    # pylint: disable=keyword-arg-before-vararg
 
     def search(self, query, batch_start=None, batch_size=None, 
                *unused_args, **unused_kwargs):
@@ -154,7 +156,7 @@ class _SOLRSearcher(object):
                                          batch_size=batch_size)
                 if events:  # may be None
                     results = self._get_suggestions(catalog, events)
-            except Exception:
+            except Exception: # pylint: disable=broad-except
                 logger.exception("Error while executing query %s on %s",
                                  query, catalog)
         return results
