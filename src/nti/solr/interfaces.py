@@ -309,6 +309,12 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
                                   min_length=0,
                                   readonly=True)
 
+    search_fields = IndexedIterable(title=u'The search fields',
+                                    required=False,
+                                    value_type=ValidTextLine(title=u"The field name"),
+                                    min_length=0,
+                                    readonly=True)
+    
     suggest_fields = IndexedIterable(title=u'The text fields',
                                      required=False,
                                      value_type=ValidTextLine(title=u"The field name"),
