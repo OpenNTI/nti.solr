@@ -263,6 +263,10 @@ class EntitiesCatalog(MetadataCatalog):
     name = ENTITIES_CATALOG
     document_interface = IEntityDocument
 
+    @property
+    def search_fields(self):
+        return ()
+
     def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         if 'mimeType' not in fq:
