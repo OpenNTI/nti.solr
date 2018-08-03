@@ -21,6 +21,8 @@ from nti.dataserver.interfaces import IUser
 from nti.dataserver.interfaces import IEntity
 from nti.dataserver.interfaces import IUseNTIIDAsExternalUsername
 
+from nti.dataserver.users.common import user_creation_sitename
+
 from nti.dataserver.users.interfaces import IUserProfile
 from nti.dataserver.users.interfaces import IAboutProfile
 from nti.dataserver.users.interfaces import IFriendlyNamed
@@ -28,8 +30,6 @@ from nti.dataserver.users.interfaces import IEducationProfile
 from nti.dataserver.users.interfaces import ISocialMediaProfile
 from nti.dataserver.users.interfaces import IProfessionalProfile
 from nti.dataserver.users.interfaces import ICompleteUserProfile
-
-from nti.dataserver.users.utils import user_creation_sitename
 
 from nti.ntiids.oids import to_external_ntiid_oid
 
