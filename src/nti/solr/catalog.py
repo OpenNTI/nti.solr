@@ -12,6 +12,8 @@ from collections import Mapping
 from collections import Iterable
 from collections import Sequence
 
+import BTrees
+
 import pysolr
 
 import six
@@ -27,8 +29,6 @@ from zope.event import notify
 from zope.intid.interfaces import IIntIds
 
 from zope.schema.interfaces import IDatetime
-
-import BTrees
 
 from nti.externalization.externalization import to_external_object
 
@@ -298,13 +298,14 @@ class CoreCatalog(object):
     def _build_term_from_search_query(self, query):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
-        text_fields = search_fields(query, self.text_fields)
-        # pylint: disable=using-constant-test, not-an-iterable
-        if text_fields:
-            for name in text_fields:
-                qt.add_term(name, term)
-        else:
-            qt.default = term
+        if term: # want to make sure we have something to search
+            text_fields = search_fields(query, self.text_fields)
+            # pylint: disable=using-constant-test, not-an-iterable
+            if text_fields:
+                for name in text_fields:
+                    qt.add_term(name, term)
+            else:
+                qt.default = term
         return qt
 
     def build_from_search_query(self, query, batch_start=None, batch_size=None):
