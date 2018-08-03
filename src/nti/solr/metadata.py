@@ -9,9 +9,10 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import re
-import six
 from math import ceil
 from datetime import datetime
+
+import six
 
 from zope import component
 from zope import interface
@@ -203,18 +204,21 @@ class _DefaultIDValue(_BasicAttributeValue):
     @classmethod
     def createdTime(self, context):
         adapted = ICreatedTimeValue(context, None)
+        # pylint: disable=too-many-function-args
         value = adapted.value() if adapted is not None else None
         return value or ZERO_DATETIME
 
     @classmethod
     def creator(self, context):
         adapted = ICreatorValue(context, None)
+        # pylint: disable=too-many-function-args
         value = adapted.value() if adapted is not None else None
         return value or SYSTEM_USER_NAME
 
     @classmethod
     def mimeType(self, context):
         adapted = IMimeTypeValue(context, None)
+        # pylint: disable=too-many-function-args
         value = adapted.value() if adapted is not None else None
         return value or 'unknown'
 
@@ -276,6 +280,7 @@ class _DefaultInReplyToValue(_BasicAttributeValue):
         result = getattr(context, "inReplyTo", None)
         if not isinstance(result, six.string_types):
             result = INTIIDValue(result, None)
+            # pylint: disable=too-many-function-args
             result = result.value() if result else None
         return text_(result.lower()) if result else None
 
@@ -309,7 +314,7 @@ class _DefaultTaggedToValue(_BasicAttributeValue):
         if not raw_tags:
             return None
         username_tags = set()
-        for raw_tag in raw_tags:
+        for raw_tag in raw_tags:  # pylint: disable=not-an-iterable
             if is_ntiid_of_types(raw_tag, self._ENTITY_TYPES):
                 entity = find_object_with_ntiid(raw_tag)
                 if entity is not None:
@@ -332,7 +337,7 @@ class _DefaultIsTopLevelContentValue(_BasicAttributeValue):
 
     def value(self, context=None):
         context = self.context if context is None else context
-        # TODO: This is messy
+        # This is messy
         # NOTE: This is referenced by persistent objects, must stay
         if getattr(context, '__is_toplevel_content__', False):
             return True
