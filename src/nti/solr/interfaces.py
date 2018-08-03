@@ -303,7 +303,7 @@ class ICoreCatalog(IInjection, IIndexSearch, IContained):
     name = ValidTextLine(title=u"Catalog name", required=True)
     core = ValidTextLine(title=u"Core/Collection name", required=True)
 
-    text_fields = IndexedIterable(title=u'The text fields',
+    text_fields = IndexedIterable(title=u'The text fields (highlight or search)',
                                   required=False,
                                   value_type=ValidTextLine(title=u"The field name"),
                                   min_length=0,
