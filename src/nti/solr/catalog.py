@@ -300,10 +300,10 @@ class CoreCatalog(object):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
         if term: # want to make sure we have something to search
-            search_fields = search_fields(query, self.search_fields)
+            fields = search_fields(query, self.search_fields)
             # pylint: disable=using-constant-test, not-an-iterable
-            if search_fields:
-                for name in search_fields:
+            if fields:
+                for name in fields:
                     qt.add_term(name, term)
             else:
                 qt.default = term
