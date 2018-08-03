@@ -64,8 +64,10 @@ class QueryTerm(TermMixin):
     def to_solr(self, op=_OR_):
         if self.default:
             return self.default
-        return op.join(u'%s:(%s)' % (name, value)
-                       for name, value in self._terms.items())
+        elif self._terms:
+            return op.join(u'%s:(%s)' % (name, value)
+                           for name, value in self._terms.items())
+        return u"*:*"  # Search all
 
     def __iadd__(self, other):
         if other.default:
