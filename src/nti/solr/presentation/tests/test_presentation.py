@@ -11,6 +11,7 @@ from __future__ import absolute_import
 from hamcrest import is_in
 from hamcrest import has_length
 from hamcrest import assert_that
+from hamcrest import greater_than_or_equal_to
 
 import unittest
 
@@ -31,7 +32,7 @@ class TestInterfaces(unittest.TestCase):
         from nti.solr.presentation import TRANSCRIPTS_CATALOG
 
         assert_that(mimeTypeRegistry.get_mime_types(ASSETS_CATALOG),
-                    has_length(5))
+                    has_length(greater_than_or_equal_to(5)))
         assert_that(mimeTypeRegistry.get_mime_types(TRANSCRIPTS_CATALOG),
                     has_length(3))
         
