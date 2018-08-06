@@ -36,27 +36,27 @@ logger = __import__('logging').getLogger(__name__)
 
 
 @component.adapter(IEntity, IIntIdAddedEvent)
-def _entity_added(obj, _):
+def _entity_added(obj, unused_event=None):
     queue_add(ENTITIES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IEntity, IObjectModifiedEvent)
-def _entity_modified(obj, _):
+def _entity_modified(obj, unused_event=None):
     queue_modified(ENTITIES_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IEntity, IIntIdRemovedEvent)
-def _entity_removed(obj, _):
+def _entity_removed(obj, unused_event=None):
     queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)
     add_to_queue(USERDATA_QUEUE, delete_user_data, obj=obj,
                  jid='userdata_removal', username=obj.username)
 
 
 @component.adapter(IEntity, IIndexObjectEvent)
-def _index_entity(obj, _):
+def _index_entity(obj, unused_event=None):
     _entity_added(obj, None)
 
 
 @component.adapter(IEntity, IUnindexObjectEvent)
-def _unindex_entity(obj, _):
+def _unindex_entity(obj, unused_event=None):
     queue_remove(ENTITIES_QUEUE, single_unindex_job, obj=obj)

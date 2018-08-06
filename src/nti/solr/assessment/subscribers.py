@@ -35,24 +35,24 @@ logger = __import__('logging').getLogger(__name__)
 
 
 @component.adapter(IQEvaluation, IIntIdAddedEvent)
-def _evaluation_added(obj, _):
+def _evaluation_added(obj, unused_event=None):
     if obj.isPublished():
         queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IQEvaluation, IObjectModifiedEvent)
-def _evaluation_modified(obj, _):
+def _evaluation_modified(obj, unused_event=None):
     if obj.isPublished():
         queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IQEvaluation, IObjectPublishedEvent)
-def _evaluation_published(obj, _):
+def _evaluation_published(obj, unused_event=None):
     queue_modified(EVALUATIONS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IQEvaluation, IObjectUnpublishedEvent)
-def _evaluation_unpublished(obj, _):
+def _evaluation_unpublished(obj, unused_event=None):
     queue_remove(EVALUATIONS_QUEUE, single_unindex_job, obj=obj)
 
 
@@ -62,10 +62,10 @@ def _evaluation_removed(obj, _):
 
 
 @component.adapter(IQEvaluation, IIndexObjectEvent)
-def _index_evaluation(obj, _):
+def _index_evaluation(obj, unused_event=None):
     queue_add(EVALUATIONS_QUEUE, single_index_job, obj)
 
 
 @component.adapter(IQEvaluation, IUnindexObjectEvent)
-def _unindex_evaluation(obj, _):
+def _unindex_evaluation(obj, unused_event=None):
     _evaluation_removed(obj, None)

@@ -73,14 +73,14 @@ def _unindex_unit(unit):
 
 
 @component.adapter(IRenderableContentUnit, IContentPackageRenderedEvent)
-def _contentunit_rendered(obj, _):
+def _contentunit_rendered(obj, unused_event=None):
     if is_published(obj):
         for unit in _get_package_and_units(obj):
             _index_unit(unit)
 
 
 @component.adapter(IContentPackage, IContentPackageAddedEvent)
-def _contentpackage_added(obj, _):
+def _contentpackage_added(obj, unused_event=None):
     if queryInteraction() is None and IGlobalContentPackage.providedBy(obj):
         return
     for unit in _get_package_and_units(obj):
@@ -98,7 +98,7 @@ def _contentpackage_replaced(new_package, event):
 
 
 @component.adapter(IContentPackage, IContentPackageRemovedEvent)
-def _contentpackage_removed(obj, _):
+def _contentpackage_removed(obj, unused_event=None):
     if queryInteraction() is None and IGlobalContentPackage.providedBy(obj):
         return
     for unit in _get_package_and_units(obj):
@@ -106,19 +106,19 @@ def _contentpackage_removed(obj, _):
 
 
 @component.adapter(IContentUnit, IIndexObjectEvent)
-def _index_contentunit(obj, _):
+def _index_contentunit(obj, unused_event=None):
     if not IContentPackage.providedBy(obj):
         _index_unit(obj)
 
 
 @component.adapter(IContentUnit, IUnindexObjectEvent)
-def _unindex_contentunit(obj, _):
+def _unindex_contentunit(obj, unused_event=None):
     if not IContentPackage.providedBy(obj):
         _unindex_unit(obj)
 
 
 @component.adapter(IContentPackage, IIndexObjectEvent)
-def _index_contentpackage(obj, _):
+def _index_contentpackage(obj, unused_event=None):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
                      index_content_package,
@@ -131,7 +131,7 @@ def _index_contentpackage(obj, _):
 
 
 @component.adapter(IContentPackage, IUnindexObjectEvent)
-def _unindex_contentpackage(obj, _):
+def _unindex_contentpackage(obj, unused_event=None):
     if is_published(obj):
         add_to_queue(CONTENT_UNITS_QUEUE,
                      unindex_content_package,

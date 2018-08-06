@@ -33,7 +33,7 @@ class CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
     _fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {'mimeType'}
 
-    def toExternalObject(self, *args, **kwargs):
+    def toExternalObject(self, *args, **kwargs):  # pylint: disable=arguments-differ
         kwargs['decorate'] = False
         result = super(CoreDocumentSOLRExternalizer, self).toExternalObject(*args, **kwargs)
         for name in self._fields_to_remove:
