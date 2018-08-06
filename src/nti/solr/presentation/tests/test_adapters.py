@@ -5,8 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
-# disable: accessing protected members, too many methods
-# pylint: disable=W0212,R0904
+# pylint: disable=protected-access,too-many-public-methods
 
 from hamcrest import is_
 from hamcrest import assert_that
@@ -29,5 +28,6 @@ class TestAdapters(unittest.TestCase):
         from nti.contenttypes.presentation.media import NTITranscript
         transcript = NTITranscript()
         transcript.ntiid = u"tag:nextthought.com,2011-10:NTI-NTITranscript-system_A10319BA.0"
+        # pylint: disable=too-many-function-args
         assert_that(IIDValue(transcript).value(),
                     is_('19701S-system-ntitranscript#tag:nextthought.com,2011-10:NTI-NTITranscript-system_A10319BA.0'))
