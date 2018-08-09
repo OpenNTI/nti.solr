@@ -272,8 +272,11 @@ class CoreCatalog(object):
             elif isinstance(value, Sequence) and len(value) == 2:  # range
                 if IDatetime.providedBy(field):
                     value = [SolrDatetime.toUnicode(x) for x in value]
-                data = (lucene_escape(value[0]), lucene_escape(value[1]))
-                fq.add_term(name, "[%s TO %s]" % data)
+                    data = (lucene_escape(value[0]), lucene_escape(value[1]))
+                    fq.add_term(name, "[%s TO %s]" % data)
+                else: # OR list
+                    data = (lucene_escape(x) for x in value)
+                    fq.add_term(name, "(%s)" % self._OR_.join(data))
             elif isinstance(value, Iterable) and value:  # OR list
                 data = (lucene_escape(x) for x in value)
                 fq.add_term(name, "(%s)" % self._OR_.join(data))
