@@ -20,7 +20,7 @@ from nti.externalization.interfaces import StandardExternalFields
 from nti.solr.interfaces import ICoreDocument
 from nti.solr.interfaces import IMetadataDocument
 
-ALL_EXTERNAL_FIELDS = getattr(StandardExternalFields, 'ALL', ())
+ALL_EXTERNAL_FIELDS = StandardExternalFields.EXTERNAL_KEYS
 
 logger = __import__('logging').getLogger(__name__)
 
@@ -31,7 +31,7 @@ class CoreDocumentSOLRExternalizer(InterfaceObjectIO):
 
     _ext_iface_upper_bound = ICoreDocument
 
-    _fields_to_remove = set(ALL_EXTERNAL_FIELDS) - {'mimeType'}
+    _fields_to_remove = frozenset(set(ALL_EXTERNAL_FIELDS) - {'mimeType'})
 
     def toExternalObject(self, *args, **kwargs):  # pylint: disable=arguments-differ
         kwargs['decorate'] = False
