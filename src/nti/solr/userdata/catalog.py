@@ -199,7 +199,7 @@ class _UserGeneratedDataContainersValue(_BasicAttributeValue):
         contained = INTIContained(context, context)
         try:
             cid = contained.containerId
-            return (text_(cid),)
+            return (text_(cid),) if cid else None
         except AttributeError:
             return None
 
