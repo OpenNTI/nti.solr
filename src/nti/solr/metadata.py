@@ -28,6 +28,8 @@ from nti.base._compat import text_
 from nti.base.interfaces import ICreatedTime
 from nti.base.interfaces import ILastModified
 
+from nti.chatserver.interfaces import IMessageInfo
+
 from nti.coremetadata.interfaces import SYSTEM_USER_NAME
 
 from nti.coremetadata.interfaces import IUseNTIIDAsExternalUsername
@@ -265,7 +267,8 @@ class _DefaultContainersValue(_BasicAttributeValue):
         if contained is not None:
             cid = contained.containerId
             if      is_ntiid_of_types(cid, self._IGNORED_TYPES) \
-                and not ICommentPost.providedBy(context):
+                and not ICommentPost.providedBy(context) \
+                and not IMessageInfo.providedBy(context):
                 return None
             else:
                 return (text_(cid),)
