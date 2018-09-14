@@ -8,10 +8,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
-import six
 from datetime import datetime
 
 import isodate
+
+import six
 
 from zope import component
 
@@ -22,6 +23,7 @@ from nti.asynchronous import create_job
 
 from nti.contenttypes.presentation.interfaces import INTIMedia
 from nti.contenttypes.presentation.interfaces import INTIDocketAsset
+from nti.contenttypes.presentation.interfaces import IAssetTitleDescribed
 
 from nti.dataserver.interfaces import IDataserver
 
@@ -120,6 +122,7 @@ def single_index_job(source, site=None, **unused_kwargs):
         obj = object_finder(source)
         catalog = ICoreCatalog(obj, None)
         if catalog is not None:
+            # pylint: disable=too-many-function-args
             return catalog.index_doc(source, obj)
 
 
@@ -143,7 +146,9 @@ def finder(source):
 
 def process_asset(obj, index=True, commit=False):
     result = 0
-    if INTIDocketAsset.providedBy(obj) or INTIMedia.providedBy(obj):
+    if     INTIMedia.providedBy(obj) \
+        or INTIDocketAsset.providedBy(obj) \
+        or IAssetTitleDescribed.providedBy(obj):
         result += 1
         catalog = ICoreCatalog(obj)
         operation = catalog.add if index else catalog.remove
@@ -156,6 +161,7 @@ def process_asset(obj, index=True, commit=False):
                 operation(transcript, commit=commit)
     return result
 
+# pylint: disable=keyword-arg-before-vararg
 
 def index_asset(source, site=None, commit=True, *unused_args, **unused_kwargs):
     job_site = get_job_site(site)
