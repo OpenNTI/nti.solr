@@ -14,6 +14,7 @@ from zope import interface
 from nti.base._compat import text_
 
 from nti.base.interfaces import IDict
+from nti.base.interfaces import IBasestring
 
 from nti.contentsearch.interfaces import ISearchHit
 from nti.contentsearch.interfaces import ITranscriptSearchHit
@@ -40,7 +41,7 @@ from nti.solr.interfaces import IContainerContextValue
 logger = __import__('logging').getLogger(__name__)
 
 
-@component.adapter(basestring)
+@component.adapter(IBasestring)
 @interface.implementer(IStringValue)
 class _StringValue(object):
 
