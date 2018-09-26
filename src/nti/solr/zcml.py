@@ -8,6 +8,8 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+# pylint: disable=inherit-non-class
+
 import functools
 
 from zope import component
@@ -15,7 +17,7 @@ from zope import interface
 
 from zope.component.zcml import utility
 
-from zope.configuration import fields
+from zope.schema import TextLine
 
 from nti.asynchronous.interfaces import IRedisQueue
 from nti.asynchronous.redis_queue import RedisQueue
@@ -36,10 +38,10 @@ logger = __import__('logging').getLogger(__name__)
 
 class IRegisterSOLR(interface.Interface):
 
-    url = fields.TextLine(title=u"SOLR url", required=True)
+    url = TextLine(title=u"SOLR url", required=True)
 
-    name = fields.TextLine(title=u"optional registration name",
-                           required=False)
+    name = TextLine(title=u"optional registration name",
+                    required=False)
 
     timeout = Int(title=u"timeout", required=False)
 
