@@ -72,3 +72,4 @@ class TestModel(unittest.TestCase):
         from nti.solr.calendar.model import CalendarEventCatalog
         catalog = component.getUtility(ICalendarEventCatalog, name='calendarevents')
         assert_that(catalog, instance_of(CalendarEventCatalog))
+        assert_that(catalog.name, is_('calendarevents'))
