@@ -147,7 +147,10 @@
 	
 	<!-- Entities -->
 	<include package=".entities" />
-	
+
+	<!-- Calendar -->
+	<include package=".calendar" />
+
 	<!-- Utilities -->
 	<utility factory=".query._SOLRQueryValidator" />
 
