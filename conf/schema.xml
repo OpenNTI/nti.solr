@@ -282,6 +282,10 @@
 	<field name="cue_start_time" type="double" indexed="false" required="false" stored="true"/> <!-- video / audio cue startTime -->
 	<field name="cue_end_time" type="double" indexed="false" required="false" stored="true"/> <!-- video / audio cue endTime -->
 
+	<!-- Calendar Events -->
+	<field name="event_start_time" type="tdate" indexed="True" required="false" stored="true"/> <!-- calendar event start_time -->
+	<field name="event_end_time" type="tdate" indexed="True" required="false" stored="true"/> <!-- calendar event end_time -->
+
 	<!-- content fields -->
 	<dynamicField 	name="*_en" type="text_en" indexed="true" stored="true"
 					termVectors="true" termPositions="true" termOffsets="true"/>

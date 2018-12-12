@@ -421,6 +421,12 @@ class IUserDataCatalog(ICoreCatalog):
     Defines a user-data catalog
     """
 
+class ICalendarEventCatalog(ICoreCatalog):
+    """
+    Defines a calendar event catalog.
+    """
+
+
 class IIndexObjectEvent(IObjectEvent):
     """
     Event to signal object must be indexed
