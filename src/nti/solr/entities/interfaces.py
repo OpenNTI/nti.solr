@@ -11,6 +11,7 @@ from __future__ import absolute_import
 from nti.schema.field import IndexedIterable
 from nti.schema.field import Text as ValidText
 from nti.schema.field import DecodingValidTextLine as ValidTextLine
+from zope import interface
 
 from nti.solr.interfaces import tagField
 from nti.solr.interfaces import ITextField
@@ -98,6 +99,13 @@ class ILocationValue(IAttributeValue):
 class IRoleValue(IAttributeValue):
     """
     Adapter interface to get the role value from a given object
+    """
+
+
+class ICustomSOLREntityDocument(interface.Interface):
+    """
+    Utility that returns a document interface. This can
+    be implemented within sites to add/remove/edit query fields
     """
 
 

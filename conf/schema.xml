@@ -256,14 +256,29 @@
 										termVectors="true" termPositions="true" termOffsets="true"/>
 	<field name="education_degree" type="text_lower" multiValued="true" indexed="true" required="false" stored="true"/>
 	<field name="social_url" type="strings" indexed="true" required="false" stored="true"/>
+	<field name="cultures" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="initiatives" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="city_interest" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="five_voices" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="giant_5" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="church_community" type="text_lower" indexed="true" required="false" stored="true"/>
+	<field name="myers_briggs" type="text_lower" indexed="true" required="false" stored="true"/>
+
 	<copyField source="role" dest="_text_"/>
 	<copyField source="alias" dest="_text_"/>
 	<copyField source="location" dest="_text_"/>
 	<copyField source="realname" dest="_text_"/>
 	<copyField source="education_*" dest="_text_"/>
 	<copyField source="professional_*" dest="_text_"/>
+	<copyField source="cultures" dest="_text_"/>
+	<copyField source="initiatives" dest="_text_"/>
+	<copyField source="city_interest" dest="_text_"/>
+	<copyField source="five_voices" dest="_text_"/>
+	<copyField source="giant_5" dest="_text_"/>
+	<copyField source="church_community" dest="_text_"/>
+	<copyField source="myers_briggs" dest="_text_"/>
 
-	<!-- Tagged Content -->
+    <!-- Tagged Content -->
 	<field name="tags" type="text_lower" multiValued="true" indexed="true" stored="true"
 		   termVectors="true" termPositions="true" termOffsets="true" />
 	<copyField source="tags" dest="_text_"/>
