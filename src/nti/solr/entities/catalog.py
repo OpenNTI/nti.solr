@@ -52,6 +52,7 @@ from nti.solr.entities.interfaces import IProfessionalTitleValue
 from nti.solr.entities.interfaces import IProfessionalCompanyValue
 from nti.solr.entities.interfaces import IEducationDescriptionValue
 from nti.solr.entities.interfaces import IProfessionalDescriptionValue
+from nti.solr.entities.interfaces import ICustomSOLREntityDocument
 
 from nti.solr.interfaces import ISiteValue
 from nti.solr.interfaces import ICoreCatalog 
@@ -261,7 +262,11 @@ def _entity_to_catalog(unused_obj):
 class EntitiesCatalog(MetadataCatalog):
 
     name = ENTITIES_CATALOG
-    document_interface = IEntityDocument
+
+    @property
+    def document_interface(self):
+        document_interface = component.queryUtility(ICustomSOLREntityDocument)
+        return document_interface if document_interface else IEntityDocument
 
     def build_from_search_query(self, query, **kwargs):  # pylint: disable=arguments-differ
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
