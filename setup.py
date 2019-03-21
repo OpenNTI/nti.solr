@@ -59,6 +59,7 @@ setup(
         'nti.contentprocessing',
         'nti.contenttypes.presentation',
         'nti.coremetadata',
+	'nti.dataserver',
         'nti.externalization',
         'nti.ntiids',
         'nti.property',
