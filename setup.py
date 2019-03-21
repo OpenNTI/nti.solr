@@ -53,6 +53,7 @@ setup(
         'nti.common',
         'nti.contentfragments',
         'nti.contentindexing',
+	'nti.contentlibrary',
         'nti.contentprocessing',
         'nti.contenttypes.presentation',
         'nti.coremetadata',
