@@ -9,6 +9,7 @@ from __future__ import absolute_import
 
 from hamcrest import is_
 from hamcrest import assert_that
+from hamcrest import contains_inanyorder
 
 import unittest
 
@@ -42,6 +43,9 @@ class TestAdapters(unittest.TestCase):
         prof.realname = u'Ichigo Kurosaki'
         prof.role = u'Student'
         prof.twitter = 'https://twitter.com/ichigo'
+        prof.facebook = 'https://facebook.com/ichigo'
+        prof.googlePlus = 'https://google.com/ichigo'  # Field removed, data still exists
+        prof.linkedIn = 'https://linkedin.com/ichigo'
         prof.positions = [ProfessionalPosition(startYear=1998,
                                                endYear=2009,
                                                companyName=u'NTI',
@@ -57,7 +61,9 @@ class TestAdapters(unittest.TestCase):
         assert_that(value, is_('Student'))
         
         value = ISocialURLValue(user).value()
-        assert_that(value, is_(('https://twitter.com/ichigo',)))
+        assert_that(value, contains_inanyorder('https://twitter.com/ichigo',
+                                               'https://facebook.com/ichigo',
+                                               'https://linkedin.com/ichigo'))
 
         value = IProfessionalTitleValue(user).value()
         assert_that(value, is_(('Developer',)))

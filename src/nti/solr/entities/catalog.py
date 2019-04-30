@@ -221,8 +221,7 @@ class _DefaultSocialURLValue(_BasicAttributeValue):
         context = self.context if context is None else context
         profile = ISocialMediaProfile(context, None)
         if profile is not None:
-            result = {profile.twitter, profile.facebook,
-                      profile.googlePlus, profile.linkedIn}
+            result = {profile.twitter, profile.facebook, profile.linkedIn}
             return tuple(text_(x.lower()) for x in result if x)
         return ()
 
