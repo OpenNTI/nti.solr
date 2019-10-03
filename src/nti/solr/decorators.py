@@ -25,6 +25,8 @@ from nti.externalization.interfaces import StandardExternalFields
 
 from nti.externalization.singleton import Singleton
 
+from nti.ntiids.ntiids import find_object_with_ntiid
+
 from nti.ntiids.oids import to_external_ntiid_oid
 
 from nti.solr.query import hl_removeEncodedHTML
@@ -76,7 +78,11 @@ class _SearchHitDecorator(Singleton):
     def decorateExternalObject(self, unused_original, external):
         containers = external.get('Containers') or ()
         if CONTAINER_ID not in external and len(containers) == 1:
-            external[CONTAINER_ID] = containers[0]
+            external[CONTAINER_ID] = container_id = containers[0]
+            container = find_object_with_ntiid(container_id)
+            title = getattr(container, 'title', '') \
+                 or getattr(container, 'label', '')
+            external["ContainerTitle"] = title
         external.pop(ID, None)
 
 

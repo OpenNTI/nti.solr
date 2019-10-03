@@ -296,7 +296,7 @@ class UserDataCatalog(MetadataCatalog):
     # search methods
 
     # pylint: disable=arguments-differ
-      
+
     def build_from_search_query(self, query, **kwargs):
         term, fq, params = MetadataCatalog.build_from_search_query(self, query, **kwargs)
         username = getattr(query, 'username', None)
