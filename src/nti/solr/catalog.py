@@ -299,17 +299,25 @@ class CoreCatalog(object):
         params['fl'] = self.return_fields
         return params
 
+    def _parse_term(self, term):
+        """
+        Get the term from the query. Here, we parse the term and look for
+        substitutions (like `#term` to `tags:term`).
+        """
+        # We will only check the first character and substitute. If we
+        # want to attempt to handle all cases, we'd have to parse the terms
+        # and handle all quoted values correctly, which is difficult.
+        # Currently, we just map `#` to `tags`
+        if term[0] == '#':
+            term = 'tags:%s' % term[1:]
+        return term
+
     def _build_term_from_search_query(self, query):
         qt = QueryTerm()
-        term = getattr(query, 'term', query)
+        term = self._get_term(query)
         if term: # want to make sure we have something to search
-            fields = search_fields(query, self.search_fields)
-            # pylint: disable=using-constant-test, not-an-iterable
-            if fields:
-                for name in fields:
-                    qt.add_term(name, term)
-            else:
-                qt.default = term
+            # Default to default text field
+            qt.default = self._parse_term(term)
         return qt
 
     def build_from_search_query(self, query, batch_start=None, batch_size=None):
@@ -367,7 +375,7 @@ class CoreCatalog(object):
         return params
 
     # pylint: disable=keyword-arg-before-vararg
-    def suggest(self, query, fields=None, batch_start=None, batch_size=None, 
+    def suggest(self, query, fields=None, batch_start=None, batch_size=None,
                 *unused_args, **unused_kwargs):
         suggest_fields = fields or self.suggest_fields
         params = self._prepare_solr_suggest(query,

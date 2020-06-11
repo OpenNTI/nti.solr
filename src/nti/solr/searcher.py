@@ -55,6 +55,7 @@ class _SOLRSearcher(object):
         return clone
 
     def query_search_catalogs(self, query):
+        # If search term startswith #, userdata - tag field only
         if query.searchOn:
             catalogs = set()
             for mimeType in query.searchOn:
@@ -119,7 +120,7 @@ class _SOLRSearcher(object):
 
     # pylint: disable=keyword-arg-before-vararg
 
-    def search(self, query, batch_start=None, batch_size=None, 
+    def search(self, query, batch_start=None, batch_size=None,
                *unused_args, **unused_kwargs):
         queries = {}
         query = ISearchQuery(query)
@@ -144,7 +145,7 @@ class _SOLRSearcher(object):
             result.update(x for x, _ in hits)
         return result
 
-    def suggest(self, query, batch_start=None, batch_size=None, 
+    def suggest(self, query, batch_start=None, batch_size=None,
                 *unused_args, **unused_kwargs):
         query = ISearchQuery(query)
         clone = self._query_clone(query)
