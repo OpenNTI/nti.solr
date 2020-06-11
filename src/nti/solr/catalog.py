@@ -314,7 +314,7 @@ class CoreCatalog(object):
 
     def _build_term_from_search_query(self, query):
         qt = QueryTerm()
-        term = self._get_term(query)
+        term = getattr(query, 'term', query)
         if term: # want to make sure we have something to search
             # Default to default text field
             qt.default = self._parse_term(term)
