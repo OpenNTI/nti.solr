@@ -58,7 +58,6 @@ from nti.solr.query import QueryParms
 from nti.solr.query import FilterQuery
 
 from nti.solr.query import hl_snippets
-from nti.solr.query import search_fields
 from nti.solr.query import prepare_solr_query
 from nti.solr.query import hl_useFastVectorHighlighter
 
@@ -286,9 +285,9 @@ class CoreCatalog(object):
 
     def _params_from_search_query(self, query):
         params = QueryParms()
-        if self.text_fields and getattr(query, 'applyHighlights', None):
+        if getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
-            params['hl.fl'] = self.text_fields
+            params['hl.fl'] = ['_text_']
             params['hl.requireFieldMatch'] = 'true'
             params['hl.simple.pre'] = params['hl.tag.pre'] = '<hit>'
             params['hl.simple.post'] = params['hl.tag.post'] = '</hit>'
