@@ -287,8 +287,8 @@ class CoreCatalog(object):
         params = QueryParms()
         if getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
-            params['hl.fl'] = self.text_fields
-            params['hl.requireFieldMatch'] = 'false'
+            params['hl.fl'] = ['*']
+            params['hl.requireFieldMatch'] = 'true'
             params['hl.simple.pre'] = params['hl.tag.pre'] = '<hit>'
             params['hl.simple.post'] = params['hl.tag.post'] = '</hit>'
             if hl_useFastVectorHighlighter(query):
