@@ -137,6 +137,7 @@ _f_pattern = re.compile(r'(.*)(_[a-z]{2})$', re.UNICODE | re.IGNORECASE)
 
 
 def normalize_field(name):
+    # Drop trailing `_en` on field, if there.
     m = _f_pattern.match(name)
     if m is not None:
         return m.groups()[0]
