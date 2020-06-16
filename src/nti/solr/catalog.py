@@ -53,7 +53,7 @@ from nti.solr.interfaces import ObjectUnindexedEvent
 
 from nti.solr.lucene import lucene_escape
 
-from nti.solr.query import QueryTerm
+from nti.solr.query import QueryTerm, search_fields
 from nti.solr.query import QueryParms
 from nti.solr.query import FilterQuery
 
@@ -285,9 +285,9 @@ class CoreCatalog(object):
 
     def _params_from_search_query(self, query):
         params = QueryParms()
-        if getattr(query, 'applyHighlights', None):
+        if self.text_fields and getattr(query, 'applyHighlights', None):
             params['hl'] = 'true'
-            params['hl.fl'] = ['*']
+            params['hl.fl'] = self.text_fields
             params['hl.requireFieldMatch'] = 'true'
             params['hl.simple.pre'] = params['hl.tag.pre'] = '<hit>'
             params['hl.simple.post'] = params['hl.tag.post'] = '</hit>'
@@ -315,8 +315,17 @@ class CoreCatalog(object):
         qt = QueryTerm()
         term = getattr(query, 'term', query)
         if term: # want to make sure we have something to search
-            # Default to default text field
-            qt.default = self._parse_term(term)
+            # Searches like `tags:(tags:tagvalue)`seem to work (subquery).
+            term = self._parse_term(term)
+            # We use our document's fields to ensure we only get matches
+            # for the fields we're looking for.
+            fields = search_fields(query, self.search_fields)
+            # pylint: disable=using-constant-test, not-an-iterable
+            if fields:
+                for name in fields:
+                    qt.add_term(name, term)
+            else:
+                qt.default = term
         return qt
 
     def build_from_search_query(self, query, batch_start=None, batch_size=None):
