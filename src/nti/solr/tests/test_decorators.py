@@ -37,6 +37,12 @@ class TestDecorators(unittest.TestCase):
         assert_that(_SearchFragmentDecorator.sanitize(s),
                     is_(u"The Adaptive Immune Response: T <hit>Lymphocytes</hit> and Their Functional"))
 
+    def test_wrapped_anchors(self):
+        # We do not handle this case
+        hit = u' <a href="http://en.wikipedia.org/wiki/Wort"><span>wort</span></a> is boiled with <a href="http://en.wikipedia.org/wiki/Hops"><span><hit>hops</span></a></hit> (and other'
+        assert_that(_SearchFragmentDecorator.sanitize(hit),
+                    is_(u'wort is boiled with hops (and other'))
+
     def test_wowza(self):
         hit = u"<html><body>/W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head>         </head> <body>  realtitle <p></p><p>  realtitle </p><p></p> <h2>partitle</h2><h2>partitle</h2><h1>jz title</h1><h1>jz title</h1><a></a> <p>imaparagraph</p> <h1>jz title</h1><a></a> <p><hit>wowza</hit> <hit>wowza</hit></p> <a></a> <p><hit>wowza</hit></p> <a></a> <p>adlk;fj;</p> <a></a> <p>w;k</p>  </body></html>"
         assert_that(_SearchFragmentDecorator.sanitize(hit),

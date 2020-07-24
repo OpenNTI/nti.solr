@@ -55,6 +55,11 @@ class _SearchFragmentDecorator(Singleton):
         # Find all matches
         matches = re.findall(r"<%s>(.*?)</%s>" % (tag, tag), raw)
         matches = set(matches or ())
+        # We do not need these tags anymore, plus these may wrap
+        # html tags(making it invalid).
+        # XXX: Should we filter HTML before index it to avoid all of this?
+        raw = raw.replace("<hit>", '')
+        raw = raw.replace("</hit>", '')
         raw = IPlainTextContentFragment(raw)
         # Loop and retain our wrapped matches
         for match in matches:
