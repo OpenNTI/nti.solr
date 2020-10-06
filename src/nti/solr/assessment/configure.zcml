@@ -28,6 +28,10 @@
 			 provides="nti.solr.interfaces.IContentValue"
 			 for="nti.assessment.interfaces.IQEvaluation" />
 
+	<adapter factory=".catalog._SurveyEvaluationContentValue"
+			 provides="nti.solr.interfaces.IContentValue"
+			 for="nti.assessment.interfaces.IQSurvey" />
+
 	<adapter factory=".catalog._DefaultContainerIdValue"
 			 provides="nti.solr.interfaces.IContainersValue"
 			 for="nti.assessment.interfaces.IQEvaluation" />

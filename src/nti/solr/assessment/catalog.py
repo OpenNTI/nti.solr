@@ -15,6 +15,7 @@ from nti.assessment.common import get_containerId
 
 from nti.assessment.interfaces import IQEvaluation
 from nti.assessment.interfaces import IQEditableEvaluation
+from nti.assessment.interfaces import IQSurvey
 
 from nti.contentfragments.interfaces import IPlainTextContentFragment
 
@@ -114,6 +115,17 @@ class _DefaultEvaluationContentValue(_BasicAttributeValue):
         return self.get_content(context)
 
 
+@component.adapter(IQSurvey)
+@interface.implementer(IContentValue)
+class _SurveyEvaluationContentValue(_DefaultEvaluationContentValue):
+
+    def get_content(self, context):
+        value = getattr(context, 'contents', None)
+        if value is not None:
+            value = IPlainTextContentFragment(value)
+        return value
+
+
 @component.adapter(IQEvaluation)
 @interface.implementer(IKeywordsValue)
 class _DefaultEvaluationKeywordsValue(_BasicAttributeValue):
@@ -169,8 +181,8 @@ class EvaluationsCatalog(MetadataCatalog):
             fq.add_or('mimeType', [lucene_escape(x) for x in types])
         return term, fq, params
 
-    def clear(self, commit=None):
-        types = self.get_mime_types(self.name)
+    def clear(self, commit=None, mimeTypes=()):
+        types = mimeTypes or self.get_mime_types(self.name)
         q = "mimeType:(%s)" % self._OR_.join(lucene_escape(x) for x in types)
         self.client.delete(q=q,
                            commit=self.auto_commit if commit is None else bool(commit))
