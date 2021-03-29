@@ -409,6 +409,10 @@
 		Maximum number of clauses in each BooleanQuery,  an exception
 		is thrown if exceeded.
 
+        NT: boolean clauses are built based on the user's memberships
+        (enrollment, instructing, etc). There's probably not a good way
+        to revamp this currently.
+
 		** WARNING **
 
 		This option actually modifies a global Lucene property that
@@ -417,7 +421,7 @@
 		be based on the last SolrCore to be initialized.
 
 		-->
-		<maxBooleanClauses>1024</maxBooleanClauses>
+		<maxBooleanClauses>32,768</maxBooleanClauses>
 
 		<!-- Slow Query Threshold (in millis)
 
@@ -1237,8 +1241,8 @@
 			<str name="name">suggest</str>
 			<str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
 			<str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookupFactory</str>
-			<!-- 
-				Alternatives to lookupImpl: 
+			<!--
+				Alternatives to lookupImpl:
 				org.apache.solr.spelling.suggest.fst.FSTLookupFactory   [finite state automaton]
 				org.apache.solr.spelling.suggest.fst.WFSTLookupFactory [weighted finite state automaton]
 				org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory [default, jaspell-based]
