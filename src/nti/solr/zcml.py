@@ -20,7 +20,11 @@ from zope.component.zcml import utility
 from zope.schema import TextLine
 
 from nti.asynchronous.interfaces import IRedisQueue
+
 from nti.asynchronous.redis_queue import RedisQueue
+
+from nti.asynchronous.scheduled import ImmediateQueueRunner
+from nti.asynchronous.scheduled import NonRaisingImmediateQueueRunner
 
 from nti.asynchronous import get_job_queue as async_queue
 
@@ -53,21 +57,18 @@ def registerSOLR(_context, url, timeout=None, name=u''):
     utility(_context, provides=ISOLR, factory=factory, name=name)
 
 
-class ImmediateQueueRunner(object):
-    """
-    A queue that immediately runs the given job. This is generally
-    desired for test or dev mode.
-    """
-
-    def put(self, job):
-        job()
-
-
 @interface.implementer(ISOLRQueueFactory)
 class _ImmediateQueueFactory(object):
 
     def get_queue(self, *unused_args, **unused_kwargs):
         return ImmediateQueueRunner()
+
+
+@interface.implementer(ISOLRQueueFactory)
+class _TestImmediateQueueFactory(object):
+
+    def get_queue(self, *unused_args, **unused_kwargs):
+        return NonRaisingImmediateQueueRunner()
 
 
 @interface.implementer(ISOLRQueueFactory)
@@ -100,6 +101,12 @@ class _SOLRProcessingQueueFactory(_AbstractProcessingQueueFactory):
 def registerImmediateProcessingQueue(_context):
     logger.info("Registering immediate solr processing queue")
     factory = _ImmediateQueueFactory()
+    utility(_context, provides=ISOLRQueueFactory, component=factory)
+
+
+def registerTestImmediateProcessingQueue(_context):
+    logger.info("Registering test immediate solr processing queue")
+    factory = _TestImmediateQueueFactory()
     utility(_context, provides=ISOLRQueueFactory, component=factory)
 
 
