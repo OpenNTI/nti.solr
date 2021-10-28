@@ -39,11 +39,13 @@ class TestDecorators(unittest.TestCase):
 
     def test_wrapped_anchors(self):
         # We do not handle this case
+        # With nti.contentfragments 1.9, links are in markup
         hit = u' <a href="http://en.wikipedia.org/wiki/Wort"><span>wort</span></a> is boiled with <a href="http://en.wikipedia.org/wiki/Hops"><span><hit>hops</span></a></hit> (and other'
         assert_that(_SearchFragmentDecorator.sanitize(hit),
-                    is_(u'wort is boiled with hops (and other'))
+                    is_(u'[wort](http://en.wikipedia.org/wiki/Wort) is boiled with [hops](http://en.wikipedia.org/wiki/Hops)\n(and other'))
 
     def test_wowza(self):
+        # With nti.contentfragments 1.9, `p` tags end up as newlines
         hit = u"<html><body>/W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html><head>         </head> <body>  realtitle <p></p><p>  realtitle </p><p></p> <h2>partitle</h2><h2>partitle</h2><h1>jz title</h1><h1>jz title</h1><a></a> <p>imaparagraph</p> <h1>jz title</h1><a></a> <p><hit>wowza</hit> <hit>wowza</hit></p> <a></a> <p><hit>wowza</hit></p> <a></a> <p>adlk;fj;</p> <a></a> <p>w;k</p>  </body></html>"
         assert_that(_SearchFragmentDecorator.sanitize(hit),
-                    is_(u'realtitle   realtitle  partitlepartitlejz titlejz title imaparagraph jz title <hit>wowza</hit> <hit>wowza</hit>  <hit>wowza</hit>  adlk;fj;  w;k'))
+                    is_(u'realtitle\n\nrealtitle\n\n## partitle\n\n## partitle\n\n# jz title\n\n# jz title\n\nimaparagraph\n\n# jz title\n\n<hit>wowza</hit> <hit>wowza</hit>\n\n<hit>wowza</hit>\n\nadlk;fj;\n\nw;k'))
